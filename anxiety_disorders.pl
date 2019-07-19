@@ -9,7 +9,7 @@
 %		previsti dal DSM-IV-TR.                                     
 %                                                                             
 %	fonte: 
-%		DSM-IV-TR Diagnostic and Statistical Manual of mental disorders (American Psychiatric Association)                	 	
+%		DSM-IV-TR Diagnostic and Statistical Manual of Mental Disorders (American Psychiatric Association)
 % 								             
 %	autore: 
 %		Donato Meoli
@@ -27,7 +27,7 @@ investigate_goals(L):-
 	paziente(X),
 	findall(goal(Y,CF),disturbo(Y,X,CF),L).
 	
-%-------------------------------------------------------------------DISTURBI D'ANSIA di AsseI----------------------------------------------------------
+%---------------------------------------------------DISTURBI D'ANSIA di AsseI------------------------------------------
 %	Disturbo di Panico Senza Agorafobia
 disturbo(disturbo_di_panico_senza_agorafobia,Paziente,CF) :- 
 	disturbo_NC(disturbo_di_panico,Paziente,CF1,true),
@@ -339,7 +339,7 @@ disturbo(disturbo_ansia_dovuto_a_condizione_medica_generale_con_sintomi_ossessiv
 	certezza(disturbo_ansia_dovuto_a_condizione_medica_generale_con_sintomi_ossessivo_compulsivi,1,[CF1,CF2],0.80,CF,true).
 
 
-%------------------------------------------------------------DISTURBI D'ANSIA NON CODIFICABILI---------------------------------------------------------
+%--------------------------------------------DISTURBI D'ANSIA NON CODIFICABILI-----------------------------------------
 disturbo_NC(disturbo_di_panico,Paziente,CF,TV) :- 
 	manifestazione_sintomatica(attacco_di_panico_inaspettato,Paziente,CF1,true),
 	caratteristica_sintomatica(frequenti_attacchi_di_panico,Paziente,CF2,true),
@@ -453,7 +453,7 @@ disturbo_NC(condizione_medica_generale_associata,Paziente,CF,TV):-
 	certezza(condizione_medica_generale_associata,2,[CF1,CF2,CF3],0.95,CF,TV).
 
 
-%----------------------------------------------------------------TIPI DI "FOBIA SPECIFICA"-------------------------------------------------------------
+%------------------------------------------------TIPI DI "FOBIA SPECIFICA"---------------------------------------------
 tipo_fobia_specifica(tipo_animali,Paziente,CF,TV) :-
 	manifestazione_sintomatica(fobia_animali,Paziente,CF1,true),
 	certezza(tipo_animali,2,[CF1],0.99,CF,TV).
@@ -475,7 +475,7 @@ tipo_fobia_specifica(tipo_altro,Paziente,CF,TV) :-
 	certezza(tipo_altro,2,[CF1],0.99,CF,TV).
 
 
-%--------------------------------------------------------------TIPI DI "FOBIA SOCIALE"-----------------------------------------------------------------
+%----------------------------------------------TIPI DI "FOBIA SOCIALE"-------------------------------------------------
 tipo_fobia_sociale(tipo_generalizzata,Paziente,CF,TV) :-
 	manifestazione_sintomatica(fobia_generalizzata,Paziente,CF1,true),
 	certezza(tipo_generalizzata,2,[CF1],0.98,CF,TV).
@@ -485,7 +485,7 @@ tipo_fobia_sociale(tipo_circoscritta,Paziente,CF,TV) :-
 	certezza(tipo_circoscritta,2,[CF1],0.98,CF,TV).
 
 
-%-----------------------------------------------------------TIPI DI "OSSESSIONI-COMPULSIONI"-----------------------------------------------------------
+%-------------------------------------------TIPI DI "OSSESSIONI-COMPULSIONI"-------------------------------------------
 tipo_ossessioni_compulsioni(tipo_aggressivo,Paziente,CF,TV) :-
 	manifestazione_sintomatica(ossessioni_compulsioni_aggressioni,Paziente,CF1,true),
 	certezza(tipo_aggressivo,2,[CF1],0.97,CF,TV).
@@ -527,7 +527,7 @@ tipo_ossessioni_compulsioni(tipo_vario,Paziente,CF,TV) :-
 	certezza(tipo_vario,2,[CF1],0.97,CF,TV).
 
 
-%-------------------------------------------------------TIPI DI "DISTURBI POST TRAUMATICI DA STRESS"---------------------------------------------------
+%---------------------------------------TIPI DI "DISTURBI POST TRAUMATICI DA STRESS"-----------------------------------
 tipo_disturbo_post_traumatico_da_stress(tipo_acuto,Paziente,CF,TV) :-
 	caratteristica_sintomatica(durata_un_mese_meno_tre_mesi,Paziente,CF1,true),
 	caratteristica_sintomatica(esordio_entro_sei_mesi,Paziente,CF2,true),
@@ -549,7 +549,7 @@ tipo_disturbo_post_traumatico_da_stress(tipo_cronico_ad_esordio_ritardato,Pazien
 	certezza(tipo_cronico_ad_esordio_ritardato,2,[CF1,CF2],0.99,CF,TV).
 
 
-%--------------------------------------------------------------MANIFESTAZIONI SINTOMATICHE-------------------------------------------------------------
+%----------------------------------------------MANIFESTAZIONI SINTOMATICHE---------------------------------------------
 manifestazione_sintomatica(attacco_di_panico_inaspettato,Paziente,CF,TV) :-
 	sintomo([escalation_ansia_o_forte_paura],1,CF1),
 	sintomo([palpitazioni,sudorazione,tremore,dispnea,asfissia,dolore_al_petto,nausea,testa_leggera,derealizzazione,depersonalizzazione,paura_di_impazzire,paura_di_morire,parestesie,brividi_o_vampate_calore],4,CF2),
@@ -733,7 +733,7 @@ manifestazione_sintomatica(ossessioni_compulsioni_vario,Paziente,CF,TV) :-
 	certezza(ossessioni_compulsioni_vario,3,[CF1],0.75,CF,TV).
 
 
-%------------------------------------------------------------CARATTERISTICHE SINTOMATICHE--------------------------------------------------------------
+%--------------------------------------------CARATTERISTICHE SINTOMATICHE----------------------------------------------
 caratteristica_sintomatica(frequenti_attacchi_di_panico,Paziente,CF,TV) :-
 	frequenza_attacchi_di_panico([da_due_a_cinque,piu_di_cinque],CF1),
 	certezza(frequenti_attacchi_di_panico,3,[CF1],0.98,CF,TV).
@@ -779,7 +779,7 @@ caratteristica_sintomatica(esordio_almeno_sei_mesi_dopo,Paziente,CF,TV) :-
 	certezza(esordio_almeno_sei_mesi_dopo,3,[CF1],1.0,CF,TV).
 
 
-%-------------------------------------------------------------DOMANDE DA CHIEDERE ALL'UTENTE-----------------------------------------------------------
+%---------------------------------------------DOMANDE DA CHIEDERE ALL'UTENTE-------------------------------------------
 tipo_attacco(L,CF) :- 
 	multiple_ask(tipo_attacco,[attacco_inaspettato,attacco_provocato],L,CF).
 
@@ -811,7 +811,7 @@ paziente(X) :-
 	selective_ask(paziente,X,[bambino,adolescente,adulto]).
 
 
-%--------------------------------------------------------LISTA DEI DISTURBI D'ANSIA CODIFICATI---------------------------------------------------------
+%----------------------------------------LISTA DEI DISTURBI D'ANSIA CODIFICATI-----------------------------------------
 lista_goals([disturbo_di_panico_senza_agorafobia,disturbo_di_panico_con_agorafobia,fobia_specifica_tipo_animali,fobia_specifica_tipo_ambiente_naturale,fobia_specifica_tipo_sangue_iniezioni_ferite,fobia_specifica_tipo_situazionale,fobia_specifica_tipo_altro,fobia_sociale_generalizzata,fobia_sociale_circoscritta,agorafobia_senza_anamnesi_di_disturbo_di_panico,disturbo_post_traumatico_da_stress_acuto,disturbo_post_traumatico_da_stress_acuto_ad_esordio_ritardato,disturbo_post_traumatico_da_stress_cronico,disturbo_post_traumatico_da_stress_cronico_ad_esordio_ritardato,disturbo_acuto_da_stress,disturbo_ossessivo_compulsivo_aggressioni,disturbo_ossessivo_compulsivo_aggressioni_con_scarso_insight,disturbo_ossessivo_compulsivo_contaminazioni,disturbo_ossessivo_compulsivo_contaminazioni_con_scarso_insight,disturbo_ossessivo_compulsivo_sesso,disturbo_ossessivo_compulsivo_sesso_con_scarso_insight,disturbo_ossessivo_compulsivo_accumulo,disturbo_ossessivo_compulsivo_accumulo_con_scarso_insight,disturbo_ossessivo_compulsivo_religione,disturbo_ossessivo_compulsivo_religione_con_scarso_insight,disturbo_ossessivo_compulsivo_ordine_e_simmetria,disturbo_ossessivo_compulsivo_ordine_e_simmetria_con_scarso_insight,disturbo_ossessivo_compulsivo_somatico,disturbo_ossessivo_compulsivo_somatico_con_scarso_insight,disturbo_ossessivo_compulsivo_superstizione,disturbo_ossessivo_compulsivo_superstizione_con_scarso_insight,disturbo_ossessivo_compulsivo_perfezione_e_responsabilita,disturbo_ossessivo_compulsivo_perfezione_e_responsabilita_con_scarso_insight,disturbo_ossessivo_compulsivo_vario,disturbo_ossessivo_compulsivo_vario_con_scarso_insight,disturbo_ansia_generalizzato,disturbo_ansia_indotto_da_sostanze_con_ansia_generalizzata,disturbo_ansia_indotto_da_sostanze_con_attacchi_di_panico,disturbo_ansia_indotto_da_sostanze_con_sintomi_ossessivo_compulsivi,disturbo_ansia_indotto_da_sostanze_con_sintomi_fobici,disturbo_ansia_dovuto_a_condizione_medica_generale_con_ansia_generalizzata,disturbo_ansia_dovuto_a_condizione_medica_generale_con_attacchi_di_panico,disturbo_ansia_dovuto_a_condizione_medica_generale_con_sintomi_ossessivo_compulsivi]).
 
 

@@ -14,7 +14,7 @@
 
 decodifica(paziente, 'Selezionare la fascia d''eta'' del paziente') :- !.
 spiega(paziente, 'La fascia d''eta'' del paziente e'' importante per differenziare, aggiungere o escludere dei sintomi per alcune diagnosi') :- !.
-decodifica(bambino, '0-9') :-!.
+decodifica(bambino, '0-9') :- !.
 decodifica(adolescente, '10-17') :- !.
 decodifica(adulto, '>=18') :- !.
 
@@ -68,10 +68,10 @@ spiega(tipo_attacco, 'Individuare una relazione fra l''esordio dell''attacco e l
 decodifica(attacco_inaspettato, 'All''improvviso ed in maniera spontanea') :- !.
 decodifica(attacco_provocato, 'Subito dopo l''esposizione o nell''attesa di un fattore scatenante') :- !.
 
-decodifica(comportamento_protettivo, 'Cerca di proteggersi dagli attacchi accertandosi anticipatamente della presenza di presidi medici o di uscite di sicurezza nei pressi in cui staziona'):-!.
+decodifica(comportamento_protettivo, 'Cerca di proteggersi dagli attacchi accertandosi anticipatamente della presenza di presidi medici o di uscite di sicurezza nei pressi in cui staziona'):- !.
 spiega(comportamento_protettivo, 'Il fatto che il paziente metta in atto un comportamento protettivo potrebbe essere indice di ansia anticipatoria, la quale fa propendere verso il disturbo di panico'):- !.
 
-decodifica(comportamento_evitante, 'Limita o evita attivita'' o spostamenti a piedi o per mezzi di trasporto') :-!.
+decodifica(comportamento_evitante, 'Limita o evita attivita'' o spostamenti a piedi o per mezzi di trasporto') :- !.
 spiega(comportamento_evitante, 'Il fatto che il paziente metta in atto un comportamento evitante potrebbe essere indice di ansia anticipatoria, la quale fa propendere verso il disturbo di panico'):- !.
 
 decodifica(preoccupazione_conseguenze_attacchi_ansia, 'Si preoccupa eccessivamente circa le conseguenze che possono derivare dai diversi attacchi d''ansia') :- !.
@@ -94,16 +94,16 @@ decodifica(un_mese_meno_tre_mesi, '>= 1 mese & < 3 mesi') :- !.
 decodifica(tre_mesi_meno_sei_mesi, '>= 3 mesi & < 6 mesi') :- !.
 decodifica(sei_mesi_piu, '>= 6 mesi') :- !. 
 
-decodifica(paura_agorafobica, 'Avverte una sensazione di paura o grave disagio quando si ritrova in ambienti non familiari o in luoghi aperti o affollati') :-!.
+decodifica(paura_agorafobica, 'Avverte una sensazione di paura o grave disagio quando si ritrova in ambienti non familiari o in luoghi aperti o affollati') :- !.
 spiega(paura_agorafobica, 'Mi serve per verificare la presenza di agorafobia'):- !.
 
 decodifica(fobia_uscite, 'Ha paura o evita di uscire di casa da solo'):- !.
 spiega(fobia_uscite, 'La paura o l''evitamento pervasivo verso le uscite di casa rappresenterebbe un indizio a favore dell''agorafobia'):- !.
 
-decodifica(fobia_luoghi_affollati, 'Ha paura o evita di frequentare luoghi affollati (per es., cinema, supermercati, ristoranti, discoteche)'):-!.
+decodifica(fobia_luoghi_affollati, 'Ha paura o evita di frequentare luoghi affollati (per es., cinema, supermercati, ristoranti, discoteche)'):- !.
 spiega(fobia_luoghi_affollati, 'La paura o l''evitamento pervasivo verso la frequentazione di luoghi affollati rappresenterebbe un indizio a favore dell''agorafobia'):- !.
 
-decodifica(fobia_lunghe_file, 'Si sente a disagio quando si trova bloccato in una lunga coda'):-!.
+decodifica(fobia_lunghe_file, 'Si sente a disagio quando si trova bloccato in una lunga coda'):- !.
 spiega(fobia_lunghe_file, 'Il disagio per le lunghe code rappresenterebbe un indizio a favore dell''agorafobia'):- !.
 
 decodifica(fobia_solitudine, 'Ha timore o evita di restare da solo in diverse circostanze'):- !.
@@ -120,10 +120,10 @@ spiega(tipo_ansia, 'A seconda del motivo che caratterizza il manifestarsi dall''
 decodifica(difficolta_allontanamento_o_indisponibilita_aiuto, 'Per il timore di non poter allontanarsi o chiedere aiuto in caso di attacco d''ansia') :- !.
 decodifica(imbarazzo_in_pubblico, 'Per il timore di poter rimanere imbarazzato in pubblico') :- !.
 decodifica(pericolo_salute,'Per il timore di poter mettere in serio pericolo la propria salute') :- !.
-decodifica(attesa_apprensiva, 'Per il timore di non riuscire ad affrontare circostanze abitudinarie o piccoli contrattempi di giornata') :-!.
-decodifica(altro_tipo_ansia, 'Per altro') :-!.
+decodifica(attesa_apprensiva, 'Per il timore di non riuscire ad affrontare circostanze abitudinarie o piccoli contrattempi di giornata') :- !.
+decodifica(altro_tipo_ansia, 'Per altro') :- !.
 
-decodifica(tipo_reazione_fobica, 'Come si comporta nei confronti delle situazioni temute') :-!.
+decodifica(tipo_reazione_fobica, 'Come si comporta nei confronti delle situazioni temute') :- !.
 spiega(tipo_reazione_fobica, 'Capire il comportamento che il paziente mette in atto verso le situazioni temute consentirebbe di rafforzare o diminuire la probabilita'' a favore di una diagnosi fobica') :- !.
 decodifica(evitamento, 'Cerca di evitarle il piu'' possibile') :- !.
 decodifica(sopportazione_con_disagio, 'Si sforza di sopportarle vivendo, pero'', dei momenti di intenso disagio') :- !.
@@ -132,7 +132,7 @@ decodifica(sopportazione_senza_problemi, 'Le sopporta senza alcun problema') :- 
 decodifica(paura_fobica_prestazionale, 'Teme le situazioni in cui i suoi atteggiamenti o le sue prestazioni sono esposte al giudizio altrui') :- !.
 spiega(paura_fobica_prestazionale, 'Mi serve per verificare la presenza di fobia sociale'):- !.
 
-decodifica(paura_fobica_sociale, 'Avverte un eccessivo disagio quando si ritrova a contatto con altre persone in contesti non familiari') :-!. 
+decodifica(paura_fobica_sociale, 'Avverte un eccessivo disagio quando si ritrova a contatto con altre persone in contesti non familiari') :- !.
 spiega(paura_fobica_sociale, 'Mi serve per verificare la presenza di fobia sociale'):- !.
 
 decodifica(fobia_parlare_agire_pubblicamente, 'Ha paura o evita di parlare o esibirsi in pubblico') :- !.
@@ -219,19 +219,19 @@ spiega(fobia_aghi_o_iniezioni, 'La belonefobia o la tripanofobia farebbe propend
 decodifica(fobia_medicazioni_invasive, 'Ha paura delle procedure mediche invasive'):- !.
 spiega(fobia_medicazioni_invasive, 'La fobia per le medicazioni invasive farebbe propendere per una diagnosi di fobia specifica di tipo sangue-iniezioni-ferite'):- !.
 
-decodifica(fobia_malattie_o_soffocamento, 'Ha paura di contrarre una malattia o di soffocare'):-!.
+decodifica(fobia_malattie_o_soffocamento, 'Ha paura di contrarre una malattia o di soffocare'):- !.
 spiega(fobia_malattie_o_soffocamento, 'La patofobia o la pnigofobia farebbe propendere per una diagnosi di fobia specifica di altro tipo'):- !.
 
-decodifica(fobia_vomito, 'Ha paura del vomito o del vomitare'):-!.
+decodifica(fobia_vomito, 'Ha paura del vomito o del vomitare'):- !.
 spiega(fobia_vomito, 'L''emetofobia farebbe propendere per una diagnosi di fobia specifica di altro tipo'):- !.
 
-decodifica(fobia_boati_o_rumori_forti, 'Ha paura dei boati o dei forti rumori') :-!.
+decodifica(fobia_boati_o_rumori_forti, 'Ha paura dei boati o dei forti rumori') :- !.
 spiega(fobia_boati_o_rumori_forti, 'La liguirofobia farebbe propendere per una diagnosi di fobia specifica di altro tipo'):- !.
 
-decodifica(fobia_maschere, 'Ha paura dei personaggi in maschera o dei clown') :-!.
+decodifica(fobia_maschere, 'Ha paura dei personaggi in maschera o dei clown') :- !.
 spiega(fobia_maschere, 'La coulrofobia farebbe propendere per una diagnosi di fobia specifica di altro tipo'):- !.
 
-decodifica(fobia_morte, 'Ha paura della morte o dei patimenti che la precedono') :-!.
+decodifica(fobia_morte, 'Ha paura della morte o dei patimenti che la precedono') :- !.
 spiega(fobia_morte, 'La tanatofobia o la necrofobia farebbe propendere per una diagnosi di fobia specifica di altro tipo'):- !.
 
 decodifica(insight_eccesso_o_irragionevolezza_paura_fobica, 'Riconosce che la paura nei confronti della situzione fobica e'' eccessiva o irragionevole') :- !.
@@ -252,7 +252,7 @@ spiega(trauma, 'L''esposizione ad un evento traumatico consentirebbe di prendere
 decodifica(comportamento_disorganizzato, 'Subito dopo l''evento traumatico ha avuto un comportamento disorganizzato') :- !.
 spiega(comportamento_disorganizzato, 'Una risposta all''evento, espressa mediante un comportamento disorganizzato, permetterebbe la conferma del trauma psicologico, inteso come sintomo a favore del disturbo post-traumatico da stress o acuto da stress'):- !.
 
-decodifica(agitazione, 'Subito dopo l''evento traumatico si e'' sentito continuamente agitato o turbato') :-!.
+decodifica(agitazione, 'Subito dopo l''evento traumatico si e'' sentito continuamente agitato o turbato') :- !.
 spiega(agitazione, 'Una risposta all''evento, espressa mediante una significativa agitazione, permetterebbe la conferma del trauma psicologico, inteso come sintomo a favore del disturbo post-traumatico da stress o acuto da stress'):- !.
 
 decodifica(sentimento_orrore, 'Subito dopo l''evento traumatico ha provato una sensazione di intensa paura o di orrore') :- !.
@@ -276,7 +276,7 @@ spiega(manifestazione_sogni_spaventosi, 'La manifestazione di sogni spaventosi o
 decodifica(ripresentazione_trauma, 'Presenta delle illusioni, allucinazioni o flashback inerenti l''evento traumatico') :- !.
 spiega(ripresentazione_trauma, 'Il verificarsi di diverse sensazioni illusive o allusive o di epsiodi dissociativi di flashback farebbe dedurre il rivivere l''evento traumatico, il quale rappresenterebbe un indizio a favore del disturbo post-traumatico da stress o acuto da stress'):- !.
 
-decodifica(manifestazione_rappresentazioni_ripetitive, 'Vive continuamente delle rappresentazioni specifiche del trauma') :-!.
+decodifica(manifestazione_rappresentazioni_ripetitive, 'Vive continuamente delle rappresentazioni specifiche del trauma') :- !.
 spiega(manifestazione_rappresentazioni_ripetitive, 'La manifestazione di rappresentazioni ripetitive specifiche associate al trauma farebbe dedurre il rivivere l''evento traumatico, il quale rappresenterebbe un indizio a favore del disturbo post-traumatico da stress o acuto da stress'):- !.
 
 decodifica(disagio_psicologico_fattori_caratterizzanti_trauma, 'Presenta un disagio psicologico intenso quando rivive situazioni associate all''evento traumatico') :- !.
@@ -303,7 +303,7 @@ spiega(affettivita_ridotta, 'La presenza di una affettivita'' ridotta farebbe de
 decodifica(diminuzione_prospettive_future, 'Si aspetta prospettive negative sul suo futuro o sui suoi desideri') :- !.
 spiega(diminuzione_prospettive_future, 'La presenza di sentimenti di diminuzione delle prospettive future farebbe dedurre l''attenuazione della reattivita'' generale, la quale rappresenterebbe un indizio a favore del disturbo post-traumatico da stress'):- !.
 
-decodifica(alterazione_sonno, 'Ha seria difficolta'' ad addormentarsi o a mantenere a lungo il sonno') :-!.
+decodifica(alterazione_sonno, 'Ha seria difficolta'' ad addormentarsi o a mantenere a lungo il sonno') :- !.
 spiega(alterazione_sonno, 'L''alterazione del sonno potrebbe essere un sintomo tipico di aumentato arousal riscontrabile nel disturbo post-traumatico da stress o acuto da stress oppure potrebbe essere un indizio a favore del disturbo d''ansia generalizzato'''):- !.
 
 decodifica(irritabilita, 'Si sente particolarmente irritabile o presenta spesso scoppi di collera') :- !.
@@ -331,13 +331,13 @@ decodifica(un_mese_meno_sei_mesi, 'Si, dopo >= 1 mese & < 6 mesi') :- !.
 decodifica(sei_mesi_o_piu, 'Si, dopo >= 6 mesi') :- !. 
 decodifica(no_esordio, 'No') :- !.
 
-decodifica(ansia_ossessiva, 'Si sente minacciato dal ricorrente presentarsi alla mente di pensieri, impulsi o immagini che vengono vissuti in maninera intrusiva ed inappropriata') :-!.
+decodifica(ansia_ossessiva, 'Si sente minacciato dal ricorrente presentarsi alla mente di pensieri, impulsi o immagini che vengono vissuti in maninera intrusiva ed inappropriata') :- !.
 spiega(ansia_ossessiva, 'Mi serve per verificare la presenza di un disturbo ossessivo-compulsivo'):- !.
 
-decodifica(ansia_compulsiva, 'Si sente continuamente obbligato a mettere in atto dei precisi comportamenti o dei rituali mentali al fine di prevenire alcuni eventi o situazioni temuti') :-!.
+decodifica(ansia_compulsiva, 'Si sente continuamente obbligato a mettere in atto dei precisi comportamenti o dei rituali mentali al fine di prevenire alcuni eventi o situazioni temuti') :- !.
 spiega(ansia_compulsiva, 'Mi serve per verificare la presenza di un disturbo ossessivo-compulsivo'):- !.
 
-decodifica(preoccupazione_controllo_ossessioni_compulsioni, 'E'' costantemente in ansia per paura di non riuscire a tenere sotto controllo tali pensieri, immagini o impulsi'):-!.
+decodifica(preoccupazione_controllo_ossessioni_compulsioni, 'E'' costantemente in ansia per paura di non riuscire a tenere sotto controllo tali pensieri, immagini o impulsi'):- !.
 spiega(preoccupazione_controllo_ossessioni_compulsioni, 'La presenza di preoccupazioni relative al controllo delle ossessioni-compulsioni fa propendere per il disturbo ossessivo-compulsivo'):- !.
 
 decodifica(insight_eccesso_o_irragionevolezza_ossessioni_compulsioni, 'Riconosce che le ossessioni o le compulsioni di cui soffre sono eccessive o irragionevoli') :- !.
@@ -349,43 +349,43 @@ decodifica(insight_basso, 'Si, ma solo in circostanze di non pericolo o quando n
 decodifica(spreco_tempo, 'Il ricorrere di questi fastidiosi pensieri o il mettere in atto comportamenti necessari a prevenire alcuni eventi comportano lo spreco di una quantita'' di tempo considerevole') :- !.
 spiega(spreco_tempo, 'Il verificarsi di uno spreco di tempo interessante rappresenterebbe un indizio a favore del disturbo ossessivo-compulsivo'):- !.
 
-decodifica(o_c_ferire_fisicamente_o_verbalmente, 'Ha timore di poter ferire fisicamente o verbalmente senza alcun motivo se stesso o altre persone in qualsiasi momento'):-!.
+decodifica(o_c_ferire_fisicamente_o_verbalmente, 'Ha timore di poter ferire fisicamente o verbalmente senza alcun motivo se stesso o altre persone in qualsiasi momento'):- !.
 spiega(o_c_ferire_fisicamente_o_verbalmente, 'Avere l''ossessione-compulsione di ferire qualcuno farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto aggressivo'):- !.
 
-decodifica(o_c_fare_cose_imbarazzanti, 'Ha timore di poter fare cose molto imbarazzanti in presenza di altre persone'):-!.
+decodifica(o_c_fare_cose_imbarazzanti, 'Ha timore di poter fare cose molto imbarazzanti in presenza di altre persone'):- !.
 spiega(o_c_fare_cose_imbarazzanti, 'Avere l''ossessione-compulsione di fare cose molto imbarazzanti farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto aggressivo'):- !.
 
 decodifica(o_c_provocare_incidenti, 'Teme di poter provocare gravi incidenti stradali o domestici') :- !.
 spiega(o_c_provocare_incidenti, 'Avere l''ossessione-compulsione di provocare gravi incidenti farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto aggressivo'):- !.
 
-decodifica(o_c_contaminazione_oggetti_o_animali_o_persone, 'Ha paura di toccare, avvicinarsi o entrare in contatto con alcune persone, animali o oggetti per timore di ammalarsi'):-!.
+decodifica(o_c_contaminazione_oggetti_o_animali_o_persone, 'Ha paura di toccare, avvicinarsi o entrare in contatto con alcune persone, animali o oggetti per timore di ammalarsi'):- !.
 spiega(o_c_contaminazione_oggetti_o_animali_o_persone, 'Avere l''ossessione-compulsione di contaminarsi al contatto con oggetti, animali o persone farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo da contaminazione'):- !.
 
-decodifica(o_c_contaminazione_germi_o_malattie_o_secrezioni_o_feci, 'Ha paura di contaminarsi a causa del contatto con germi, malattie, feci o secrezioni corporee'):-!.
+decodifica(o_c_contaminazione_germi_o_malattie_o_secrezioni_o_feci, 'Ha paura di contaminarsi a causa del contatto con germi, malattie, feci o secrezioni corporee'):- !.
 spiega(o_c_contaminazione_germi_o_malattie_o_secrezioni_o_feci, 'Avere l''ossessione-compulsione di contaminarsi al contatto con germi, malattie, feci o secrezioni corporee farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo da contaminazione'):- !.
 
-decodifica(o_c_contaminazione_posti_o_luoghi_contaminati, 'Evita di frequentare posti considerati contaminati come sale di attese, bagni pubblici, telefoni pubblici o luoghi considerati ad alto tasso di inquinamento'):-!.
+decodifica(o_c_contaminazione_posti_o_luoghi_contaminati, 'Evita di frequentare posti considerati contaminati come sale di attese, bagni pubblici, telefoni pubblici o luoghi considerati ad alto tasso di inquinamento'):- !.
 spiega(o_c_contaminazione_posti_o_luoghi_contaminati, 'Avere l''ossessione-compulsione di contaminarsi, frequentando posti o luoghi ritenuti inquinanti, farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo da contaminazione'):- !.
 
-decodifica(o_c_pulizia_ambiente, 'Sente la necessita'' di pulire continuamente la casa o gli oggetti di uso comune'):-!.
+decodifica(o_c_pulizia_ambiente, 'Sente la necessita'' di pulire continuamente la casa o gli oggetti di uso comune'):- !.
 spiega(o_c_pulizia_ambiente, 'Avere l''ossessione-compulsione di pulire ambienti ed oggetti di uso comune farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo da contaminazione'):- !.
 
-decodifica(o_c_pulizia_personale, 'Si sente obbligato ad indossare guanti ed indumenti particolari o a lavarsi continuamente al fine di evitare la contaminazione'):-!.
+decodifica(o_c_pulizia_personale, 'Si sente obbligato ad indossare guanti ed indumenti particolari o a lavarsi continuamente al fine di evitare la contaminazione'):- !.
 spiega(o_c_pulizia_personale, 'Avere l''ossessione-compulsione di pulire ambienti ed oggetti di uso comune farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo da contaminazione'):- !.
 
-decodifica(o_c_atti_sessuali, 'E''angosciato da pensieri intrusivi di atti sessuali verso estranei, parenti, amici o bambini'):-!.
+decodifica(o_c_atti_sessuali, 'E''angosciato da pensieri intrusivi di atti sessuali verso estranei, parenti, amici o bambini'):- !.
 spiega(o_c_atti_sessuali, 'Avere l''ossessione-compulsione per gli atti sessuali farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto sessuale'):- !.
 
 decodifica(o_c_immagini_pornografiche,'E'' angustiato dal ricorrente presentarsi alla mente di immagini pornografiche') :- !.
 spiega(o_c_immagini_pornografiche, 'Avere l''ossessione-compulsione per le immagini pornografiche farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto sessuale'):- !.
 
-decodifica(o_c_omosessualita, 'Ha timore di diventare omosessuale o evita di guardare o parlare con persone dello stesso sesso in modo da autorassicurarsi di non essere omosessuale') :-!.
+decodifica(o_c_omosessualita, 'Ha timore di diventare omosessuale o evita di guardare o parlare con persone dello stesso sesso in modo da autorassicurarsi di non essere omosessuale') :- !.
 spiega(o_c_omosessualita, 'Avere l''ossessione-compulsione per l''omossessualita farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto sessuale'):- !.
 
-decodifica(o_c_collezionare_oggetti_inutili,'Ha difficolta'' nel buttar via degli oggetti anche se si ritengono inutili'):-!.
+decodifica(o_c_collezionare_oggetti_inutili,'Ha difficolta'' nel buttar via degli oggetti anche se si ritengono inutili'):- !.
 spiega(o_c_collezionare_oggetti_inutili, 'Avere l''ossessione-compulsione di collezionare oggetti inutili farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo accumulo'):- !.
 
-decodifica(o_c_spazi_vuoti, 'Tende ad occupare ogni angolo o spazio vuoto fino a far diventare la casa o la stanza ingombra di collezioni'):-!.
+decodifica(o_c_spazi_vuoti, 'Tende ad occupare ogni angolo o spazio vuoto fino a far diventare la casa o la stanza ingombra di collezioni'):- !.
 spiega(o_c_spazi_vuoti, 'Avere l''ossessione-compulsione di riempire tutti gli spazi vuoti farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo accumulo'):- !.
 
 decodifica(o_c_controllare_rifiuti, 'Sente la necessita'' di ispezionare i rifiuti prima di gettarli'):- !.
@@ -394,73 +394,73 @@ spiega(o_c_controllare_rifiuti, 'Avere l''ossessione-compulsione di controllare 
 decodifica(o_c_recuperare_oggetti_da_terra, 'Ha degli impulsi a recuperare qualsiasi oggetto da terra'):- !.
 spiega(o_c_recuperare_oggetti_da_terra, 'Avere l''ossessione-compulsione di recuperare oggetti da terra farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo accumulo'):- !.
 
-decodifica(o_c_bestemmie, 'Ha paura di pronunciare frasi blasfeme o teme di essere punito per averle pensate'):-!.
+decodifica(o_c_bestemmie, 'Ha paura di pronunciare frasi blasfeme o teme di essere punito per averle pensate'):- !.
 spiega(o_c_bestemmie, 'Avere l''ossessione-compulsione per le bestemmie farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto religioso'):- !.
 
-decodifica(o_c_sacrilegio, 'Ha timore di aver involontariamente omaggiato figure diaboliche'):-!.
+decodifica(o_c_sacrilegio, 'Ha timore di aver involontariamente omaggiato figure diaboliche'):- !.
 spiega(o_c_sacrilegio, 'Avere l''ossessione-compulsione per i sacrilegi farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto religioso'):- !.
  
-decodifica(o_c_moralita, 'Si preoccupa in continuazione sulla propria moralita'''):-!.
+decodifica(o_c_moralita, 'Si preoccupa in continuazione sulla propria moralita'''):- !.
 spiega(o_c_moralita, 'Avere l''ossessione-compulsione per la moralita'' farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto religioso'):- !.
 
 decodifica(o_c_credo_religioso, 'Teme di fallire o eseguire in maniera errata i rituali previsti dal proprio credo religioso') :- !.
 spiega(o_c_credo_religioso, 'Avere l''ossessione-compulsione per i credi religiosi farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto religioso'):- !.
 
-decodifica(o_c_preghiere, 'Sente l''eccessiva necessita'' di pregare o trovare rassicurazioni in figure religiose') :-!.
+decodifica(o_c_preghiere, 'Sente l''eccessiva necessita'' di pregare o trovare rassicurazioni in figure religiose') :- !.
 spiega(o_c_preghiere, 'Avere l''ossessione-compulsione per le preghiere farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo a contenuto religioso'):- !.
 
 decodifica(o_c_disagio_disordine,'Si sente a disagio quando gli oggetti vengono riarrangiati o messi fuori posto da altri') :- !.
 spiega(o_c_disagio_disordine, 'Avere l''ossessione-compulsione per il disordine farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo ordine e simmetria'):- !.
 
-decodifica(o_c_ordine_oggetti, 'Si sofferma continuamente a controllare che tutti gli oggetti siano in ordine o a risistemare gli oggetti fuori posto per diverso tempo'):-!.
+decodifica(o_c_ordine_oggetti, 'Si sofferma continuamente a controllare che tutti gli oggetti siano in ordine o a risistemare gli oggetti fuori posto per diverso tempo'):- !.
 spiega(o_c_ordine_oggetti, 'Avere l''ossessione-compulsione di ordinare o controllare continuamente gli oggetti farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo ordine e simmetria'):- !.
 
-decodifica(o_c_simmetria, 'Sente la necessita'' di disporre taluni oggetti in un dato ordine o in maniera simmetrica'):-!.
+decodifica(o_c_simmetria, 'Sente la necessita'' di disporre taluni oggetti in un dato ordine o in maniera simmetrica'):- !.
 spiega(o_c_simmetria, 'Avere l''ossessione-compulsione di disporre simmetricamente gli oggetti farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo ordine e simmetria'):- !.
 
 decodifica(o_c_controllo_forme_corporee, 'Controlla costantemente le proprie forme corporee') :- !.
 spiega(o_c_controllo_forme_corporee, 'Avere l''ossessione-compulsione per le forme corporee farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo somatico'):- !.
 
-decodifica(o_c_giudizio_altrui_aspetto_fisico, 'Teme eccessivamente le reazioni degli altri sul proprio aspetto fisico'):-!.
+decodifica(o_c_giudizio_altrui_aspetto_fisico, 'Teme eccessivamente le reazioni degli altri sul proprio aspetto fisico'):- !.
 spiega(o_c_giudizio_altrui_aspetto_fisico, 'Avere l''ossessione-compulsione per il giudizio che altre persone possono avere sul proprio aspetto fisico farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo somatico'):- !.
 
-decodifica(o_c_parole_superstiziose, 'Ha paura di dire o pensare certe parole per le conseguenze negative che possono derivare dal farlo') :-!.
+decodifica(o_c_parole_superstiziose, 'Ha paura di dire o pensare certe parole per le conseguenze negative che possono derivare dal farlo') :- !.
 spiega(o_c_parole_superstiziose, 'Avere l''ossessione-compulsione per le parole superstiziose farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo superstizioso'):- !.
 
-decodifica(o_c_colori_simboli_o_numeri_superstiziosi, 'Fa costantemente attenzione all''uso di alcuni colori, numeri o simboli per paura che portino sfortuna') :-!.
+decodifica(o_c_colori_simboli_o_numeri_superstiziosi, 'Fa costantemente attenzione all''uso di alcuni colori, numeri o simboli per paura che portino sfortuna') :- !.
 spiega(o_c_colori_simboli_o_numeri_superstiziosi, 'Avere l''ossessione-compulsione relativa all''uso di colori, simboli o numeri superstiziosi farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo superstizioso'):- !.
 
-decodifica(o_c_credenze_superstiziose, 'Mette in atto comportamenti sulla base di credenze supertiziose') :-!.
+decodifica(o_c_credenze_superstiziose, 'Mette in atto comportamenti sulla base di credenze supertiziose') :- !.
 spiega(o_c_credenze_superstiziose, 'Avere l''ossessione-compulsione relativa alle credenze superstiziose farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo superstizioso'):- !.
 
-decodifica(o_c_rifare_cose, 'Capita di dover rifare alcune cose piu'' di una volta fino a quando crede di averle fatte perfettamente'):-!.
+decodifica(o_c_rifare_cose, 'Capita di dover rifare alcune cose piu'' di una volta fino a quando crede di averle fatte perfettamente'):- !.
 spiega(o_c_rifare_cose, 'Avere l''ossessione-compulsione di rifare delle cose piu'' volte farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo perfezione e responsabilita'''):- !.
 
-decodifica(o_c_controllo_errori, 'Si ritrova spesso a controllare di non aver commesso disattenzioni per paura che possa accadere qualcosa di brutto') :-!.
+decodifica(o_c_controllo_errori, 'Si ritrova spesso a controllare di non aver commesso disattenzioni per paura che possa accadere qualcosa di brutto') :- !.
 spiega(o_c_controllo_errori, 'Avere l''ossessione-compulsione per il controllo degli errori o delle disattenzioni farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo perfezione e responsabilita'''):- !.
 
-decodifica(o_c_dire_cose_insensate, 'Ha costantemente paura di dire qualcosa di sbagliato o di insensato') :-!.
+decodifica(o_c_dire_cose_insensate, 'Ha costantemente paura di dire qualcosa di sbagliato o di insensato') :- !.
 spiega(o_c_dire_cose_insensate, 'Avere l''ossessione-compulsione di dire cose sbagliate o insensate farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo perfezione e responsabilita'''):- !.
 
-decodifica(o_c_scadenze, 'Teme in modo sproporzionato di non riuscire a completare un compito o di non rispettare alcune scadenze'):-!.
+decodifica(o_c_scadenze, 'Teme in modo sproporzionato di non riuscire a completare un compito o di non rispettare alcune scadenze'):- !.
 spiega(o_c_scadenze, 'Avere l''ossessione-compulsione per le scadenze farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo perfezione e responsabilita'''):- !.
 
-decodifica(o_c_numero_morsi, 'Sente la necessita'' di mangiar sempre una stessa quantita'' di bocconi indipendentemente dal tipo di cibo'):-!.
+decodifica(o_c_numero_morsi, 'Sente la necessita'' di mangiar sempre una stessa quantita'' di bocconi indipendentemente dal tipo di cibo'):- !.
 spiega(o_c_numero_morsi, 'Avere l''ossessione-compulsione per il cibo farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo vario'):- !.
 
-decodifica(o_c_rumori, 'Si sente facilmente infastidito da certi suoni e rumori come ticchettii, ronzii o boati'):-!.
+decodifica(o_c_rumori, 'Si sente facilmente infastidito da certi suoni e rumori come ticchettii, ronzii o boati'):- !.
 spiega(o_c_rumori, 'Avere l''ossessione-compulsione per alcuni suoni o rumori farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo vario'):- !.
 
-decodifica(o_c_toccare, 'Sente l''impellente bisogno di toccare o strofinare ripetutamente determinati oggetti'):-!.
+decodifica(o_c_toccare, 'Sente l''impellente bisogno di toccare o strofinare ripetutamente determinati oggetti'):- !.
 spiega(o_c_toccare, 'Avere l''ossessione-compulsione di toccare o strofinare oggetti farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo vario'):- !.
 
-decodifica(o_c_conteggi, 'Tende a contate determinati oggetti come gradini, piani di appartamenti, auto in file o altro'):-!.
+decodifica(o_c_conteggi, 'Tende a contate determinati oggetti come gradini, piani di appartamenti, auto in file o altro'):- !.
 spiega(o_c_conteggi, 'Avere l''ossessione-compulsione di contare in determinate circostanze farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo vario'):- !.
 
-decodifica(o_c_ricordi, 'Sente il desiderio di ricordare o memorizzare slogan, targhe, nomi, parole o avvenimenti'):-!.
+decodifica(o_c_ricordi, 'Sente il desiderio di ricordare o memorizzare slogan, targhe, nomi, parole o avvenimenti'):- !.
 spiega(o_c_ricordi, 'Avere l''ossessione-compulsione di ricordare o memorizzare alcune cose farebbe propendere per una diagnosi di disturbo ossessivo-compulsivo di tipo vario'):- !.
 
-decodifica(preoccupazione_circostanze_abitudinarie_o_piccoli_imprevisti, 'Negli ultimi mesi ha raggiunto livelli eccessivi di preoccupazione relativamente a circostanze quotidiane, abitudinarie o a piccoli imprevisti di minima entita'''):-!.
+decodifica(preoccupazione_circostanze_abitudinarie_o_piccoli_imprevisti, 'Negli ultimi mesi ha raggiunto livelli eccessivi di preoccupazione relativamente a circostanze quotidiane, abitudinarie o a piccoli imprevisti di minima entita'''):- !.
 spiega(preoccupazione_circostanze_abitudinarie_o_piccoli_imprevisti, 'Mi serve per verificare la presenza di ansia generalizzata'):- !.
 
 decodifica(difficolta_controllo_preoccupazione, 'Ha seria difficolta'' nel controllare la preoccupazione o nell''impedire che i pensieri preoccupanti interferiscano con l''attenzione necessaria ai compiti da svolgere nella giornata') :- !.
@@ -748,7 +748,7 @@ decodifica(esordio_entro_sei_mesi, 'Esordio entro 5 mesi dal Trauma') :- !.
 decodifica(esordio_almeno_sei_mesi_dopo, 'Esordio almeno 6 mesi dopo il Trauma') :- !.
 
 
-decodifica(presentazione_sistema, '---------------------------------------------------------\n-- Prolog Expert System on Anxiety Disorders (PESAD)\n\n--	autore Francesco Nigro\n--	versione Settembre 2011\n---------------------------------------------------------\n') :- !.
+decodifica(presentazione_sistema, '---------------------------------------------------------\n-- Prolog Expert System on Anxiety Disorders (PESAD)\n\n--	autore Donato Meoli\n--	versione Agosto 2019\n---------------------------------------------------------\n') :- !.
 
 decodifica(errore_risposta, 'Risposta errata, rispondere nuovamente') :- !.
 
