@@ -8,7 +8,7 @@ This code was developed during the Artificial Intelligence Fundamentals course @
 
 ## Prerequisites
 
-To run the expert system you must download [SWI-Prolog](https://www.swi-prolog.org/Download.html) for your operating system.
+To run the expert system you have to download [SWI-Prolog](https://www.swi-prolog.org/Download.html) for your operating system.
 
 ## Running the expert system
 

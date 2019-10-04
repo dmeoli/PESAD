@@ -1,20 +1,16 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                            
-%	nome: 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	name:
 %		anxiety_disorders.pl
 %                                                                             
-%	descrizione: 
-%		Il modulo anxiety_disorders contiene la base di conoscenza del Sistema Esperto.
-%		I disturbi d'ansia, codificati nella presente base di conoscenza, si riferiscono ai disturbi d'ansia di Asse I 
-%		previsti dal DSM-IV-TR.                                     
-%                                                                             
-%	fonte: 
-%		DSM-IV-TR Diagnostic and Statistical Manual of Mental Disorders (American Psychiatric Association)
+%	description:
+%		Il modulo anxiety_disorders contiene la base di conoscenza del sistema esperto.
+%		I disturbi d'ansia, codificati nella presente base di conoscenza, si riferiscono
+%       ai disturbi d'ansia di asse I previsti dal DSM-IV-TR (Diagnostic and Statistical
+%       Manual of Mental Disorders - American Psychiatric Association).
 % 								             
-%	autore: 
+%	author:
 %		Donato Meoli
-%       								             
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Diagnosi di controllo su un singolo disturbo
