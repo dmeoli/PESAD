@@ -25,7 +25,7 @@ investigate_goals(L) :-
 	
 %---------------------------------------------------DISTURBI D'ANSIA di AsseI------------------------------------------
 %	Disturbo di Panico Senza Agorafobia
-disturbo(disturbo_di_panico_senza_agorafobia,Paziente,CF) :- 
+disturbo(disturbo_di_panico_senza_agorafobia,Paziente,CF) :-
 	disturbo_NC(disturbo_di_panico,Paziente,CF1,true),
 	disturbo_NC(agorafobia,Paziente,CF2,false),
 	disturbo_NC(condizione_medica_generale_associata,Paziente,CF3,false),
@@ -33,7 +33,7 @@ disturbo(disturbo_di_panico_senza_agorafobia,Paziente,CF) :-
 	certezza(disturbo_di_panico_senza_agorafobia,1,[CF1,CF2,CF3,CF4],0.97,CF,true).
 
 %	Disturbo di Panico Con Agorafobia 
-disturbo(disturbo_di_panico_con_agorafobia,Paziente,CF) :- 
+disturbo(disturbo_di_panico_con_agorafobia,Paziente,CF) :-
 	disturbo_NC(disturbo_di_panico,Paziente,CF1,true),
 	disturbo_NC(agorafobia,Paziente,CF2,true),
 	disturbo_NC(condizione_medica_generale_associata,Paziente,CF3,false),
@@ -101,7 +101,7 @@ disturbo(disturbo_post_traumatico_da_stress_acuto,Paziente,CF) :-
 	certezza(disturbo_post_traumatico_da_stress_acuto,1,[CF1,CF2],0.98,CF,true).
 
 %	Disturbo Post-Traumatico da Stress Acuto ad Esordio Ritardato
-disturbo(disturbo_post_traumatico_da_stress_acuto_ad_esordio_ritardato,Paziente,CF) :- 
+disturbo(disturbo_post_traumatico_da_stress_acuto_ad_esordio_ritardato,Paziente,CF) :-
 	disturbo_NC(disturbo_post_traumatico_da_stress,Paziente,CF1,true),
 	tipo_disturbo_post_traumatico_da_stress(tipo_acuto_ad_esordio_ritardato,Paziente,CF2,true),
 	certezza(disturbo_post_traumatico_da_stress_acuto_ad_esordio_ritardato,1,[CF1,CF2],0.98,CF,true).
@@ -113,13 +113,13 @@ disturbo(disturbo_post_traumatico_da_stress_cronico,Paziente,CF) :-
 	certezza(disturbo_post_traumatico_da_stress_cronico,1,[CF1,CF2],0.98,CF,true).
 
 %	Disturbo Post-Traumatico da Stress Cronico ad Esordio Ritardato
-disturbo(disturbo_post_traumatico_da_stress_cronico_ad_esordio_ritardato,Paziente,CF) :- 
+disturbo(disturbo_post_traumatico_da_stress_cronico_ad_esordio_ritardato,Paziente,CF) :-
 	disturbo_NC(disturbo_post_traumatico_da_stress,Paziente,CF1,true),
 	tipo_disturbo_post_traumatico_da_stress(tipo_cronico_ad_esordio_ritardato,Paziente,CF2,true),
 	certezza(disturbo_post_traumatico_da_stress_cronico_ad_esordio_ritardato,1,[CF1,CF2],0.98,CF,true).
 
 %	Disturbo Acuto da Stress
-disturbo(disturbo_acuto_da_stress,Paziente,CF) :- 
+disturbo(disturbo_acuto_da_stress,Paziente,CF) :-
 	disturbo_NC(disturbo_acuto_da_stress,Paziente,CF1,true),
 	disturbo_NC(condizione_medica_generale_associata,Paziente,CF2,false),
 	disturbo_NC(alterazione_indotta_da_sostanza_associata,Paziente,CF3,false),
@@ -336,7 +336,7 @@ disturbo(disturbo_ansia_dovuto_a_condizione_medica_generale_con_sintomi_ossessiv
 
 
 %--------------------------------------------DISTURBI D'ANSIA NON CODIFICABILI-----------------------------------------
-disturbo_NC(disturbo_di_panico,Paziente,CF,TV) :- 
+disturbo_NC(disturbo_di_panico,Paziente,CF,TV) :-
 	manifestazione_sintomatica(attacco_di_panico_inaspettato,Paziente,CF1,true),
 	caratteristica_sintomatica(frequenti_attacchi_di_panico,Paziente,CF2,true),
 	manifestazione_sintomatica(ansia_anticipatoria_situazioni_panico,Paziente,CF3,true),
@@ -344,7 +344,7 @@ disturbo_NC(disturbo_di_panico,Paziente,CF,TV) :-
 	certezza(disturbo_di_panico,2,[CF1,CF2,CF3,CF4],0.97,CF,TV).
 
 disturbo_NC(agorafobia,Paziente,CF,TV) :-
-	manifestazione_sintomatica(ansia_agorafobica,Paziente,CF1,true), 
+	manifestazione_sintomatica(ansia_agorafobica,Paziente,CF1,true),
 	manifestazione_sintomatica(evitamento_o_sopportazione_con_disagio,Paziente,CF2,true),
 	certezza(agorafobia,2,[CF1,CF2],0.98,CF,TV).
 
@@ -418,13 +418,13 @@ disturbo_NC(disturbo_post_traumatico_da_stress,Paziente,CF,TV) :-
 	manifestazione_sintomatica(disagio_significativo,Paziente,CF6,true),
 	certezza(disturbo_post_traumatico_da_stress,2,[CF1,CF2,CF3,CF4,CF5,CF6],0.98,CF,TV).
 
-disturbo_NC(disturbo_ossessivo_compulsivo,Paziente,CF,TV) :- 
+disturbo_NC(disturbo_ossessivo_compulsivo,Paziente,CF,TV) :-
 	manifestazione_sintomatica(ansia_ossessiva_compulsiva,Paziente,CF1,true),
 	manifestazione_sintomatica(disagio_significativo,Paziente,CF2,true),
 	manifestazione_sintomatica(alto_riconoscimento_eccesso_o_irragionevolezza_ossessioni_compulsioni,Paziente,CF3,true),
 	certezza(disturbo_ossessivo_compulsivo,2,[CF1,CF2,CF3],0.97,CF,TV).
 
-disturbo_NC(disturbo_ossessivo_compulsivo_con_scarso_insight,Paziente,CF,TV) :- 
+disturbo_NC(disturbo_ossessivo_compulsivo_con_scarso_insight,Paziente,CF,TV) :-
 	manifestazione_sintomatica(ansia_ossessiva_compulsiva,Paziente,CF1,true),
 	manifestazione_sintomatica(disagio_significativo,Paziente,CF2,true),
 	manifestazione_sintomatica(basso_riconoscimento_eccesso_o_irragionevolezza_ossessioni_compulsioni,Paziente,CF3,true),
@@ -612,7 +612,7 @@ manifestazione_sintomatica(ansia_ossessiva_compulsiva,Paziente,CF,TV) :-
 
 manifestazione_sintomatica(dissociazione,Paziente,CF,TV) :-
 	sintomo([affettivita_ridotta,sentimento_estraneita,riduzione_consapevolezza_ambientale,derealizzazione,depersonalizzazione,amnesia_dissociativa],3,CF1),
-	certezza(dissociazione,3,[CF1],0.98,CF,TV). 
+	certezza(dissociazione,3,[CF1],0.98,CF,TV).
 
 manifestazione_sintomatica(evento_traumatico_rivissuto,bambino,CF,TV) :-
 	!,
@@ -776,34 +776,34 @@ caratteristica_sintomatica(esordio_almeno_sei_mesi_dopo,Paziente,CF,TV) :-
 
 
 %---------------------------------------------DOMANDE DA CHIEDERE ALL'UTENTE-------------------------------------------
-tipo_attacco(L,CF) :- 
+tipo_attacco(L,CF) :-
 	multiple_ask(tipo_attacco,[attacco_inaspettato,attacco_provocato],L,CF).
 
-insight_eccesso_o_irragionevolezza_ossessioni_compulsioni(L,CF) :- 
+insight_eccesso_o_irragionevolezza_ossessioni_compulsioni(L,CF) :-
 	multiple_ask(insight_eccesso_o_irragionevolezza_ossessioni_compulsioni,[insight_nullo,insight_alto,insight_basso],L,CF).
 
-frequenza_attacchi_di_panico(L,CF) :- 
+frequenza_attacchi_di_panico(L,CF) :-
 	multiple_ask(frequenza_attacchi_di_panico,[uguale_minore_uno,da_due_a_cinque,piu_di_cinque],L,CF).
 
-durata_sintomi(L,CF) :- 
+durata_sintomi(L,CF) :-
 	multiple_ask(durata_sintomi,[meno_due_giorni,due_giorni_meno_un_mese,un_mese_meno_tre_mesi,tre_mesi_meno_sei_mesi,sei_mesi_piu],L,CF).
 
-esordio_sintomi(L,CF) :- 
+esordio_sintomi(L,CF) :-
 	multiple_ask(esordio_sintomi,[meno_un_mese,un_mese_meno_sei_mesi,sei_mesi_o_piu,no_esordio],L,CF).
 
-tipo_ansia(L,CF) :- 
+tipo_ansia(L,CF) :-
 	multiple_ask(tipo_ansia,[difficolta_allontanamento_o_indisponibilita_aiuto,imbarazzo_in_pubblico,pericolo_salute,attesa_apprensiva,altro_tipo_ansia],L,CF).
 
-tipo_reazione_fobica(L,CF) :- 
+tipo_reazione_fobica(L,CF) :-
 	multiple_ask(tipo_reazione_fobica,[evitamento,sopportazione_con_disagio,sopportazione_senza_problemi],L,CF).
 
-sintomo(Y,Z,CF) :- 
+sintomo(Y,Z,CF) :-
 	criterion_ask(sintomo,Y,Z,CF).
 
-evidenza_eziologica(Y,Z,CF) :- 
+evidenza_eziologica(Y,Z,CF) :-
 	criterion_ask(sintomo,Y,Z,CF).
 
-paziente(X) :- 
+paziente(X) :-
 	selective_ask(paziente,X,[bambino,adolescente,adulto]).
 
 

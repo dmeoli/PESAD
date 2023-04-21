@@ -76,11 +76,11 @@ run(aiuto) :-
 	menu,
 	!.
 %	chiude il sistema
-run(chiudi) :- 
+run(chiudi) :-
 	clean_memory,
 	!.
 %	pulisce la memoria, cancellando tutti i fatti asseriti dall'utente o gli alberi di dimostrazione utilizzati nelle precedenti esecuzioni
-run(pulisci) :- 
+run(pulisci) :-
 	clean_memory,
 	!.
 %	caso in cui il comando digitato dall'utente non e' valido
@@ -112,7 +112,7 @@ display_investigation(Lista_Goal) :-
 %	print_goals(Lista_Goal):
 %		stampa a video la lista dei goal con il relativo grado di certezza ottenuto	
 print_goals([]). 
-print_goals([H|T]) :- 
+print_goals([H|T]) :-
 	arg(1,H,Goal),
 	arg(2,H,CF),
 	rule_I(_,Goal,_,Codice_Goal),
@@ -274,7 +274,7 @@ check_response_control_how(no,_).
 
 %	get_simple_response(Risposta):
 %		restituisce la risposta utente per una domanda del tipo "si-no"
-get_simple_response(Risposta) :- 
+get_simple_response(Risposta) :-
 	repeat,
 	write('? '),
 	decodifica(indicazione_risposta_si_no,T_Indicazione_Risposta_Si_No),
@@ -286,25 +286,25 @@ get_simple_response(Risposta) :-
 
 %	check_format_simple_response(Risposta,Y):
 %		controlla che la risposta digitata dall'utente sia valida e, nel caso positivo, la restituisce in un formato standard
-check_format_simple_response(si,Y) :- 
+check_format_simple_response(si,Y) :-
 	Y=yes, 
 	!.
-check_format_simple_response(s,Y) :- 
+check_format_simple_response(s,Y) :-
 	Y=yes, 
 	!.
-check_format_simple_response(yes,Y) :- 
+check_format_simple_response(yes,Y) :-
 	Y=yes, 
 	!.
-check_format_simple_response(y,Y) :- 
+check_format_simple_response(y,Y) :-
 	Y=yes, 
 	!.
-check_format_simple_response(no,Y) :- 
+check_format_simple_response(no,Y) :-
 	Y=no, 
 	!.
-check_format_simple_response(n,Y) :- 
+check_format_simple_response(n,Y) :-
 	Y=no, 
 	!.
-check_format_simple_response(not,Y) :- 
+check_format_simple_response(not,Y) :-
 	Y=no, 
 	!.
 check_format_simple_response(_,_) :-
@@ -505,34 +505,34 @@ get_criterion_response(Risposta) :-
 
 %	check_format_criterion_response(Risposta_Utente,Risposta):
 %		controlla che la risposta digitata dall'utente sia valida e, nel caso positivo, la restituisce in un formato standard
-check_format_criterion_response(si,Y) :- 
+check_format_criterion_response(si,Y) :-
 	Y=yes, 
 	!.
-check_format_criterion_response(s,Y) :- 
+check_format_criterion_response(s,Y) :-
 	Y=yes, 
 	!.
-check_format_criterion_response(yes,Y) :- 
+check_format_criterion_response(yes,Y) :-
 	Y=yes, 
 	!.
-check_format_criterion_response(y,Y) :- 
+check_format_criterion_response(y,Y) :-
 	Y=yes, 
 	!.
-check_format_criterion_response(no,Y) :- 
+check_format_criterion_response(no,Y) :-
 	Y=no, 
 	!.
-check_format_criterion_response(n,Y) :- 
+check_format_criterion_response(n,Y) :-
 	Y=no, 
 	!.
-check_format_criterion_response(not,Y) :- 
+check_format_criterion_response(not,Y) :-
 	Y=no, 
 	!.
-check_format_criterion_response(perche,Y) :- 
+check_format_criterion_response(perche,Y) :-
 	Y=why, 
 	!.
-check_format_criterion_response(p,Y) :- 
+check_format_criterion_response(p,Y) :-
 	Y=why, 
 	!.
-check_format_criterion_response(why,Y) :- 
+check_format_criterion_response(why,Y) :-
 	Y=why, 
 	!.
 check_format_criterion_response(_,_) :-
@@ -941,7 +941,7 @@ add_element(Elemento,Lista,[Elemento|Lista]).
 %	delete_element(X,L,L1)
 %		elimina l'elemento X dalla lista L ottenendo L1
 delete_element(Elemento,[],[]).
-delete_element(Elemento,[Elemento|Residuo_Lista],Residuo_Lista) :- 
+delete_element(Elemento,[Elemento|Residuo_Lista],Residuo_Lista) :-
 	!.
-delete_element(Elemento,[Testa|Coda],[Testa|Residuo_Lista]) :- 
+delete_element(Elemento,[Testa|Coda],[Testa|Residuo_Lista]) :-
 	delete_element(Elemento,Coda,Residuo_Lista).
