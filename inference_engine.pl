@@ -76,11 +76,11 @@ run(aiuto) :-
 	menu,
 	!.
 %	chiude il sistema
-run(chiudi):- 
+run(chiudi) :- 
 	clean_memory,
 	!.
 %	pulisce la memoria, cancellando tutti i fatti asseriti dall'utente o gli alberi di dimostrazione utilizzati nelle precedenti esecuzioni
-run(pulisci):- 
+run(pulisci) :- 
 	clean_memory,
 	!.
 %	caso in cui il comando digitato dall'utente non e' valido
@@ -146,7 +146,7 @@ ask_investigation_how(Risposta) :-
 
 %	check_response_investigation_how(Risposta,Lista_Goal):
 %		elabora la risposta dell'utente in merito alla richiesta del "come" si e' giunti ad una qualsiasi soluzione
-check_response_investigation_how(yes,Lista_Goal):-
+check_response_investigation_how(yes,Lista_Goal) :-
 	pick_goal(Lista_Goal,Nome_Goal_Scelto),
 	print_tree(Nome_Goal_Scelto),
 	white_lines(1),
@@ -267,7 +267,7 @@ ask_control_how(Risposta) :-
 
 %	check_response_control_how(Risposta,Goal):
 %		elabora la risposta dell'utente in merito alla richiesta del "come" si e' giunti alla soluzione del goal
-check_response_control_how(yes,Goal):-
+check_response_control_how(yes,Goal) :-
 	white_lines(1),
 	print_tree(Goal).
 check_response_control_how(no,_).
@@ -317,7 +317,7 @@ check_format_simple_response(_,_) :-
 print_tree(Goal) :-	
 	show_rule_I(Goal).
 
-show_rule_I(Goal):-
+show_rule_I(Goal) :-
 	rule_I(TV,Goal,CF,Index_I),
 	Certezza is round(CF*100),
 	decodifica(Goal,Nome_Goal),
@@ -471,20 +471,20 @@ ask_question(Attributo,[Item|Item_Restanti],Numero_Item_Richiesti,Certezza,Lista
 	known_question_condition(Attributo,Item,Item_Restanti,Numero_Item_Richiesti,Certezza,Lista_Fatti).
 
 %	Se per l'n-esimo item c'e' gia' una risposta positiva, si prende il valore di certezza e si passa ad esaminare il successivo item
-known_question_condition(Attributo,Item,Item_Restanti,Numero_Item_Richiesti,Certezza,Lista_Fatti):-
+known_question_condition(Attributo,Item,Item_Restanti,Numero_Item_Richiesti,Certezza,Lista_Fatti) :-
 	known(yes,Attributo,Item,Certezza_Risposta),
 	!,
 	add_element(fact(yes,Item,Certezza_Risposta),Lista_Fatti,Lista_Fatti_Aggiornata),
 	ask_question(Attributo,Item_Restanti,Numero_Item_Richiesti,Certezza,Lista_Fatti_Aggiornata).
 %	Se per l'n-esimo item c'e' gia' una risposta negativa, si computa il valore di certezza e si passa ad esaminare il successivo item
-known_question_condition(Attributo,Item,Item_Restanti,Numero_Item_Richiesti,Certezza,Lista_Fatti):-
+known_question_condition(Attributo,Item,Item_Restanti,Numero_Item_Richiesti,Certezza,Lista_Fatti) :-
 	known(no,Attributo,Item,Certezza_Risposta),
 	!,
 	Certezza_Risposta_Computata is 1-Certezza_Risposta,
 	add_element(fact(yes,Item,Certezza_Risposta_Computata),Lista_Fatti,Lista_Fatti_Aggiornata),
 	ask_question(Attributo,Item_Restanti,Numero_Item_Richiesti,Certezza,Lista_Fatti_Aggiornata).
 %	Effettua la domanda all'utente
-known_question_condition(Attributo,Item,Item_Restanti,Numero_Item_Richiesti,Certezza,Lista_Fatti):-	
+known_question_condition(Attributo,Item,Item_Restanti,Numero_Item_Richiesti,Certezza,Lista_Fatti) :-	
 	white_lines(2),
 	decodifica(Item,Item_Esteso),
 	write(Item_Esteso),
@@ -593,7 +593,7 @@ compute_certainty_criterion_ask(Attributo,Numero_Item_Richiesti,Certezza,Lista_F
 	get_certainty_criterion(Attributo,Numero_Item_Richiesti,Certezza,Lista_Fatti_Ordinata,1,[]).
 
 %	Dalla lista dei fatti ordinati per valore di certezza, preleva i primi M fatti richiesti dal criterio.
-get_certainty_criterion(Attributo,Numero_Item_Richiesti,Certezza,Lista_Fatti_Ordinata,Contatore,Lista_Fatti_Candidati):-
+get_certainty_criterion(Attributo,Numero_Item_Richiesti,Certezza,Lista_Fatti_Ordinata,Contatore,Lista_Fatti_Candidati) :-
 	Contatore =< Numero_Item_Richiesti,
 	!,
 	Lista_Fatti_Ordinata = [Fatto_Certezza_Max|Residuo_Lista_Fatti_Ordinata],
@@ -602,14 +602,14 @@ get_certainty_criterion(Attributo,Numero_Item_Richiesti,Certezza,Lista_Fatti_Ord
 	assert_fact(Attributo,Fatto_Certezza_Max),
 	get_certainty_criterion(Attributo,Numero_Item_Richiesti,Certezza,Residuo_Lista_Fatti_Ordinata,Contatore_Aggiornato,Lista_Fatti_Candidati_Aggiornata).
 %	Dagli M fatti candidati prende quello con certezza piu' bassa, il quale caratterizzera' la certezza finale del criterio.
-get_certainty_criterion(_,_,Certezza,_,_,Lista_Fatti_Candidati):-
+get_certainty_criterion(_,_,Certezza,_,_,Lista_Fatti_Candidati) :-
 	ascending_order_facts(Lista_Fatti_Candidati,Lista_Fatti_Candidati_Ordinata),
 	Lista_Fatti_Candidati_Ordinata = [Fatto_Certezza_Min|_],
 	arg(3,Fatto_Certezza_Min,Certezza).
 	
 %	assert_fact(Attributo,Fatto):
 %		asserisce un fatto ottenuto da una domanda a risposta secca
-assert_fact(Attributo,Fatto):-
+assert_fact(Attributo,Fatto) :-
 	ultimo_indice_I_livello(Index_I),
 	ultimo_indice_II_livello(Index_II),
 	ultimo_indice_III_livello(Index_III),
@@ -855,25 +855,25 @@ ultimo_indice_III_livello(1).
 ultimo_indice_IV_livello(1).
 
 %	aggiorna l'indice per I livello di inferenza
-prossimo_indice_I_livello(Prossimo):-
+prossimo_indice_I_livello(Prossimo) :-
         retract(ultimo_indice_I_livello(Ultimo)),
         Prossimo is Ultimo+1,
         assert(ultimo_indice_I_livello(Prossimo)).
 
 %	aggiorna l'indice per II livello di inferenza
-prossimo_indice_II_livello(Prossimo):-
+prossimo_indice_II_livello(Prossimo) :-
         retract(ultimo_indice_II_livello(Ultimo)),
         Prossimo is Ultimo+1,
         assert(ultimo_indice_II_livello(Prossimo)).
 
 %	aggiorna l'indice per III livello di inferenza
-prossimo_indice_III_livello(Prossimo):-
+prossimo_indice_III_livello(Prossimo) :-
         retract(ultimo_indice_III_livello(Ultimo)),
         Prossimo is Ultimo+1,
         assert(ultimo_indice_III_livello(Prossimo)).
 
 %	aggiorna l'indice per IV livello di inferenza
-prossimo_indice_IV_livello(Prossimo):-
+prossimo_indice_IV_livello(Prossimo) :-
         retract(ultimo_indice_IV_livello(Ultimo)),
         Prossimo is Ultimo+1,
         assert(ultimo_indice_IV_livello(Prossimo)).
@@ -941,7 +941,7 @@ add_element(Elemento,Lista,[Elemento|Lista]).
 %	delete_element(X,L,L1)
 %		elimina l'elemento X dalla lista L ottenendo L1
 delete_element(Elemento,[],[]).
-delete_element(Elemento,[Elemento|Residuo_Lista],Residuo_Lista):- 
+delete_element(Elemento,[Elemento|Residuo_Lista],Residuo_Lista) :- 
 	!.
-delete_element(Elemento,[Testa|Coda],[Testa|Residuo_Lista]):- 
+delete_element(Elemento,[Testa|Coda],[Testa|Residuo_Lista]) :- 
 	delete_element(Elemento,Coda,Residuo_Lista).
