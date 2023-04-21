@@ -14,12 +14,12 @@
 
 
 % Diagnosi di controllo su un singolo disturbo
-solve_goal(Y,CF):-
+solve_goal(Y,CF) :-
 	paziente(X),
 	disturbo(Y,X,CF).
 
 % Diagnosi investigativa su piu' disturbi
-investigate_goals(L):-
+investigate_goals(L) :-
 	paziente(X),
 	findall(goal(Y,CF),disturbo(Y,X,CF),L).
 	
@@ -95,25 +95,25 @@ disturbo(agorafobia_senza_anamnesi_di_disturbo_di_panico,Paziente,CF) :-
 	certezza(agorafobia_senza_anamnesi_di_disturbo_di_panico,1,[CF1,CF2,CF3,CF4],0.96,CF,true).
 
 %	Disturbo Post-Traumatico da Stress Acuto
-disturbo(disturbo_post_traumatico_da_stress_acuto,Paziente,CF):-
+disturbo(disturbo_post_traumatico_da_stress_acuto,Paziente,CF) :-
 	disturbo_NC(disturbo_post_traumatico_da_stress,Paziente,CF1,true),
 	tipo_disturbo_post_traumatico_da_stress(tipo_acuto,Paziente,CF2,true),	
 	certezza(disturbo_post_traumatico_da_stress_acuto,1,[CF1,CF2],0.98,CF,true).
 
 %	Disturbo Post-Traumatico da Stress Acuto ad Esordio Ritardato
-disturbo(disturbo_post_traumatico_da_stress_acuto_ad_esordio_ritardato,Paziente,CF):- 
+disturbo(disturbo_post_traumatico_da_stress_acuto_ad_esordio_ritardato,Paziente,CF) :- 
 	disturbo_NC(disturbo_post_traumatico_da_stress,Paziente,CF1,true),
 	tipo_disturbo_post_traumatico_da_stress(tipo_acuto_ad_esordio_ritardato,Paziente,CF2,true),
 	certezza(disturbo_post_traumatico_da_stress_acuto_ad_esordio_ritardato,1,[CF1,CF2],0.98,CF,true).
 
 %	Disturbo Post-Traumatico da Stress Cronico
-disturbo(disturbo_post_traumatico_da_stress_cronico,Paziente,CF):-
+disturbo(disturbo_post_traumatico_da_stress_cronico,Paziente,CF) :-
 	disturbo_NC(disturbo_post_traumatico_da_stress,Paziente,CF1,true),
 	tipo_disturbo_post_traumatico_da_stress(tipo_cronico,Paziente,CF2,true),
 	certezza(disturbo_post_traumatico_da_stress_cronico,1,[CF1,CF2],0.98,CF,true).
 
 %	Disturbo Post-Traumatico da Stress Cronico ad Esordio Ritardato
-disturbo(disturbo_post_traumatico_da_stress_cronico_ad_esordio_ritardato,Paziente,CF):- 
+disturbo(disturbo_post_traumatico_da_stress_cronico_ad_esordio_ritardato,Paziente,CF) :- 
 	disturbo_NC(disturbo_post_traumatico_da_stress,Paziente,CF1,true),
 	tipo_disturbo_post_traumatico_da_stress(tipo_cronico_ad_esordio_ritardato,Paziente,CF2,true),
 	certezza(disturbo_post_traumatico_da_stress_cronico_ad_esordio_ritardato,1,[CF1,CF2],0.98,CF,true).
@@ -430,7 +430,7 @@ disturbo_NC(disturbo_ossessivo_compulsivo_con_scarso_insight,Paziente,CF,TV) :-
 	manifestazione_sintomatica(basso_riconoscimento_eccesso_o_irragionevolezza_ossessioni_compulsioni,Paziente,CF3,true),
 	certezza(disturbo_ossessivo_compulsivo_con_scarso_insight,2,[CF1,CF2,CF3],0.97,CF,TV).
 
-disturbo_NC(disturbo_ansia_generalizzato,Paziente,CF,TV):-
+disturbo_NC(disturbo_ansia_generalizzato,Paziente,CF,TV) :-
 	manifestazione_sintomatica(ansia_generalizzata,Paziente,CF1,true),
 	manifestazione_sintomatica(disagio_significativo,Paziente,CF2,true),
 	caratteristica_sintomatica(durata_almeno_sei_mesi,Paziente,CF3,true),
@@ -442,7 +442,7 @@ disturbo_NC(alterazione_indotta_da_sostanza_associata,Paziente,CF,TV) :-
 	manifestazione_sintomatica(disagio_significativo,Paziente,CF3,true),
 	certezza(alterazione_indotta_da_sostanza_associata,2,[CF1,CF2,CF3],0.95,CF,TV).
 
-disturbo_NC(condizione_medica_generale_associata,Paziente,CF,TV):-
+disturbo_NC(condizione_medica_generale_associata,Paziente,CF,TV) :-
 	manifestazione_sintomatica(condizione_medica_generale,Paziente,CF1,true),
 	caratteristica_sintomatica(evidenza_eziologica_condizione_medica_e_ansia,Paziente,CF2,true),
 	manifestazione_sintomatica(disagio_significativo,Paziente,CF3,true),
@@ -660,23 +660,23 @@ manifestazione_sintomatica(evitamento_o_sopportazione_con_disagio,Paziente,CF,TV
 	tipo_reazione_fobica([evitamento,sopportazione_con_disagio],CF1),
 	certezza(evitamento_o_sopportazione_con_disagio,3,[CF1],0.99,CF,TV).
 
-manifestazione_sintomatica(fobia_animali,Paziente,CF,TV):-
+manifestazione_sintomatica(fobia_animali,Paziente,CF,TV) :-
 	sintomo([fobia_ragni,fobia_uccelli,fobia_rettili_o_serpenti,fobia_topi,fobia_cani_o_gatti,fobia_insetti,fobia_api_o_calabroni],1,CF1),
 	certezza(fobia_animali,3,[CF1],0.98,CF,TV).
 
-manifestazione_sintomatica(fobia_ambiente_naturale,Paziente,CF,TV):-
+manifestazione_sintomatica(fobia_ambiente_naturale,Paziente,CF,TV) :-
 	sintomo([fobia_temporali,fobia_altezze,fobia_buio,fobia_acqua],1,CF1),
 	certezza(fobia_ambiente_naturale,3,[CF1],0.97,CF,TV).
 
-manifestazione_sintomatica(fobia_sangue_iniezioni_ferite,Paziente,CF,TV):-
+manifestazione_sintomatica(fobia_sangue_iniezioni_ferite,Paziente,CF,TV) :-
 	sintomo([fobia_sangue_o_ferite,fobia_aghi_o_iniezioni,fobia_medicazioni_invasive],1,CF1),
 	certezza(fobia_sangue_iniezioni_ferite,3,[CF1],0.98,CF,TV).
 
-manifestazione_sintomatica(fobia_situazioni,Paziente,CF,TV):-
+manifestazione_sintomatica(fobia_situazioni,Paziente,CF,TV) :-
 	sintomo([fobia_mezzi_trasporto,fobia_spazi_stretti_o_chiusi],1,CF1),
 	certezza(fobia_situazioni,3,[CF1],0.96,CF,TV).
 
-manifestazione_sintomatica(fobia_altro,Paziente,CF,TV):-
+manifestazione_sintomatica(fobia_altro,Paziente,CF,TV) :-
 	sintomo([fobia_malattie_o_soffocamento,fobia_vomito,fobia_boati_o_rumori_forti,fobia_maschere,fobia_morte],1,CF1),
 	certezza(fobia_altro,3,[CF1],0.95,CF,TV).
 
