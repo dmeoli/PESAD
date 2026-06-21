@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SWI-Prolog
+        run: sudo apt-get update && sudo apt-get install -y swi-prolog
+
+      - name: Prolog — engine loads
+        run: swipl -q -g "consult('prolog/bot_boot.pl'), halt" -t "halt(1)"
+
+      - name: Prolog — clinical regression suite
+        run: swipl prolog/clinical_tests.pl
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r telegram_bot/requirements.txt ruff
+
+      - name: Lint
+        run: ruff check telegram_bot/pesad_bot.py tests/smoke_bridge.py
+
+      - name: Compile
+        run: python -m py_compile telegram_bot/pesad_bot.py
+
+      - name: Bridge smoke test (MQI)
+        run: python tests/smoke_bridge.py
+
+  docker:
+    needs: test
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/pesad:latest
