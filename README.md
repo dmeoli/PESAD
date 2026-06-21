@@ -15,7 +15,7 @@ To run the expert system you have to download [SWI-Prolog](https://www.swi-prolo
 To run the expert system you just type into the terminal:
 
 ```
-$ swipl start.pl
+$ swipl prolog/start.pl
 ```
 
 At start-up the system asks you to choose the interface language (English or
@@ -32,16 +32,30 @@ the whole inference under both uncertainty methods and checks the top-ranked
 diagnosis:
 
 ```
-$ swipl clinical_tests.pl
+$ swipl prolog/clinical_tests.pl
 ```
+
+## Telegram bot
+
+The expert system is also available as a Telegram bot that drives the very same
+engine over the SWI-Prolog Machine Query Interface. See
+[`telegram_bot/`](telegram_bot/README.md) for how it works, how to run it, and
+[`telegram_bot/DEPLOY.md`](telegram_bot/DEPLOY.md) for deployment.
 
 ## Project structure
 
-The system is organized by responsibility:
+```
+prolog/         Prolog sources (inference engine, knowledge base, bot bridge)
+telegram_bot/   Telegram front-end (Python, python-telegram-bot + swiplserver)
+doc/            Documentation
+Dockerfile, docker-compose.yml   Containerised deployment
+```
+
+The Prolog system under `prolog/` is organized by responsibility:
 
 | File | Responsibility |
 | --- | --- |
-| `start.pl` | Bootstrap: directives and module loading |
+| `start.pl` | Terminal bootstrap: directives and module loading, runs `main/0` |
 | `shell.pl` | User shell: REPL loop, language selection, command dispatch, result presentation, `decode`/`explain` localization |
 | `ask.pl` | Knowledge acquisition: the criterion / multiple / selective question protocols |
 | `uncertainty.pl` | Certainty calculus (switchable min / product t-norm), certainty-based ordering, inference-level indexes |
@@ -52,6 +66,8 @@ The system is organized by responsibility:
 | `criteria.pl` | Knowledge base: sub-disorders, types/specifiers, symptomatic manifestations/features, questions |
 | `interface_en.pl`, `interface_it.pl` | English / Italian localization (`label/3`, `explanation/3`) |
 | `clinical_tests.pl` | Regression test suite over clinical vignettes |
+| `bot_io.pl` | I/O abstraction (`ui_read/2`): terminal vs Telegram-bot mode |
+| `bot_boot.pl`, `bot_session.pl` | Bot bootstrap (per-chat thread-local state) and MQI session API |
 
 ## License [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

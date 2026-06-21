@@ -15,20 +15,20 @@ SWI-Prolog facilities:
   in its own thread. The session-state predicates (`known/4`, `fact/8`,
   `rule_I/II/III`, the `last_level_*` indexes, `language/1`,
   `uncertainty_method/1`) are declared `thread_local` in
-  [`../bot_boot.pl`](../bot_boot.pl), so concurrent chats are fully isolated.
+  [`../prolog/bot_boot.pl`](../prolog/bot_boot.pl), so concurrent chats are fully isolated.
   The knowledge base (`disorders.pl`, `criteria.pl`, the locales) stays shared
   and read-only.
 - **Suspend/resume via message queues.** Every interactive `read/1` in the
   engine was replaced by `ui_read(Kind, Term)` (see
-  [`../bot_io.pl`](../bot_io.pl)). In bot mode it flushes the captured console
+  [`../prolog/bot_io.pl`](../prolog/bot_io.pl)). In bot mode it flushes the captured console
   output as a *turn* and blocks the worker on an input queue until the next
   answer arrives. `Kind` (`language | method | command | simple | criterion |
   certainty | menu | menu_why | number | final`) tells the front-end which
   keyboard to render. In terminal mode `ui_read` is just `read/1`, so
-  `swipl start.pl` keeps working exactly as before.
+  `swipl prolog/start.pl` keeps working exactly as before.
 - **MQI transport.** Python drives Prolog over the Machine Query Interface
   (`library(mqi)` ⇄ the `swiplserver` package) with three predicates from
-  [`../bot_session.pl`](../bot_session.pl): `bot_start/3`, `bot_answer/4`,
+  [`../prolog/bot_session.pl`](../prolog/bot_session.pl): `bot_start/3`, `bot_answer/4`,
   `bot_cancel/1`.
 
 ```

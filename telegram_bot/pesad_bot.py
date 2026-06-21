@@ -48,7 +48,7 @@ logger = logging.getLogger("pesad-bot")
 # --------------------------------------------------------------------------- #
 
 PESAD_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BOOTSTRAP = os.path.join(PESAD_DIR, "bot_boot.pl")
+BOOTSTRAP = os.path.join(PESAD_DIR, "prolog", "bot_boot.pl")
 TG_MAX = constants.MessageLimit.MAX_TEXT_LENGTH  # 4096
 
 DISCLAIMER = (
