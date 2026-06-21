@@ -14,8 +14,22 @@ has a free tier.
 | **Google Cloud `e2-micro`** | perpetual (1/mo, US regions) | Small always-free VM. Same approach as Oracle. |
 | **Fly.io** | small free allowance | Easiest (deploys the Dockerfile). Requires a card; usage beyond the allowance is billed. |
 
-On a **VM** you can run the bot either with Docker (below) or directly with the
-provided **systemd** unit. On **Fly.io** you deploy the Dockerfile.
+On a **VM** the quickest path is the **`setup.sh`** script (below); you can also
+use Docker or the plain systemd unit. On **Fly.io** you deploy the Dockerfile.
+
+## Option 0 — one-shot script (recommended, any Ubuntu/Debian VM)
+
+SSH into the VM, then run (token as argument):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/dmeoli/PESAD/master/telegram_bot/setup.sh \
+  | sudo bash -s -- <TELEGRAM_TOKEN>
+```
+
+It installs SWI-Prolog (with `library(mqi)`) + Python, clones the repo to
+`/opt/PESAD`, creates the virtualenv, writes `.env`, and installs and starts the
+`pesad-bot` systemd service (always-on, auto-restart). Re-running it pulls the
+latest code and restarts. Follow logs with `journalctl -u pesad-bot -f`.
 
 ## Option A — Docker (any VM, or Fly.io)
 
