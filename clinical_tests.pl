@@ -27,6 +27,7 @@
 
 :- reconsult('interface_en.pl').
 :- reconsult('interface_it.pl').
+:- reconsult('bot_io.pl').
 :- reconsult('utils.pl').
 :- reconsult('uncertainty.pl').
 :- reconsult('fuzzy.pl').

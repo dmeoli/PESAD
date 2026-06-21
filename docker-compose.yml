@@ -1,0 +1,10 @@
+services:
+  pesad-bot:
+    build: .
+    image: pesad-bot
+    container_name: pesad-bot
+    restart: unless-stopped          # auto-restart on crash / reboot -> always on
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+    # Token: put TELEGRAM_TOKEN in a .env file next to this compose file, or
+    # export it in the shell before `docker compose up -d`.

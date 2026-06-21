@@ -37,6 +37,7 @@ label(en, yes_no_hint, '(yes, no)') :- !.
 label(en, option_request, 'Enter the code corresponding to the chosen option') :- !.
 label(en, goal_request, 'Which of the following disorders do you want to check') :- !.
 label(en, diagnosis_result, 'The patient suffers from ') :- !.
+label(en, patient, 'What is the patient''s age range') :- !.
 label(en, how_request_control, 'Do you want to know how it was deduced') :- !.
 label(en, how_request_investigation, 'Do you want to know how they were deduced') :- !.
 label(en, true_label, ' is true with CF ') :- !.

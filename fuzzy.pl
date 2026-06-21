@@ -79,7 +79,7 @@ graded_value(Variable,Value) :-
 	white_lines(1),
 	repeat,
 	write(' > '),
-	read(Input),
+	ui_read(number,Input),
 	( number(Input)
 	-> Value = Input, assertz(known_value(Variable,Value)), !
 	;  decode(answer_error,Answer_Error), write(Answer_Error), nl, fail ).

@@ -1,0 +1,16 @@
+[Unit]
+Description=PESAD Telegram bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Adjust the path to wherever you cloned the repo on the VM:
+WorkingDirectory=/opt/PESAD/telegram_bot
+EnvironmentFile=/opt/PESAD/telegram_bot/.env
+ExecStart=/opt/PESAD/telegram_bot/.venv/bin/python /opt/PESAD/telegram_bot/pesad_bot.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

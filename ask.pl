@@ -19,9 +19,9 @@ get_simple_response(Answer) :-
 	write('? '),
 	decode(yes_no_hint,T_Yes_No_Hint),
 	write(T_Yes_No_Hint),
-	write(' > '), 
-	read(User_Answer), 
-	check_format_simple_response(User_Answer,Answer), 
+	write(' > '),
+	ui_read(simple,User_Answer),
+	check_format_simple_response(User_Answer,Answer),
 	!.
 
 %	check_format_simple_response(Answer,Y):
@@ -96,9 +96,9 @@ get_criterion_response(Answer) :-
 	write('? '),
 	decode(yes_no_hint,T_Yes_No_Hint2),
 	write(T_Yes_No_Hint2),
-	write(' > '), 
-	read(User_Answer), 
-	check_format_criterion_response(User_Answer,Answer), 
+	write(' > '),
+	ui_read(criterion,User_Answer),
+	check_format_criterion_response(User_Answer,Answer),
 	!.
 
 %	check_format_criterion_response(User_Answer,Answer):
@@ -166,7 +166,7 @@ ask_certainty(Certainty) :-
 	decode(certainty_hint,T_Certainty_Hint),
 	write(T_Certainty_Hint),
 	write(' >'),
-	read(Certainty),
+	ui_read(certainty,Certainty),
 	check_certainty(Certainty),
 	!.
 
@@ -248,7 +248,7 @@ get_multiple_response(Chosen_Option,Answer,Options_List) :-
 	write(T_Option_Request),
 	repeat,
 	write(' > '),
-	read(Chosen_Option),
+	ui_read(menu_why,Chosen_Option),
 	check_multiple_response(Chosen_Option,Answer,Options_List),
 	!.
 

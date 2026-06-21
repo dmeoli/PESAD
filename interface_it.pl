@@ -37,6 +37,7 @@ label(it, yes_no_hint, '(si, no)') :- !.
 label(it, option_request, 'Digitare il codice corrispondente all''opzione scelta') :- !.
 label(it, goal_request, 'Quale dei seguenti disturbi si vuole controllare') :- !.
 label(it, diagnosis_result, 'Il paziente soffre di ') :- !.
+label(it, patient, 'Qual è la fascia d''età del paziente') :- !.
 label(it, how_request_control, 'Vuoi sapere come e'' stato dedotto') :- !.
 label(it, how_request_investigation, 'Vuoi sapere come sono stati dedotti') :- !.
 label(it, true_label, ' e'' vero con CF ') :- !.
@@ -436,12 +437,12 @@ label(it, predominant_anxiety, 'Ansia Predominante (Attacchi di Panico o Ansia)'
 label(it, predominant_oc_presentation, 'Presentazione Ossessivo-Compulsiva Predominante') :- !.
 label(it, not_delirium_bound, 'Non Esclusivamente Durante un Delirium') :- !.
 label(it, substance_intoxication_or_withdrawal_or_medication_use, 'Era intossicato o in astinenza da una sostanza, o aveva assunto un farmaco, nel periodo in cui sono comparsi i sintomi') :- !.
-label(it, symptoms_developed_during_or_after_substance_use, 'I sintomi si sono sviluppati durante o poco dopo lintossicazione o lastinenza da sostanze, o dopo lesposizione a un farmaco') :- !.
+label(it, symptoms_developed_during_or_after_substance_use, 'I sintomi si sono sviluppati durante o poco dopo l''intossicazione o l''astinenza da sostanze, o dopo l''esposizione a un farmaco') :- !.
 label(it, substance_capable_of_producing_symptoms, 'La sostanza o il farmaco coinvolti sono in grado di produrre i sintomi riferiti') :- !.
-label(it, disturbance_is_direct_consequence_of_medical_condition, 'Vi e evidenza che il disturbo sia la diretta conseguenza fisiologica di unaltra condizione medica') :- !.
+label(it, disturbance_is_direct_consequence_of_medical_condition, 'Vi è evidenza che il disturbo sia la diretta conseguenza fisiologica di un''altra condizione medica') :- !.
 label(it, not_exclusively_during_delirium, 'Il disturbo non si manifesta esclusivamente durante episodi di delirium') :- !.
-explanation(it, substance_intoxication_or_withdrawal_or_medication_use, 'Stabilire il coinvolgimento di una sostanza o di un farmaco e necessario per considerare un disturbo indotto da sostanze/farmaci') :- !.
+explanation(it, substance_intoxication_or_withdrawal_or_medication_use, 'Stabilire il coinvolgimento di una sostanza o di un farmaco è necessario per considerare un disturbo indotto da sostanze/farmaci') :- !.
 explanation(it, symptoms_developed_during_or_after_substance_use, 'Un legame temporale tra i sintomi e la sostanza o il farmaco supporta un disturbo indotto (Criterio B1)') :- !.
 explanation(it, substance_capable_of_producing_symptoms, 'La sostanza o il farmaco deve essere farmacologicamente in grado di causare i sintomi (Criterio B2)') :- !.
-explanation(it, disturbance_is_direct_consequence_of_medical_condition, 'Un legame fisiopatologico diretto con una condizione medica supporta un disturbo dovuto a unaltra condizione medica (Criterio B)') :- !.
+explanation(it, disturbance_is_direct_consequence_of_medical_condition, 'Un legame fisiopatologico diretto con una condizione medica supporta un disturbo dovuto a un''altra condizione medica (Criterio B)') :- !.
 explanation(it, not_exclusively_during_delirium, 'Sintomi che si manifestano esclusivamente durante un delirium escluderebbero questa diagnosi (Criterio D)') :- !.

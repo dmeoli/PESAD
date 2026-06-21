@@ -1,0 +1,3 @@
+# Pinned to the versions verified locally (Python 3.14, SWI-Prolog 9.2 + library(mqi)).
+python-telegram-bot==21.11.1
+swiplserver==1.0.2

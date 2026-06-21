@@ -38,11 +38,11 @@ main :-
 	repeat,
 	white_lines(1),
 	write('> '),
-	read(Command),
+	ui_read(command,Command),
 	run(Command),
 	Command == quit,
 	!,
-	halt.
+	finish_main.
 
 %	select_language:
 %		asks the user which interface language to use and asserts language/1
@@ -54,7 +54,7 @@ select_language :-
 	write('	2: Italiano'), nl,
 	repeat,
 	write(' > '),
-	read(Choice),
+	ui_read(language,Choice),
 	set_language(Choice),
 	!.
 
@@ -80,7 +80,7 @@ select_uncertainty_method :-
 	write('	3: '), write(T_Method_Fuzzy_Membership), nl,
 	repeat,
 	write(' > '),
-	read(Choice),
+	ui_read(method,Choice),
 	set_uncertainty_method(Choice),
 	!.
 
@@ -230,7 +230,7 @@ pick_goal(Goals_List,Goal_Name) :-
 	write(T_Option_Request),
 	repeat,
 	write(' > '),
-	read(Chosen_Goal_Index),
+	ui_read(menu,Chosen_Goal_Index),
 	check_goal(Chosen_Goal_Index,Goals_List),
 	parse_goal(Chosen_Goal_Index,Goal_Name),
 	white_lines(2),
@@ -284,7 +284,7 @@ get_goal(Goal_Name,Goals_List) :-
 	write(T_Option_Request),
 	repeat,
 	write(' > '),
-	read(Goal_Index),
+	ui_read(menu,Goal_Index),
 	check_selection_goal(Goal_Index,Goals_List),
 	parse_response(1,Goal_Index,Goal_Name,Goals_List),
 	!.

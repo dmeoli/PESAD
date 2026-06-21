@@ -1,0 +1,9 @@
+.git
+.idea
+telegram_bot/.venv
+telegram_bot/.env
+**/__pycache__
+*.pyc
+# Heavy / unneeded at runtime:
+DSM-V-TR Diagnostic and Statistical Manual of Mental Disorders.pdf
+doc

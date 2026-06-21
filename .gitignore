@@ -2,6 +2,12 @@
 
 DSM-V-TR Diagnostic and Statistical Manual of Mental Disorders.pdf
 
+# Python bot
+telegram_bot/.venv/
+telegram_bot/.env
+__pycache__/
+*.pyc
+
 # LaTeX build artifacts
 *.aux
 *.log

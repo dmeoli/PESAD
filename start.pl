@@ -31,6 +31,7 @@
 :- reconsult('interface_it.pl').
 
 % Inference engine.
+:- reconsult('bot_io.pl').
 :- reconsult('utils.pl').
 :- reconsult('uncertainty.pl').
 :- reconsult('fuzzy.pl').
