@@ -1,6 +1,6 @@
 # PESAD Telegram bot — SWI-Prolog engine + Python (python-telegram-bot) front-end.
 # Based on the official SWI-Prolog image (ships library(mqi)); Python is added on top.
-FROM swipl:9
+FROM swipl:latest
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends python3 python3-venv \
