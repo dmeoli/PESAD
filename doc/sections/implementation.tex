@@ -1,0 +1,246 @@
+\section{Implementation}
+
+This section describes how PESAD is realised: the tools adopted, the modular
+architecture of the system, the representation of the knowledge base, the
+mechanisms of the inference engine ---knowledge acquisition, uncertainty
+management and explanation--- and the bilingual user interface.
+
+\subsection{Tools Used}
+
+PESAD is implemented in \emph{SWI-Prolog}, a mature and free implementation of
+the Prolog logic-programming language. Prolog was chosen because the diagnostic
+knowledge is naturally expressed as \emph{rules} (definite clauses) and because
+its resolution mechanism provides backward chaining and backtracking out of the
+box. The features that Prolog does not provide natively ---reasoning under
+uncertainty and the explanation of the reasoning process--- are implemented
+explicitly on top of the language, as described below.
+
+\subsection{System Architecture}
+
+The system is organised by \emph{responsibility} rather than as a single
+monolithic file. This separation mirrors the conceptual architecture of an
+expert system (knowledge base, inference engine, user interface) and makes each
+concern independently readable and maintainable. Table~\ref{tab:modules} lists
+the modules and the directives that load them are collected in
+\texttt{start.pl}.
+
+\begin{table}[h]
+\centering
+\caption{Modular organisation of PESAD.}
+\label{tab:modules}
+\small
+\begin{tabular}{@{}lp{9.2cm}@{}}
+\toprule
+\textbf{Module} & \textbf{Responsibility} \\
+\midrule
+\texttt{start.pl} & Bootstrap: directives and loading of the modules. \\
+\texttt{shell.pl} & User shell: REPL loop, language selection, command dispatch, presentation of results, and the \texttt{decode/2}\,/\,\texttt{explain/2} localization dispatch. \\
+\texttt{ask.pl} & Knowledge acquisition: the \emph{criterion}, \emph{multiple} and \emph{selective} question protocols, with answer parsing and certainty elicitation. \\
+\texttt{uncertainty.pl} & Certainty-factor calculus, certainty-based ordering and inference-level index bookkeeping. \\
+\texttt{explanation.pl} & Printing of the proof tree (\emph{how} a conclusion was reached). \\
+\texttt{memory.pl} & Working-memory management (facts and proof trees). \\
+\texttt{utils.pl} & General-purpose helpers (output spacing, list operations). \\
+\texttt{disorders.pl} & Knowledge base: codable Axis~I disorders (diagnostic goals) and entry points. \\
+\texttt{criteria.pl} & Knowledge base: sub-disorders, types, symptomatic manifestations and features, and the questions. \\
+\texttt{interface\_en.pl}, \texttt{interface\_it.pl} & English / Italian localization (\texttt{label/3}, \texttt{explanation/3}, \texttt{command/3}). \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Knowledge Base}
+
+The knowledge base is structured over \emph{four inference levels} that descend
+from the abstract diagnoses to the concrete observations:
+
+\begin{enumerate}[label=(\Roman*)]
+    \item \textbf{Disorders} ---the codable Axis~I diagnoses, i.e. the goals of
+    the system (\texttt{disorder/3});
+    \item \textbf{Sub-disorders and types} ---non-codable building-block
+    disorders and their specifiers (\texttt{disorder\_nc/4} and the
+    \texttt{*\_type/4} predicates);
+    \item \textbf{Symptomatic manifestations and features}
+    (\texttt{symptomatic\_manifestation/4}, \texttt{symptomatic\_feature/4});
+    \item \textbf{Elementary symptoms / facts} elicited from the user
+    (\texttt{symptom/3}).
+\end{enumerate}
+
+Each rule carries, besides the patient and the resulting certainty factor, the
+truth value it is asserted with. As an example, the rule for \emph{Panic
+Disorder} requires the presence of the panic-disorder criteria and the
+\emph{absence} of an associated substance-induced alteration and of an
+associated general medical condition (the shared exclusion):
+
+\begin{lstlisting}
+disorder(panic_disorder, Patient, CF) :-
+    disorder_nc(panic_disorder, Patient, CF1, true),
+    exclude_substance_and_medical(Patient, CF2, CF3),
+    certainty(panic_disorder, 1, [CF1,CF2,CF3], 0.97, CF, true).
+\end{lstlisting}
+
+The last argument of \texttt{certainty/6} is the truth value, the constant
+\texttt{0.97} is the certainty of the rule itself, and the integer \texttt{1}
+identifies the inference level, which is used by the explanation module to build
+the proof tree.
+
+\subsubsection{Inference Engine}
+
+The inference engine is the part of the system that, given the facts stated by
+the user, derives the diagnoses. It comprises three concerns: the acquisition of
+information from the user, the management of uncertainty, and the explanation of
+the reasoning.
+
+\paragraph{Knowledge Acquisition.}
+Questions are posed to the user through three protocols, implemented in
+\texttt{ask.pl}.
+
+\emph{Criterion ask} verifies a criterion made of one or more items, each a
+yes/no question; a criterion of $N$ items may require that only $M$ of them
+(with $1 \le M \le N$) be satisfied. Its certainty is obtained by taking the $M$
+items with the highest certainty and then keeping the \emph{lowest} certainty
+among them:
+\begin{equation}
+\cf_{\text{criterion}} \;=\; \min \big( \text{top-}M \{\, \cf_1, \dots, \cf_N \,\} \big).
+\end{equation}
+For instance, with $N=3$ items of certainties $\{0.4, 0.7, 0.6\}$ and $M=2$, the
+two highest are $\{0.7, 0.6\}$ and the resulting certainty is $0.6$. If the user
+answers \emph{no} to an item with certainty $c$, the item contributes the
+complementary certainty $1-c$.
+
+\emph{Multiple ask} lets the user choose one value from a list of options. If
+the chosen answer is among those admitted by the question, the certainty equals
+the one declared by the user; otherwise the residual certainty is distributed
+over the remaining options:
+\begin{equation}
+\cf \;=\;
+\begin{cases}
+\cf_{\text{answer}} & \text{if the answer is admitted,}\\[4pt]
+\dfrac{1-\cf_{\text{answer}}}{\,|\text{options}|-1\,} & \text{otherwise.}
+\end{cases}
+\end{equation}
+
+\emph{Selective ask} is used for single, mutually exclusive choices (e.g. the
+patient's age group): the admitted option succeeds with certainty $1.0$, while
+any other choice makes the goal fail.
+
+\paragraph{Uncertainty Management.}
+Reasoning under uncertainty is implemented with \emph{certainty factors}
+(\cf{}~$\in [0,1]$), managed in \texttt{uncertainty.pl}. The certainty of the
+\emph{antecedent} of a rule, whose premises must all hold (a conjunction), is
+the minimum of the premises' certainties:
+\begin{equation}
+\cf_{\text{ant}} \;=\; \min_i \cf_i .
+\end{equation}
+The certainty of the \emph{consequent} combines the antecedent certainty with
+the certainty of the rule. For a goal asserted as true the two are multiplied;
+for a negated goal the complement of the product is taken:
+\begin{equation}
+\cf_{\text{cons}} \;=\;
+\begin{cases}
+\cf_{\text{rule}} \cdot \cf_{\text{ant}} & \text{(positive goal),}\\[4pt]
+1 - \cf_{\text{rule}} \cdot \cf_{\text{ant}} & \text{(negated goal).}
+\end{cases}
+\end{equation}
+These two predicates are at the heart of the calculus:
+
+\begin{lstlisting}
+antecedent_certainty(Antecedent_CF_List, Antecedent_CF) :-
+    min_list(Antecedent_CF_List, Antecedent_CF).
+
+consequent_certainty(Goal, 1, Antecedent_CF, Rule_CF, Consequent_CF, true) :-
+    Consequent_CF is Rule_CF * Antecedent_CF,
+    ...
+consequent_certainty(Goal, 1, Antecedent_CF, Rule_CF, Consequent_CF, false) :-
+    Consequent_CF is 1 - (Rule_CF * Antecedent_CF),
+    ...
+\end{lstlisting}
+
+While computing the consequent, each rule is asserted (as \texttt{rule\_I/4},
+\texttt{rule\_II/5} or \texttt{rule\_III/6}, according to its inference level)
+together with a hierarchical index. These assertions form the proof tree that
+the explanation module later traverses.
+
+\paragraph{Certainty factors versus fuzzy logic.}
+The conjunction of the premises is, in fact, a \emph{fuzzy} operation: PESAD
+evaluates it with a configurable t-norm, selected at start-up and stored in the
+dynamic fact \texttt{uncertainty\_method/1}. Two methods are provided:
+\begin{itemize}
+  \item \texttt{cf} (the default) uses the \emph{minimum} (G\"odel t-norm),
+  i.e. the certainty of a criterion equals that of its \emph{weakest} satisfied
+  premise: $\cf_{\text{ant}} = \min_i \cf_i$;
+  \item \texttt{fuzzy} uses the \emph{product} t-norm, i.e. the algebraic
+  product of the premises: $\cf_{\text{ant}} = \prod_i \cf_i$.
+\end{itemize}
+The remaining steps (rule chaining $\cf_{\text{rule}}\cdot\cf_{\text{ant}}$ and
+the negation $1-x$) are shared. The two methods are compared on a suite of
+clinical vignettes in Chapter~\ref{chap:validation}; both rank the correct
+diagnosis first, but the product t-norm systematically \emph{under-rates
+polythetic disorders}: a fully met post-traumatic stress disorder, which
+combines seven symptom clusters,
+collapses to $28\%$ because every premise multiplies the result, whereas the
+minimum keeps the confidence at a clinically plausible $66\%$ regardless of how
+many criteria a disorder has. For a diagnostic task in which a syndrome is ``as
+strong as its weakest satisfied criterion'', the minimum is the more faithful
+operator, and it is therefore kept as the default; the product t-norm remains
+available for comparison and experimentation.
+
+A richer fuzzy treatment is also provided as a third method
+(\texttt{fuzzy\_membership}, in \texttt{fuzzy.pl}): for the graded clinical
+variables ---symptom duration, panic-attack frequency and degree of insight---
+the clinician enters a \emph{crisp} value (e.g. the duration in months) instead
+of choosing a discrete option, and a trapezoidal membership grade becomes the
+certainty. This replaces the hard diagnostic cut-offs with smooth boundaries:
+for instance, against the ``at least six months'' criterion a five-month
+duration scores $0.67$ rather than abruptly failing, while the conjunction is
+still aggregated with the minimum. Table~\ref{tab:duration-membership}
+illustrates the membership of the ``at least six months'' fuzzy set.
+
+\begin{table}[h]
+\centering
+\caption{Membership grade of the ``duration at least 6 months'' fuzzy set.}
+\label{tab:duration-membership}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{duration (months)} & 2 & 3 & 4 & 5 & 6 & 8 \\
+\midrule
+\textbf{membership} & 0\% & 0\% & 33\% & 67\% & 100\% & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Explanation Module.}
+A good expert system must justify its behaviour. PESAD does so in two ways,
+implemented in \texttt{ask.pl} (the \emph{why}) and \texttt{explanation.pl} (the
+\emph{how}).
+
+\emph{Why} questions: while answering a yes/no or multiple-choice question, the
+user may reply \texttt{why} (\texttt{perche}) to receive an explanation of the
+diagnostic reason behind the question; the same question is then asked again.
+
+\emph{How} questions: after a diagnosis the user may ask how it was reached. The
+predicate \texttt{print\_tree/1} walks the asserted rules across the three
+inference levels and prints, indented by level, each (sub-)conclusion with its
+certainty, distinguishing what was \emph{deduced} (intermediate rules) from what
+was \emph{stated} by the user (leaf facts).
+
+\subsubsection{User Interface}
+
+The user interacts with the system through a textual shell (\texttt{shell.pl})
+that implements a read--evaluate--print loop. At start-up the user selects the
+interface language; the dynamic fact \texttt{language/1} then drives every
+message through the localization dispatch:
+
+\begin{lstlisting}
+decode(Key, Text) :- language(Language), label(Language, Key, Text), !.
+decode(Key, Key).
+\end{lstlisting}
+
+All user-visible text is therefore stored as language-neutral \emph{keys} that
+each locale file (\texttt{interface\_en.pl}, \texttt{interface\_it.pl}) maps to a
+\texttt{label/3} string and, where relevant, to an \texttt{explanation/3} string.
+The command vocabulary is localized in the same way through \texttt{command/3},
+so that the user may type either the English or the Italian command words while
+the engine works on a single set of internal command atoms
+(\texttt{investigation}, \texttt{control}, \texttt{facts}, \texttt{help},
+\texttt{clean}, \texttt{quit}). Adding a new language amounts to providing a new
+locale file, with no change to the engine or the knowledge base.

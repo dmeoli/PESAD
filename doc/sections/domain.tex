@@ -1,0 +1,610 @@
+%==============================================================================
+%  Chapter: The PESAD System
+%  Section: Domain Analysis
+%==============================================================================
+\chapter{The PESAD System}
+
+The following sections present the analysis of the domain, the phases of
+identification, conceptualization and knowledge representation and, finally, the
+implementation of the functional components of the realized expert system.
+
+\section{Domain Analysis}
+
+This section discusses the domain under study for the construction of the expert
+system. A brief introduction to the concept of ``anxiety'' is followed by its
+distinction into ``state anxiety'' and ``trait anxiety''. The symptoms of
+anxiety are then introduced, together with their classification according to the
+functional system they affect. Finally, the classification adopted in the
+present work is described: that of the fifth edition, text revision, of the
+\emph{Diagnostic and Statistical Manual of Mental Disorders}
+(DSM-5-TR, 2022)~\cite{dsm}, which distributes the conditions of interest across
+three distinct chapters, each of which is analysed in turn.
+
+\subsection{Anxiety}
+
+From an etymological point of view, anxiety derives from the Latin term
+\emph{anxia} (to tighten). Anxiety is a universal emotion which, in itself, it
+would not be inappropriate to experience, since it represents a necessary part
+of the response to stress. It constitutes, in fact, a defence mechanism aimed at
+anticipating the perception of danger even before it has clearly manifested
+itself. Anxiety typically sets in motion the physiological mechanisms that push,
+on the one hand, towards exploration in order to identify the danger and confront
+it in the most appropriate manner and, on the other hand, towards avoidance and
+flight.
+
+Anxiety is generally regarded by mental-health professionals as ``the mother of
+all emotions'' and, precisely for this reason, it is useful to differentiate an
+anxiety understood as an existential condition (``trait'' anxiety) from a
+pathological anxiety (``state'' anxiety).
+
+The distinction between the concepts of ``trait'' anxiety and ``state'' anxiety
+was introduced by Cattell and Scheier (1961) and further elaborated by
+Spielberger and colleagues in the development of their self-assessment scale, the
+State--Trait Anxiety Inventory~\cite{stai}. The two paragraphs below report some
+salient points of the two concepts of anxiety, as elaborated by Spielberger and
+colleagues.
+
+\subsubsection{Trait Anxiety}
+
+Trait anxiety can be considered a relatively stable characteristic of the
+personality, a behavioural attitude, which reflects the manner in which the
+subject tends to perceive environmental stimuli and situations as dangerous or
+threatening.
+
+Subjects with high trait anxiety show a more marked reactivity to a greater
+number of stimuli and are characterized, according to Cattell and Scheier, by
+high arousal, ego weakness, and a tendency towards sensitivity and guilt.
+
+These characteristics seem to indicate a sort of predisposition to anxiety, in
+the sense that subjects with high trait anxiety have a greater probability, with
+respect to others, of presenting state anxiety in circumstances with low
+anxiety-provoking potential and/or, for equal stimuli, of experiencing higher
+levels of state anxiety. For subjects with high trait anxiety, the anxious one is
+the habitual mode of response to stimuli and to environmental situations, whereas
+for the others it is an exceptional mode.
+
+\subsubsection{State Anxiety}
+
+State anxiety manifests itself as an interruption of the emotional continuum,
+that is, it provokes a rupture in the emotional balance of the person; it is
+expressed through a subjective sensation of tension, worry, restlessness,
+nervousness and reactivity. It is associated with an activation of the autonomic
+nervous system, which provokes a series of physiological activations.
+
+High levels of state anxiety are particularly unpleasant, disturbing and even
+painful, to the point of inducing the person to put into action behavioural
+adaptation mechanisms aimed at putting an end to these sensations. However, these
+mechanisms may fail to achieve their purpose, leaving room for other behaviours,
+this time of a maladaptive type, which lead to the opposite effect, namely a
+further increase of anxiety, thus starting a vicious circle of a pathological
+nature.
+
+State anxiety, therefore, beyond certain levels of severity and duration, becomes
+a pathology that may take the form of an \emph{anxiety disorder} or of one of the
+related conditions described in the remainder of this chapter.
+
+In this work, the anxiety under study is pathological state anxiety, that is, the
+state anxiety that becomes disproportionate to the events that arouse it, that
+persists even when the events have been overcome, or that manifests itself in the
+absence of objective events.
+
+\subsection{Symptoms of Anxiety}
+
+The symptoms that denote an anxiety disorder may generally involve one or more of
+the four functional systems that are normally coordinated by our organism to
+produce adaptive responses to dangerous situations: the cognitive system, the
+affective system, the behavioural system and the physiological system.
+
+Generally, in the presence of a threat, the organism reacts by activating the
+different systems: the cognitive apparatus establishes the existence of a danger
+and provides selective evaluations of the threat and of the resources available
+to face it; the affective component acts as an accelerator of the reaction by
+increasing the sense of urgency; the behavioural component activates or inhibits
+action; and the physiological component acts as a somatic mobilizer.
+
+\paragraph{Cognitive symptoms.}
+The cognitive symptoms include three different types of symptom: sensory
+symptoms, difficulties of thought, and conceptual symptoms.
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Sensory symptoms} are significant not so much because of their
+        severity or their interference with sensory and perceptual function, but
+        because, being little known and not immediately controllable, they tend
+        to induce more sensitive people to think they are about to ``lose their
+        mind''. Such symptoms include: a confused or clouded mind, visualization
+        of objects in a blurred/distant way, visualization of the environment in
+        a different/unreal way, sense of unreality, and hypervigilance.
+  \item \textbf{Difficulties of thought} mainly concern difficulty in
+        remembering important things, confusion, the inability to control one's
+        thinking, difficulty of concentration, distractibility, blocking,
+        difficulty in reasoning, and loss of objectivity and perspective. They
+        may be produced by a variety of factors, among them the cognitive
+        inhibitions that interfere with memory and the continuous coping with
+        danger.
+  \item \textbf{Conceptual symptoms} reflect the preoccupation with the sense of
+        vulnerability and danger. Examples are the fear of losing control, the
+        fear of not being able to cope with situations, the fear of physical
+        injury or of death, the fear of mental disorders, the fear of negative
+        evaluations, threatening visual images, and repetitive frightening
+        ideation.
+\end{itemize}
+
+\paragraph{Affective symptoms.}
+The affective symptoms are often the most conspicuous in anxiety disorders. The
+qualitative experiences of anxiety may differ from one situation to another, and
+even from time to time within the same situation, so the anxious person may often
+feel irritable, impatient, ill at ease, nervous, tense, touchy, fearful,
+frightened, terrified, alarmed, appalled, excited, agitated, and so on.
+
+\paragraph{Behavioural symptoms.}
+The behavioural symptoms of anxiety generally reflect either the hyperactivity of
+the behavioural system or its inhibition. There may indeed be inhibition,
+immobility of muscle tone, flight, avoidance, difficult speech, defective
+coordination, agitation, collapse and hyperventilation.
+
+\paragraph{Physiological symptoms.}
+The physiological symptoms of anxiety reflect the readiness of the organism, in
+its globality, to react in order to protect itself by activating the branch of
+the autonomic nervous system. The physiological symptoms in the different anxiety
+disorders may involve the functional systems summarized in
+Table~\ref{tab:physiological}.
+
+\begin{longtable}{@{}p{0.30\textwidth}p{0.62\textwidth}@{}}
+  \caption{Physiological symptoms of anxiety, grouped by the bodily system they
+  affect.}\label{tab:physiological}\\
+  \toprule
+  \textbf{System / activity} & \textbf{Symptoms} \\
+  \midrule
+  \endfirsthead
+  \multicolumn{2}{@{}l}{\small\itshape Table~\ref{tab:physiological} (continued)}\\
+  \toprule
+  \textbf{System / activity} & \textbf{Symptoms} \\
+  \midrule
+  \endhead
+  \midrule
+  \multicolumn{2}{r}{\small\itshape continued on next page}\\
+  \endfoot
+  \bottomrule
+  \endlastfoot
+  Cardiovascular activity &
+    palpitations, increased heart rate, increased blood pressure, weakness,
+    fainting, decreased blood pressure, decreased heart rate \\
+  Respiratory activity &
+    breathing difficulties, pressure in the chest, lump in the throat, sensation
+    of choking, laboured, rapid or shallow breathing, etc. \\
+  Neuromuscular activity &
+    increased reflexes, startle reaction, twitching eyelid, insomnia, spasm,
+    tremor, stiffness, agitation, strained facial expression, restless pacing,
+    swaying, generalized weakness, wobbly legs, clumsy movements \\
+  Gastrointestinal activity &
+    abdominal pain, loss of appetite, repulsion towards food, nausea, heartburn,
+    abdominal discomfort, vomiting \\
+  Urinary-tract activity &
+    urge to urinate, frequency of urination \\
+  Skin activity &
+    flushing of the face or pallid face, localized or diffuse sweating, hot or
+    cold flushes, itching \\
+\end{longtable}
+
+\subsection{The DSM-5-TR Classification}
+
+The reference nosology adopted in this work is the fifth edition, text revision,
+of the \emph{Diagnostic and Statistical Manual of Mental Disorders}
+(DSM-5-TR), published by the American Psychiatric Association in
+2022~\cite{dsm}. With respect to the earlier DSM-IV-TR, on which the first version
+of PESAD was based, the DSM-5-TR introduced a substantial reorganization of the
+conditions historically grouped together as ``anxiety disorders''. The single
+DSM-IV-TR class is now split across \textbf{three} separate chapters:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Anxiety Disorders};
+  \item \textbf{Obsessive-Compulsive and Related Disorders}; and
+  \item \textbf{Trauma- and Stressor-Related Disorders}.
+\end{itemize}
+
+The key reorganizations introduced by this split, and relevant to the present
+system, may be summarized as follows.
+
+\begin{itemize}[leftmargin=2em]
+  \item Obsessive-Compulsive Disorder is no longer classified among the anxiety
+        disorders; it heads the new \emph{Obsessive-Compulsive and Related
+        Disorders} chapter, together with body dysmorphic disorder, hoarding
+        disorder, trichotillomania and excoriation disorder.
+  \item Posttraumatic Stress Disorder and Acute Stress Disorder are likewise no
+        longer anxiety disorders; they belong to the new \emph{Trauma- and
+        Stressor-Related Disorders} chapter, which also requires an identifiable
+        traumatic or stressful event as part of its diagnostic criteria.
+  \item Panic disorder and agoraphobia, formerly coded jointly (as ``panic
+        disorder with/without agoraphobia'' and ``agoraphobia without history of
+        panic disorder''), are now \textbf{two separate diagnoses}, each of which
+        can be coded independently and both of which may be assigned together.
+        The \emph{panic attack} itself is no longer a codable disorder but a
+        \textbf{cross-cutting specifier} that can be appended to any diagnosis
+        (e.g.\ ``PTSD with panic attacks'').
+  \item Social phobia was renamed \textbf{social anxiety disorder}.
+  \item \textbf{Hoarding disorder} and \textbf{excoriation (skin-picking)
+        disorder} are entirely new diagnoses, not present in DSM-IV-TR.
+  \item \textbf{Prolonged grief disorder} is a new diagnosis added specifically
+        in the DSM-5-TR text revision of 2022; it was not present in DSM-IV-TR,
+        nor in the original DSM-5 of 2013.
+\end{itemize}
+
+The following three subsections describe, chapter by chapter, the disorders
+actually modelled by PESAD. For each disorder a single paragraph summarizes its
+core DSM-5-TR criteria, namely the key symptoms, the polythetic thresholds (of
+the form ``at least $M$ of $N$'') and the required duration. The residual
+\emph{other specified} and \emph{unspecified} categories of each chapter are not
+modelled as positive diagnostic goals and are therefore omitted.
+
+\subsection{Anxiety Disorders}
+
+\subsubsection{Separation Anxiety Disorder}
+
+The disorder is defined by developmentally inappropriate and excessive fear or
+anxiety concerning separation from those to whom the individual is attached, as
+evidenced by \textbf{at least 3 of 8} symptoms: recurrent excessive distress when
+anticipating or experiencing separation; persistent worry about losing
+attachment figures or about harm befalling them; persistent worry that an
+untoward event will cause separation; reluctance or refusal to go out for fear of
+separation; fear of being alone; reluctance or refusal to sleep away from home or
+without a major attachment figure nearby; repeated nightmares about separation;
+and repeated complaints of physical symptoms when separation occurs or is
+anticipated. The fear, anxiety or avoidance must be persistent, lasting
+\textbf{at least 4 weeks in children and adolescents} (younger than 18 years) and
+\textbf{typically 6 months or more in adults}, and must cause clinically
+significant distress or impairment.
+
+\subsubsection{Selective Mutism}
+
+Selective mutism is characterized by a consistent failure to speak in specific
+social situations in which there is an expectation to speak (e.g.\ at school),
+despite speaking in other situations. The disturbance must interfere with
+educational or occupational achievement or with social communication, last
+\textbf{at least 1 month} (not limited to the first month of school), and not be
+attributable to a lack of knowledge of, or comfort with, the spoken language
+required. It is not better explained by a communication disorder and does not
+occur exclusively during an autism spectrum or psychotic disorder.
+
+\subsubsection{Specific Phobia}
+
+Specific phobia involves marked fear or anxiety about a specific object or
+situation, which almost always provokes immediate fear and is actively avoided or
+endured with intense anxiety. The fear is out of proportion to the actual danger
+and to the sociocultural context, is persistent (\textbf{typically 6 months or
+more}, at all ages) and causes clinically significant distress or impairment. The
+disorder is coded according to the phobic stimulus, and PESAD models the
+\textbf{five} DSM-5-TR stimulus types listed in Table~\ref{tab:phobia-types}.
+
+\begin{longtable}{@{}p{0.34\textwidth}p{0.58\textwidth}@{}}
+  \caption{The five stimulus types of specific phobia.}%
+  \label{tab:phobia-types}\\
+  \toprule
+  \textbf{Type} & \textbf{Typical stimuli} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Type} & \textbf{Typical stimuli} \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endlastfoot
+  Animal & spiders, insects, dogs \\
+  Natural environment & heights, storms, water \\
+  Blood--injection--injury & needles, invasive medical procedures, injury \\
+  Situational & aeroplanes, lifts, enclosed places \\
+  Other & choking or vomiting situations; in children, loud sounds or costumed
+          characters \\
+\end{longtable}
+
+\subsubsection{Social Anxiety Disorder}
+
+Social anxiety disorder is defined by marked fear or anxiety about one or more
+social situations involving possible scrutiny by others (social interactions,
+being observed, or performing), driven by the fear of acting in a way, or showing
+anxiety symptoms, that will be negatively evaluated. The social situations almost
+always provoke fear, are avoided or endured with intense anxiety, and the fear is
+out of proportion to the actual threat. The disturbance is persistent
+(\textbf{typically 6 months or more}) and causes clinically significant distress
+or impairment. A \emph{performance only} specifier applies when the fear is
+restricted to speaking or performing in public.
+
+\subsubsection{Panic Disorder}
+
+Panic disorder requires recurrent \textbf{unexpected} panic attacks. A panic
+attack is an abrupt surge of intense fear or discomfort that peaks within
+minutes, during which \textbf{at least 4 of the 13} symptoms of
+Table~\ref{tab:panic-symptoms} occur. At least one attack must have been followed
+by \textbf{1 month or more} of persistent concern about further attacks or their
+consequences, or of significant maladaptive change in behaviour related to the
+attacks. The disturbance must not be attributable to a substance or another
+medical condition, nor better explained by another mental disorder.
+
+\begin{longtable}{@{}p{0.05\textwidth}p{0.88\textwidth}@{}}
+  \caption{The thirteen symptoms of a panic attack (eleven physical and two
+  cognitive); at least four are required.}\label{tab:panic-symptoms}\\
+  \toprule
+  \# & \textbf{Symptom} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \# & \textbf{Symptom} \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endlastfoot
+  1 & Palpitations, pounding heart, or accelerated heart rate \\
+  2 & Sweating \\
+  3 & Trembling or shaking \\
+  4 & Shortness of breath or smothering \\
+  5 & Feelings of choking \\
+  6 & Chest pain or discomfort \\
+  7 & Nausea or abdominal distress \\
+  8 & Feeling dizzy, unsteady, light-headed, or faint \\
+  9 & Chills or heat sensations \\
+  10 & Paraesthesias (numbness or tingling) \\
+  11 & Derealization or depersonalization \\
+  12 & Fear of losing control or ``going crazy'' \\
+  13 & Fear of dying \\
+\end{longtable}
+
+\subsubsection{Agoraphobia}
+
+Agoraphobia is defined by marked fear or anxiety about \textbf{at least 2 of the
+5} situations: using public transportation; being in open spaces; being in
+enclosed places; standing in line or being in a crowd; and being outside the home
+alone. The situations are feared or avoided because of thoughts that escape might
+be difficult, or help unavailable, should panic-like or other incapacitating or
+embarrassing symptoms develop. They almost always provoke fear and are actively
+avoided, require a companion, or are endured with intense anxiety. The fear is out
+of proportion to the actual danger, is persistent (\textbf{typically 6 months or
+more}) and causes clinically significant distress or impairment. Agoraphobia is
+diagnosed irrespective of panic disorder; if both sets of criteria are met, both
+diagnoses are assigned.
+
+\subsubsection{Generalized Anxiety Disorder}
+
+Generalized anxiety disorder is characterized by excessive anxiety and worry,
+occurring \textbf{more days than not for at least 6 months}, about a number of
+events or activities, which the individual finds difficult to control. The
+anxiety and worry must be associated with \textbf{at least 3 of the 6} symptoms
+(only \textbf{1} required in children): restlessness or feeling keyed up;
+being easily fatigued; difficulty concentrating or mind going blank;
+irritability; muscle tension; and sleep disturbance. The disturbance causes
+clinically significant distress or impairment and is not attributable to a
+substance or another medical condition.
+
+\subsubsection{Substance/Medication-Induced Anxiety Disorder}
+
+In this disorder, panic attacks or anxiety predominate in the clinical picture,
+and there is evidence that the symptoms developed during or soon after substance
+intoxication or withdrawal, or after exposure to or withdrawal from a medication
+capable of producing such symptoms. The disturbance must not be better explained
+by an independent anxiety disorder; persistence of symptoms for a substantial
+period (\textbf{about 1 month}) after the cessation of acute withdrawal or severe
+intoxication suggests an independent disorder. The symptoms must not occur
+exclusively during a delirium and must cause clinically significant distress or
+impairment. The condition is coded with onset during intoxication, during
+withdrawal, or after medication use.
+
+\subsubsection{Anxiety Disorder Due to Another Medical Condition}
+
+Here panic attacks or anxiety predominate in the clinical picture, and there is
+evidence from the history, physical examination or laboratory findings that the
+disturbance is the direct pathophysiological consequence of another medical
+condition (e.g.\ hyperthyroidism, hyperparathyroidism, phaeochromocytoma,
+vestibular dysfunction, seizure disorders, or cardiopulmonary conditions). The
+disturbance must not be better explained by another mental disorder, must not
+occur exclusively during a delirium, and must cause clinically significant
+distress or impairment.
+
+\subsection{Obsessive-Compulsive and Related Disorders}
+
+\subsubsection{Obsessive-Compulsive Disorder}
+
+Obsessive-compulsive disorder is defined by the presence of obsessions,
+compulsions, or both. \emph{Obsessions} are recurrent and persistent thoughts,
+urges or images that are experienced as intrusive and unwanted and that cause
+marked anxiety or distress, which the individual attempts to ignore, suppress or
+neutralize with another thought or action. \emph{Compulsions} are repetitive
+behaviours or mental acts that the individual feels driven to perform in response
+to an obsession or according to rigidly applied rules, aimed at preventing or
+reducing distress but not connected in a realistic way with what they are
+designed to neutralize, or clearly excessive. The obsessions or compulsions must
+be time-consuming (\textbf{taking more than 1 hour per day}) or cause clinically
+significant distress or impairment. An \textbf{insight} specifier with three
+levels (good or fair, poor, absent or delusional) and a \emph{tic-related}
+specifier are available.
+
+\subsubsection{Body Dysmorphic Disorder}
+
+Body dysmorphic disorder consists of a preoccupation with one or more perceived
+defects or flaws in physical appearance that are not observable or appear slight
+to others. At some point the individual must have performed repetitive behaviours
+(e.g.\ mirror checking, excessive grooming, skin picking, reassurance seeking) or
+mental acts (e.g.\ comparing one's appearance with that of others) in response to
+the appearance concerns. The preoccupation must cause clinically significant
+distress or impairment and must not be better explained by concerns with body fat
+or weight in an individual whose symptoms meet criteria for an eating disorder. A
+\emph{with muscle dysmorphia} specifier and the same three-level insight specifier
+apply.
+
+\subsubsection{Hoarding Disorder}
+
+Hoarding disorder is characterized by a persistent difficulty discarding or
+parting with possessions, regardless of their actual value, owing to a perceived
+need to save the items and to the distress associated with discarding them. This
+difficulty results in the accumulation of possessions that congest and clutter
+active living areas and substantially compromise their intended use. The hoarding
+must cause clinically significant distress or impairment (including the
+maintenance of a safe environment) and must not be attributable to another
+medical condition or better explained by another mental disorder. A \emph{with
+excessive acquisition} specifier and the three-level insight specifier apply.
+
+\subsubsection{Trichotillomania (Hair-Pulling Disorder)}
+
+Trichotillomania is defined by recurrent pulling out of one's hair resulting in
+hair loss, together with repeated attempts to decrease or stop the pulling. The
+hair pulling must cause clinically significant distress or impairment, must not
+be attributable to another medical condition (e.g.\ a dermatological condition),
+and must not be better explained by another mental disorder (e.g.\ attempts to
+improve a perceived appearance defect in body dysmorphic disorder).
+
+\subsubsection{Excoriation (Skin-Picking) Disorder}
+
+Excoriation disorder consists of recurrent skin picking resulting in skin
+lesions, together with repeated attempts to decrease or stop the picking. The
+skin picking must cause clinically significant distress or impairment, must not
+be attributable to the physiological effects of a substance (e.g.\ cocaine) or
+another medical condition (e.g.\ scabies), and must not be better explained by
+another mental disorder.
+
+\subsubsection{Substance/Medication-Induced Obsessive-Compulsive and Related
+Disorder}
+
+In this disorder, obsessions, compulsions, skin picking, hair pulling, other
+body-focused repetitive behaviours or other symptoms characteristic of the
+chapter predominate in the clinical picture, and there is evidence that the
+symptoms developed during or soon after substance intoxication or withdrawal, or
+after exposure to or withdrawal from a medication capable of producing such
+symptoms. The disturbance must not be better explained by an independent
+obsessive-compulsive and related disorder, must not occur exclusively during a
+delirium, and must cause clinically significant distress or impairment. It is
+coded with onset during intoxication, during withdrawal, or after medication use.
+
+\subsubsection{Obsessive-Compulsive and Related Disorder Due to Another Medical
+Condition}
+
+Here obsessions, compulsions, appearance preoccupations, hoarding, hair pulling,
+skin picking or other characteristic symptoms predominate in the clinical
+picture, and there is evidence that the disturbance is the direct
+pathophysiological consequence of another medical condition. The disturbance must
+not be better explained by another mental disorder, must not occur exclusively
+during a delirium, and must cause clinically significant distress or impairment.
+Specifiers identify the predominant symptom presentation (obsessive-compulsive,
+appearance preoccupations, hoarding, hair-pulling, or skin-picking).
+
+\subsection{Trauma- and Stressor-Related Disorders}
+
+\subsubsection{Reactive Attachment Disorder}
+
+Reactive attachment disorder is defined by a consistent pattern of inhibited,
+emotionally withdrawn behaviour towards adult caregivers, manifested by
+\textbf{both} of: the child rarely or minimally seeking comfort when distressed,
+and rarely or minimally responding to comfort when distressed. It is accompanied
+by a persistent social and emotional disturbance shown by \textbf{at least 2 of
+3} symptoms (minimal social and emotional responsiveness; limited positive
+affect; episodes of unexplained irritability, sadness or fearfulness). The child
+must have experienced a pattern of extremes of insufficient care
+(\textbf{at least 1 of 3}: social neglect, repeated changes of caregivers, or
+rearing in settings limiting selective attachments), presumed responsible for the
+disturbance. The criteria for autism spectrum disorder must not be met, the
+disturbance must be evident \textbf{before age 5}, and the child must have a
+developmental age of \textbf{at least 9 months}.
+
+\subsubsection{Disinhibited Social Engagement Disorder}
+
+This disorder is defined by a pattern of behaviour in which the child actively
+approaches and interacts with unfamiliar adults, shown by \textbf{at least 2 of
+4} symptoms: reduced or absent reticence in approaching unfamiliar adults; overly
+familiar verbal or physical behaviour; diminished or absent checking back with a
+caregiver after venturing away; and willingness to go off with an unfamiliar
+adult with minimal hesitation. The behaviours must extend beyond mere
+impulsivity, must follow a pattern of extremes of insufficient care
+(\textbf{at least 1 of 3}, as for reactive attachment disorder) presumed
+responsible for them, and the child must have a developmental age of
+\textbf{at least 9 months}.
+
+\subsubsection{Posttraumatic Stress Disorder}
+
+Posttraumatic stress disorder requires exposure to actual or threatened death,
+serious injury or sexual violence through one or more of four routes (directly
+experiencing the event; witnessing it in person; learning that it happened to a
+close family member or friend; or experiencing repeated or extreme exposure to
+aversive details). The symptoms are organized into the four clusters of
+Table~\ref{tab:ptsd-clusters}; the disturbance must last \textbf{more than 1
+month} and cause clinically significant distress or impairment. A \emph{with
+dissociative symptoms} specifier (depersonalization or derealization) and a
+\emph{with delayed expression} specifier (full criteria not met until at least 6
+months after the event) are available.
+
+\begin{longtable}{@{}p{0.20\textwidth}p{0.10\textwidth}p{0.60\textwidth}@{}}
+  \caption{The four symptom clusters of PTSD (individuals older than 6 years) and
+  their polythetic thresholds.}\label{tab:ptsd-clusters}\\
+  \toprule
+  \textbf{Cluster} & \textbf{Threshold} & \textbf{Content} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Cluster} & \textbf{Threshold} & \textbf{Content} \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endlastfoot
+  B -- Intrusion & at least 1 of 5 &
+    intrusive memories; distressing dreams; dissociative reactions
+    (flashbacks); psychological distress at, and physiological reactivity to,
+    cues resembling the event \\
+  C -- Avoidance & at least 1 of 2 &
+    avoidance of distressing memories, thoughts or feelings; avoidance of
+    external reminders of the event \\
+  D -- Negative cognitions and mood & at least 2 of 7 &
+    amnesia for the event; exaggerated negative beliefs; distorted blame;
+    persistent negative emotional state; diminished interest; detachment from
+    others; inability to feel positive emotions \\
+  E -- Arousal and reactivity & at least 2 of 6 &
+    irritable or aggressive behaviour; reckless or self-destructive behaviour;
+    hypervigilance; exaggerated startle; concentration problems; sleep
+    disturbance \\
+\end{longtable}
+
+For \textbf{children 6 years and younger} (the preschool subtype) the thresholds
+are developmentally lowered: exposure occurs through 3 routes rather than 4, the
+intrusion cluster keeps the threshold of at least 1 of 5, and avoidance and
+negative cognitions are merged into a single cluster requiring \textbf{at least 1
+of 6} symptoms, while the arousal cluster requires \textbf{at least 2 of 5}. The
+duration (more than 1 month) and the available specifiers are unchanged.
+
+\subsubsection{Acute Stress Disorder}
+
+Acute stress disorder shares the same exposure criterion as PTSD (one or more of
+four routes). It requires the presence of \textbf{at least 9 of 14} symptoms
+drawn from five categories (intrusion, negative mood, dissociation, avoidance and
+arousal), beginning or worsening after the event. The duration of the disturbance
+is \textbf{3 days to 1 month after the trauma}; symptoms resolving in fewer than 3
+days do not qualify, and symptoms persisting beyond 1 month lead instead to a
+diagnosis of PTSD. The disturbance must cause clinically significant distress or
+impairment, must not be attributable to a substance or another medical condition,
+and must not be better explained by a brief psychotic disorder.
+
+\subsubsection{Adjustment Disorder}
+
+Adjustment disorder is the development of emotional or behavioural symptoms in
+response to an identifiable stressor, occurring \textbf{within 3 months} of the
+onset of the stressor. The symptoms must be clinically significant, shown by
+marked distress out of proportion to the stressor and/or significant impairment.
+The disturbance must not meet the criteria for another mental disorder, must not
+be merely an exacerbation of a pre-existing disorder, and must not represent
+normal bereavement or be better explained by prolonged grief disorder. Once the
+stressor or its consequences have terminated, the symptoms do not persist for
+more than a further \textbf{6 months}. The subtype is specified as: with depressed
+mood; with anxiety; with mixed anxiety and depressed mood; with disturbance of
+conduct; with mixed disturbance of emotions and conduct; or unspecified. Course
+specifiers distinguish \emph{acute} (less than 6 months) from \emph{persistent}
+(6 months or longer).
+
+\subsubsection{Prolonged Grief Disorder}
+
+Prolonged grief disorder, new in DSM-5-TR, requires the death of a close person
+\textbf{at least 12 months ago} (\textbf{at least 6 months} in children and
+adolescents). Since the death there must be a persistent grief response shown by
+\textbf{one or both} of intense yearning or longing for the deceased and
+preoccupation with thoughts or memories of the deceased, present nearly every day
+for at least the last month. In addition, \textbf{at least 3 of 8} symptoms must
+be present nearly every day for at least the last month: identity disruption; a
+marked sense of disbelief about the death; avoidance of reminders that the person
+is dead; intense emotional pain related to the death; difficulty reintegrating
+into relationships and activities; emotional numbness; a feeling that life is
+meaningless; and intense loneliness. The disturbance must cause clinically
+significant distress or impairment, must clearly exceed expected social, cultural
+or religious norms, and must not be better explained by another mental disorder
+nor attributable to a substance or another medical condition.

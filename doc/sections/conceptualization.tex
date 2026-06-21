@@ -1,0 +1,210 @@
+\section{Conceptualization}
+
+In this section we present an analysis of the process that led to expressing the
+knowledge in logical form. In particular, we discuss the objects that were
+identified and the relations and properties of those objects.
+
+The knowledge is organised over four inference levels, which structure the
+reasoning from the most abstract diagnosis down to the elementary observations:
+
+\begin{enumerate}[label=(\Roman*)]
+    \item \emph{Disorders} ---the ``child'' anxiety disorders that the system is
+    able to diagnose, encoded by the relation \texttt{disorder/3};
+    \item \emph{Sub-disorders and types} ---the ``parent'' or
+    ``non-codifiable'' disorders and the specialisation types that, combined with
+    them, define a disorder, encoded by the relation \texttt{disorder\_nc/4};
+    \item \emph{Symptomatic manifestations and features} ---the complex symptoms
+    and the features attached to them, encoded by the relations
+    \texttt{symptomatic\_manifestation/4} and \texttt{symptomatic\_feature/4};
+    \item \emph{Elementary symptoms} ---the atomic facts reported by the user,
+    encoded by the relation \texttt{symptom/3}.
+\end{enumerate}
+
+
+\subsection{Objects}
+
+The conceptualization phase brought several objects to light. These objects can be
+classified into categories.
+
+In Table~\ref{tab:objects}, rather than weighing down the discussion with a list
+of every single identified object, we prefer to report the categories to which the
+objects belong, focusing attention on the description of what they represent. For
+each category, a few examples of objects are also given.
+
+\begin{longtable}{p{0.22\linewidth} p{0.42\linewidth} p{0.28\linewidth}}
+\caption{Objects identified during the conceptualization
+phase.}\label{tab:objects}\\
+\toprule
+\textbf{Object Category} & \textbf{Description} & \textbf{Examples} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Object Category} & \textbf{Description} & \textbf{Examples} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\footnotesize\itshape continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+
+Disorder &
+The ``child'' anxiety disorders that the expert system is able to diagnose. &
+Panic Disorder Without Agoraphobia; Specific Phobia, Animal Type; Generalised
+Anxiety Disorder; \dots \\
+\addlinespace
+
+Non-Codifiable Disorder &
+Both the ``parent'' anxiety disorders to which the ``child'' disorders refer and
+the so-called ``non-codifiable'' disorders, that is, those disorders that, without
+a precise specialisation or placement, cannot be recorded. &
+Agoraphobia; Specific Phobia; Post-Traumatic Stress Disorder; Panic Disorder;
+Social Phobia; \dots \\
+\addlinespace
+
+Type of Non-Codifiable Disorder &
+The various specialisations that, combined with the non-codifiable disorders,
+allow a disorder to be defined. &
+Generalised Type; Circumscribed Type; Animal Type; Natural Environment Type;
+\dots \\
+\addlinespace
+
+Symptomatic Manifestation &
+The various manifestations of symptoms that denote an anxiety disorder.
+Typically, a symptomatic manifestation is made up of several criteria (complex
+symptoms). Each criterion is composed of one or more symptoms, which need not all
+be mandatorily required for the diagnosis: it may be the case that a minimum
+number of symptoms out of a larger set is required. &
+Increased Arousal; Psychological Trauma; Social Phobic Anxiety; Agoraphobic
+Anxiety; Unexpected Panic Attack; Generalised Anxiety; \dots \\
+\addlinespace
+
+Symptomatic Feature &
+The features connected to the symptoms that allow one disorder to be determined or
+distinguished from another. &
+Duration of at least 6 months; Frequent panic attacks; Onset of symptoms within 1
+month of the traumatic event; \dots \\
+\addlinespace
+
+Elementary Symptom &
+The atomic symptoms that, once assembled, give rise to the symptomatic
+manifestations. &
+Depersonalisation; Terror; Avoidance; Nausea; \dots \\
+\addlinespace
+
+Patient &
+The categories of patient to whom the diagnosis is addressed. Placing the patient
+in one of the three age ranges makes it possible to distinguish both the number of
+symptomatic manifestations or features required by a given disorder and the number
+of symptoms expected from a single symptomatic manifestation. &
+Child (0--9 years); Adolescent (10--17 years); Adult (18+). \\
+\addlinespace
+
+Degree of Insight of the Obsessions &
+The degrees of insight into the reasonableness of the obsessions-compulsions. &
+High Insight; Low Insight; \dots \\
+\addlinespace
+
+Type of Anxiety &
+The types of anxiety. The distinction is based on the main reason that triggers
+the anxious process. &
+Anxiety due to embarrassment in public; Anxiety due to concern for one's own
+health; \dots \\
+\addlinespace
+
+Type of Panic Attack &
+The two types into which a panic attack can be specialised. &
+Unexpected Panic Attack; Situationally Triggered Panic Attack. \\
+\addlinespace
+
+Type of Phobic Reaction &
+The types of reaction that an individual may have towards a feared situation or
+object. &
+Endurance with distress; Avoidance; \dots \\
+\addlinespace
+
+Symptom Duration &
+The various durations used to verify all the symptoms that require the presence of
+the symptoms for a precise length of time. &
+Less than 2 days; 2 days -- less than 1 month; 1 month -- less than 3 months;
+3 months -- less than 6 months; 6 months or more. \\
+\addlinespace
+
+Symptom Onset &
+The various periods within which the acute stress disorder and the post-traumatic
+stress disorder can arise. &
+Less than 1 month; 1 month -- less than 6 months; 6 months or more. \\
+\addlinespace
+
+Panic Attack Frequency &
+The various frequencies of panic attacks required in panic disorder. &
+1; 2--5; 6+. \\
+\end{longtable}
+
+
+\subsection{Relations and Properties}
+
+Table~\ref{tab:relations} reports the relations and the properties of the objects.
+The first five relations correspond to the four inference levels described at the
+beginning of this section.
+
+\begin{longtable}{p{0.46\linewidth} p{0.46\linewidth}}
+\caption{Relations and properties of the objects.}\label{tab:relations}\\
+\toprule
+\textbf{Relation} & \textbf{Description} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Relation} & \textbf{Description} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\footnotesize\itshape continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+
+\texttt{patient(Patient)} &
+Indicates the type of patient to whom the diagnosis is addressed. \\
+\addlinespace
+
+\texttt{disorder/3} &
+States that the given object is a ``child'' disorder and is diagnosable for the
+specified patient (level~I). \\
+\addlinespace
+
+\texttt{disorder\_nc/4} &
+States that the given object is a ``parent'' or ``non-codifiable'' disorder,
+together with its specialisation type, and is diagnosable for the specified
+patient (level~II). \\
+\addlinespace
+
+\texttt{symptomatic\_manifestation/4} &
+States that the given object is a symptomatic manifestation and is diagnosable for
+the specified patient (level~III). \\
+\addlinespace
+
+\texttt{symptomatic\_feature/4} &
+States that the given object is a symptomatic feature and is diagnosable for the
+specified patient (level~III). \\
+\addlinespace
+
+\texttt{symptom/3} &
+Encodes a criterion (complex symptom) at the elementary level (level~IV): the
+list argument indicates the various elementary symptoms that compose the
+criterion, while the numeric argument indicates the number of symptoms mandatorily
+required to diagnose the criterion. \\
+\addlinespace
+
+\texttt{aetiological\_evidence([Evidence\_List], Evidence\_Number)} &
+Indicates an aetiological evidence, where \texttt{Evidence\_List} lists the
+various ways of verifying the aetiological link between the disorder and the
+factor under examination (drug, withdrawal, intoxication), and
+\texttt{Evidence\_Number} indicates the number of evidences mandatorily required
+for the diagnosis. \\
+\addlinespace
+
+\texttt{phobic\_reaction\_type([Options])} &
+Indicates a type of phobic reaction, where \texttt{Options} lists the admissible
+reaction options. \\
+\end{longtable}

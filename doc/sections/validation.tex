@@ -1,0 +1,75 @@
+\chapter{Validation}
+\label{chap:validation}
+
+The system is validated with a small regression suite of clinical vignettes,
+one per disorder family, collected in the file \texttt{clinical\_tests.pl} and
+run with \texttt{swipl clinical\_tests.pl}.
+
+\section{Method}
+
+Each clinical case encodes the answers a clinician would give as a set of
+\texttt{known/4} facts. To run the full \emph{investigation} without interactive
+input, the harness automatically discovers every symptom the engine may ask ---by
+inspecting the clauses of the manifestation, feature and type predicates--- and
+sets each of them to \emph{absent} as a baseline; it then overlays the positive
+findings of the case, runs the investigation, ranks the disorders by certainty
+and checks that the top-ranked diagnosis is the expected one. The
+``no-diagnosis'' vignette is considered passed when the highest certainty stays
+below $30\%$. Every case is executed under all three uncertainty methods:
+\texttt{cf} (minimum t-norm, the default), \texttt{fuzzy} (product t-norm) and
+\texttt{fuzzy\_membership} (graded membership functions over duration, frequency
+and insight).
+
+\section{Cases and results}
+
+Table~\ref{tab:validation} reports, for each vignette, the certainty assigned to
+the expected diagnosis under the three methods (``---'' means the method did not
+rank the expected diagnosis first).
+
+\begin{table}[h]
+\centering
+\caption{Clinical test suite: certainty of the expected diagnosis per method.}
+\label{tab:validation}
+\small
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Vignette} & \textbf{Expected diagnosis} & \textbf{cf} & \textbf{fuzzy} & \textbf{fuzzy-mem.} \\
+\midrule
+Recurrent unexpected panic attacks & Panic Disorder & 72\% & 57\% & 72\% \\
+Assault survivor & Posttraumatic Stress Disorder & 66\% & 28\% & 66\% \\
+Contamination obsessions \& rituals & OCD, with poor insight & 73\% & 56\% & 73\% \\
+Out-of-proportion spider fear & Specific Phobia, Animal Type & 75\% & 58\% & 75\% \\
+Fear of transport / open spaces & Agoraphobia & 75\% & 57\% & 75\% \\
+Low mood after job loss & Adjustment Disorder & 70\% & 60\% & 70\% \\
+Anxiety during stimulant use & Substance-Induced Anxiety Disorder & 70\% & 37\% & 70\% \\
+Spider phobia of $\sim$5 months & Specific Phobia, Animal Type & --- & --- & 64\% \\
+Mild non-specific work stress & no strong diagnosis ($<30\%$) & 10\% & 4\% & 10\% \\
+\midrule
+\textbf{Cases passed} & & \textbf{8/9} & \textbf{8/9} & \textbf{9/9} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Findings}
+
+\begin{itemize}
+  \item On the seven prototypical cases all three methods rank the correct
+  disorder first, and all three correctly refrain from a strong diagnosis on the
+  non-specific case.
+  \item \emph{Specifiers are surfaced in the result}: the obsessive-compulsive
+  case is returned as ``Obsessive-Compulsive Disorder, With Poor Insight''. The
+  insight specifier (good or fair / poor / absent or delusional), which applies
+  to obsessive-compulsive, body dysmorphic and hoarding disorders, is encoded as
+  a selective specifier that labels the diagnosis without changing its presence.
+  \item The \texttt{fuzzy} (product) method assigns lower and less stable
+  certainties ---most visibly for the polythetic post-traumatic stress disorder
+  ($28\%$) and substance-induced anxiety disorder ($37\%$)--- confirming why the
+  minimum t-norm is kept as the default.
+  \item The borderline vignette is the discriminating case: a marked animal
+  phobia present for only about five months. The discrete methods (\texttt{cf}
+  and \texttt{fuzzy}) miss the hard ``at least six months'' cut-off and fail to
+  reach the diagnosis, whereas \texttt{fuzzy\_membership} grades the five-month
+  duration at $0.67$ of the fuzzy set and still ranks the phobia first ($64\%$).
+  This illustrates the practical benefit of membership functions at diagnostic
+  thresholds, at the cost of requiring a crisp numeric input from the clinician.
+\end{itemize}

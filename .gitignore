@@ -1,0 +1,14 @@
+.idea
+
+DSM-V-TR Diagnostic and Statistical Manual of Mental Disorders.pdf
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz

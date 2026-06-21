@@ -1,0 +1,249 @@
+\section{Identification}
+
+In this section we describe the phases that led to the acquisition of the domain
+knowledge, the identification of the requirements to be implemented, and the
+definition of the reasoning strategy.
+
+
+\subsection{Knowledge Acquisition}
+
+The acquisition of the knowledge of the application domain was a complex and
+laborious task. It was carried out by drawing on three different kinds of source:
+
+\begin{itemize}
+    \item \emph{Books and manuals}:
+    \begin{itemize}
+        \item \emph{DSM-5-TR. Diagnostic and Statistical Manual of Mental
+        Disorders}~\cite{dsm}.
+        \item \emph{The ABC of Psychopathology. Exploration, identification and
+        treatment of mental disorders}~\cite{abc}.
+    \end{itemize}
+
+    \item \emph{Web resources}:
+    \begin{itemize}
+        \item \url{http://www.ipsico.org/default.htm}
+        \item \url{http://www.cpsico.com/index.htm}
+        \item \url{http://www.ansia-depressione.net}
+    \end{itemize}
+
+    \item \emph{Human expert}: the consultancy provided by a psychologist.
+\end{itemize}
+
+From the study of the diagnostic criteria we learned that each ``parent'' anxiety
+disorder can be specialised into several ``child'' anxiety disorders.
+
+Although the DSM-5-TR is a sound diagnostic manual, it does not allow a
+knowledge engineer to encode exactly the various disorders that fall
+under each category. Indeed, while it reports the diagnostic criteria related to
+each ``parent'' disorder together with the possible specialisations, it does not
+contain all the information needed to differentiate the diagnoses among the
+``child'' disorders.
+
+To address this issue, in addition to the use of manuals and psychology portals,
+we relied on a human expert who---thanks to their experience in terms of
+knowledge, heuristics and reasoning mechanisms---made it possible to simplify the
+complexity of the work.
+
+Starting from the diagnostic criteria of each ``parent'' anxiety disorder, we
+carried out a process of refinement and specialisation of the various criteria so
+as to identify every single ``child'' anxiety disorder. At the end of the
+knowledge-acquisition work, 43 ``child'' anxiety disorders were identified; they
+are reported in Table~\ref{tab:disorders}.
+
+\begin{longtable}{p{0.34\linewidth} p{0.58\linewidth}}
+\caption{Classification of the anxiety disorders handled by the expert
+system.}\label{tab:disorders}\\
+\toprule
+\textbf{Category} & \textbf{Disorders} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Category} & \textbf{Disorders} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\footnotesize\itshape continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+
+Panic Disorder &
+Panic Disorder Without Agoraphobia; Panic Disorder With Agoraphobia. \\
+\addlinespace
+
+Agoraphobia Without History of Panic Disorder &
+Agoraphobia Without History of Panic Disorder. \\
+\addlinespace
+
+Specific Phobia &
+Specific Phobia, ``Animal'' Type; Specific Phobia, ``Natural Environment'' Type;
+Specific Phobia, ``Blood-Injection-Injury'' Type; Specific Phobia,
+``Situational'' Type; Specific Phobia, ``Other'' Type. \\
+\addlinespace
+
+Social Phobia &
+Generalised Social Phobia; Circumscribed Social Phobia. \\
+\addlinespace
+
+Obsessive-Compulsive Disorder &
+Obsessive-Compulsive Disorder with Aggressive Content (and with Poor Insight);
+with Contamination Content (and with Poor Insight); with Sexual Content (and with
+Poor Insight); Hoarding Type (and with Poor Insight); with Religious Content (and
+with Poor Insight); Order and Symmetry Type (and with Poor Insight); Somatic Type
+(and with Poor Insight); Superstitious Type (and with Poor Insight); Perfection
+and Responsibility Type (and with Poor Insight); with Miscellaneous Content (and
+with Poor Insight). \\
+\addlinespace
+
+Post-Traumatic Stress Disorder &
+Acute Post-Traumatic Stress Disorder; Acute Post-Traumatic Stress Disorder with
+Delayed Onset; Chronic Post-Traumatic Stress Disorder; Chronic Post-Traumatic
+Stress Disorder with Delayed Onset. \\
+\addlinespace
+
+Acute Stress Disorder &
+Acute Stress Disorder. \\
+\addlinespace
+
+Generalised Anxiety Disorder &
+Generalised Anxiety Disorder. \\
+\addlinespace
+
+Anxiety Disorder Due to a General Medical Condition &
+With Generalised Anxiety; With Panic Attacks; With Obsessive-Compulsive
+Symptoms. \\
+\addlinespace
+
+Substance-Induced Anxiety Disorder &
+With Generalised Anxiety; With Panic Attacks; With Obsessive-Compulsive Symptoms;
+With Phobic Symptoms. \\
+\end{longtable}
+
+
+\subsection{Requirements}
+
+In the following sections we provide a brief description of the requirements that
+the system must satisfy and of the features to be implemented.
+
+
+\subsubsection{Programming Language}
+
+The expert system must be implemented in Prolog.
+
+Prolog, an acronym for \emph{PROgramming in LOGic}, is a very powerful and
+flexible logic programming language. It is particularly well suited to Artificial
+Intelligence and to non-numerical programming.
+
+By using Prolog as the programming language, it is possible to express the
+knowledge about the identified objects and relations in the form of facts and
+rules. It is also possible to ask questions of the user so as to derive further
+information useful to the inference process.
+
+Two behavioural features required by the system are not provided natively by
+Prolog: the handling of uncertainty and an explanation module. They are discussed
+below.
+
+
+\subsubsection{Handling of Uncertainty}
+
+The first behavioural feature we want to implement is the handling of
+uncertainty.
+
+Prolog reasons in a categorical way, in the sense that every element can only be
+either true or false, with no other possibility.
+
+In the medical field, this kind of reasoning turns out to be too restrictive. The
+diagnosis of disorders or diseases may, in fact, rest on rather uncertain
+knowledge, both because symptoms and causes may be only probably correlated with
+a disorder or disease, and because the patient may not answer with complete
+certainty.
+
+The handling of the uncertainty intrinsic to the available knowledge becomes even
+more necessary in a critical domain such as the diagnosis of anxiety disorders,
+where the mental disorder must be managed as quickly and correctly as possible, in
+order to prevent the exacerbation of the symptoms from ``destroying'' the overall
+functioning of the patient or from significantly interfering with their
+occupational or social functioning.
+
+From these premises, the need emerges to move away from the categorical nature of
+assertions and to converge towards a probabilistic nature, in which it is possible
+to assign a degree of certainty to every known fact or rule.
+
+This notion of certainty is not to be understood in the mathematical sense of the
+term, but rather as the subjective confidence one has in the truth of an assertion
+or in the fact that an inference rule turns out to be applicable.
+
+Indeed, it is still a matter of debate whether it is more appropriate to use
+probability theory in its most rigorous sense or in a more informal and
+simplified version.
+
+In the project under examination, we chose to use the more informal and
+simplified version for two simple reasons. First, because we want the expert
+system to emulate human reasoning, which is certainly intuitive and not very
+mathematical. Second, because one cannot disregard the greater computational
+simplicity of an intuitive and less rigorous method.
+
+
+\subsubsection{Explanation Module}
+
+The second behavioural feature concerns the implementation of an explanation
+module.
+
+In an expert system, the explanation capability is of fundamental importance.
+Users, in fact, tend not to trust an artificial system slavishly, nor to accept
+blindly the solution of a problem produced in an uncontrollable way.
+
+This capability is even more necessary in uncertain domains, such as that of
+medical diagnosis, in order to increase the trust that the physician or the expert
+places in the advice of the system, and to enable them to discover a possible
+error in the reasoning process.
+
+In keeping with this requirement, the expert system under examination provides
+explanations about its own way of proceeding on two occasions: when it is asked
+\emph{why} a given question is being posed, and when it is asked \emph{how} the
+solution of a problem was reached.
+
+
+\subsection{Reasoning Strategy}
+
+As far as the type of inference to be used is concerned, the choice fell on
+backward chaining.
+
+Backward chaining is a type of inference in which one starts from a possible
+solution of the problem and tries to verify, by applying the production rules in
+reverse, whether there exists a rule capable of providing that solution. It is
+opposed to forward chaining, in which one starts from the known facts contained in
+the knowledge base and applies the production rules forward in order to deduce new
+facts. Like the handling of uncertainty, backward chaining is not provided
+natively by Prolog and must be implemented by the inference engine.
+
+The inference process will moreover use the \emph{left-most} computation rule and
+the \emph{depth-first} search strategy. Thus, in the inference process, given a
+query
+
+\[
+\texttt{:-}\ G_1,\, G_2,\, \dots,\, G_n
+\]
+
+the left-most literal will always be selected. Given the literal to be resolved
+(for example, $G_1$), the first clause whose head is unifiable with $G_1$ will
+always be selected.
+
+As for the behaviour that the inference process must adopt upon the occurrence of
+possible negative answers, we opted for a ``non-failure'' policy. Considering, in
+fact, that the expert system has to handle the uncertainty of the information, we
+decided to process negative answers as positive answers, but with a
+``complemented'' degree of certainty. For instance, a negative answer with a
+degree of certainty of $0.7$ for a feature required as true will be processed by
+the system as a positive answer with a degree of certainty of $0.3$. In this way,
+it is possible to bring every computation to completion, returning the degree of
+certainty with which the conclusion turns out to be true.
+
+Finally, since some diagnostic criteria require the verification of undesirable
+features, the system must provide the possibility of specifying, for a given goal,
+which sub-goals are required as true and which as false. Depending on the case, it
+will be the inference engine that correctly computes the degree of certainty.
+
+The reasoning strategy introduced in this section will be taken up again and
+documented in depth in the sections devoted to the description of the inference
+engine.

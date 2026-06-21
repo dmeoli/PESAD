@@ -1,0 +1,332 @@
+\chapter{Use and Functionality of the System}
+
+This chapter provides a brief description of how the system is started and of the
+functionalities it implements.
+
+
+\section{Starting the System}
+
+In order to run the expert system it is sufficient to copy the \texttt{PESAD}
+folder, which contains the modules that implement the system, into a directory of
+choice. The system relies on the SWI-Prolog environment and is launched by
+consulting the start-up file \texttt{start.pl}, located in the \texttt{PESAD}
+folder, directly from the command line:
+
+\begin{lstlisting}
+$ swipl start.pl
+\end{lstlisting}
+
+The very first action performed at start-up is the selection of the interface
+language. The system asks the user to choose between English and Italian, and the
+whole session is then conducted in the selected language:
+
+\begin{lstlisting}
+Select language / Seleziona lingua:
+	1: English
+	2: Italiano
+ > 1.
+\end{lstlisting}
+
+Once the language has been chosen, the system prints a short presentation message
+followed by the list of available commands, and then waits for the user to type a
+command:
+
+\begin{lstlisting}
+-------------------------------------------------------------------
+-- PESAD - Prolog Expert System for Anxiety,
+--         Obsessive-Compulsive and Trauma-Related Disorders
+--
+--	knowledge base: DSM-5-TR
+--	author:         Donato Meoli
+-------------------------------------------------------------------
+
+Available commands:
+
+	investigation.	- Run the full investigation of all disorders;
+	control.	- Run the check of a single disorder;
+	facts.		- Show the asserted facts;
+	help.		- Show the list of available commands;
+	clean.		- Clear the memory;
+	quit.		- Close the interface.
+
+>
+\end{lstlisting}
+
+At this point the system remains idle, waiting for a user command. Once a command
+has been typed, the system performs a short validity check on it: if the command
+is not recognised, an error message is shown and the system waits again for a
+valid command. As a general rule, every input typed by the user is followed by
+rigorous validity checks.
+
+
+\section{System Commands}
+
+The expert system provides six different commands:
+
+\begin{itemize}
+  \item \texttt{investigation} --- starts the complete investigation of all the
+        disorders represented in the system;
+  \item \texttt{control} --- starts the check of a single disorder, chosen among
+        those implemented in the system;
+  \item \texttt{facts} --- displays the facts temporarily asserted by the user
+        during the current consultation;
+  \item \texttt{help} --- displays the list of commands accepted by the system;
+  \item \texttt{clean} --- clears the working memory;
+  \item \texttt{quit} --- closes the user interface.
+\end{itemize}
+
+The command words are always in English, regardless of the selected interface
+language: only the questions, diagnoses and explanations that the user reads are
+localised, whereas the commands are control tokens and are kept uniform.
+
+Throughout a consultation, when the inference engine lacks the information needed
+to continue its reasoning, it poses questions to the user. Symptom questions are
+answered with \texttt{yes} or \texttt{no}; in addition, the user may type
+\texttt{why} (or \texttt{perche} in the Italian interface) to obtain an
+explanation of why the question is being asked. After a \texttt{yes}/\texttt{no}
+answer, the system asks for a certainty value, which must be a real number in the
+interval $[0.0, 1.0]$ expressing how confident the user is in the given answer.
+
+
+\subsection{Investigation}
+
+The \texttt{investigation} command launches the procedure that investigates the
+symptoms affecting a given patient, in order to diagnose a list of possible
+anxiety disorders. The result of the investigation is therefore an \emph{ordered}
+list of disorders that are candidates to be the cause of the patient's distress.
+
+This functionality is characterised by two design choices. The first is to
+structure the reasoning so that, once an Axis~I disorder has been resolved, the
+system does not stop the exploration but continues to examine alternative paths.
+In this way the inference engine produces a list of anxiety disorders, each
+associated with a certainty score. This score, obtained as the product of the
+certainty of the premise and the certainty of the rule representing the disorder,
+allows a \emph{ranking} of the anxiety disorders, from the most certain to the
+least certain.
+
+The second choice is to report in the result list all the disorders that were
+examined, together with their certainty degree. This was considered appropriate
+because the expert user of the system can benefit from a complete view of the
+anxiety disorders and, whenever a discrepancy with their own reasoning is
+observed, can investigate the reason for the difference by displaying the proof
+tree of the disorders involved.
+
+In the code, this functionality is implemented through the following predicate:
+
+\begin{lstlisting}[language=Prolog]
+solve(investigation) :-
+    delete_trees,
+    investigate_goals(Goals_List),
+    descending_order_goals(Goals_List, Sorted_Goals_List),
+    display_investigation(Sorted_Goals_List),
+    investigation_how(Sorted_Goals_List).
+\end{lstlisting}
+
+The predicate \texttt{delete\_trees} removes any trace of the chain of rules and
+facts that led to the various goals in previous executions. This operation does
+\emph{not} remove the facts dynamically asserted by the user during previous
+consultations: the two operations are deliberately kept separate, so that all the
+facts stated by the user remain in memory across subsequent executions, while the
+traces of the rules and facts used in the proof trees are removed at every run.
+This choice prevents partial traces of disorders from remaining in memory should
+the investigation procedure terminate prematurely because of unexpected errors or
+incorrect use of the system. If the user wishes to clear the entire working
+memory, the \texttt{clean} command can be used.
+
+The predicate \texttt{investigate\_goals/1} first determines the patient's age
+class --- child, adolescent or adult --- and then, for every disorder
+represented, verifies the required features, asking the user questions whenever
+the available information is insufficient. The predicate
+\texttt{descending\_order\_goals/2} sorts the resolved goals in descending order
+of certainty, \texttt{display\_investigation/1} prints the resulting list of
+disorders together with their certainty degree, and
+\texttt{investigation\_how/1} manages the optional request for an explanation of
+how a conclusion was reached. A single derivation tree is printed at a time, to
+make it easier to read: after the diagnosis has been shown, the system asks the
+user whether they want the ``how''; if the answer is \texttt{yes}, the system
+asks for the code of the disorder for which the explanation should be produced,
+prints the corresponding tree, and then allows the user either to leave the
+investigation procedure or to request further explanations for other disorders.
+
+A concise example of an investigation session is shown below:
+
+\begin{lstlisting}
+> investigation.
+
+[ ... the system asks the relevant symptom questions ... ]
+
+Does the patient experience recurrent and unexpected panic attacks?
+? (yes, no) > yes.
+Enter the certainty degree (from 0.0 to 1.0) > 0.9.
+
+Does the patient avoid situations from which escape might be difficult?
+? (yes, no) > why.
+Pervasive fear or avoidance of situations from which escape might be
+difficult would direct the diagnosis in favor of agoraphobia.
+? (yes, no) > yes.
+Enter the certainty degree (from 0.0 to 1.0) > 0.8.
+
+========================== DIAGNOSIS ==========================
+
+1) Panic Disorder with a certainty degree of 81%
+
+2) Agoraphobia with a certainty degree of 64%
+
+Do you want to know how they were deduced? (yes, no) > yes.
+
+Enter the code corresponding to the chosen option > 1.
+
+[ ... the proof tree for Panic Disorder is printed ... ]
+
+Do you want to know how they were deduced? (yes, no) > no.
+\end{lstlisting}
+
+
+\subsection{Control}
+
+The \texttt{control} command launches the procedure that checks whether the
+patient suffers from a given anxiety disorder. This functionality is of
+fundamental importance whenever the expert has already carried out a preliminary
+analysis of the patient, or has data that allow a particular type of disorder to
+be hypothesised: with this tool the expert can confirm or reject that hypothesis.
+
+In the code, the control of a given disorder is implemented through the following
+predicate:
+
+\begin{lstlisting}[language=Prolog]
+solve(control) :-
+    selection_goal(Goal_Name),
+    delete_tree(Goal_Name),
+    solve_goal(Goal_Name, CF),
+    display_control(Goal_Name, CF),
+    control_how(Goal_Name).
+\end{lstlisting}
+
+The predicate \texttt{selection\_goal/1} lets the user select the disorder to be
+checked from a list of possible options, retrieved from the up-to-date list of
+disorders present in the knowledge base. The predicate
+\texttt{delete\_tree/1} then removes any trace of the chain of rules and facts
+that led to the conclusion of that goal in a previous execution; as in the
+investigation case, this operation removes only the proof-tree traces and not the
+facts asserted by the user, again to avoid leaving partial traces in memory if
+the procedure terminates prematurely. The entire working memory can still be
+cleared with the \texttt{clean} command.
+
+The predicate \texttt{solve\_goal/2} is very similar to
+\texttt{investigate\_goals/1}, the difference being that the inference engine
+verifies exclusively the disorder unifying with \texttt{Goal\_Name}; as before,
+the reasoning is driven by the patient's age class, and questions are posed to the
+user only when new information is needed. The predicate returns the certainty
+degree with which the disorder is found to be true. The predicate
+\texttt{display\_control/2} prints the single result of the check, and
+\texttt{control\_how/1} asks the expert whether they are interested in an
+explanation of how the conclusion was reached: if the answer is \texttt{yes}, the
+system immediately prints the corresponding proof tree; otherwise it closes the
+control procedure and waits for new commands.
+
+A concise example of a control session is shown below:
+
+\begin{lstlisting}
+> control.
+
+Which of the following disorders do you want to check?
+
+	1: Panic Disorder
+	2: Agoraphobia
+	3: Generalized Anxiety Disorder
+	[ ... ]
+
+Enter the code corresponding to the chosen option > 1.
+
+[ ... the system asks only the questions relevant to Panic Disorder ... ]
+
+Does the patient experience recurrent and unexpected panic attacks?
+? (yes, no) > yes.
+Enter the certainty degree (from 0.0 to 1.0) > 0.9.
+
+========================== DIAGNOSIS ==========================
+
+The patient suffers from Panic Disorder with a certainty degree of 81%
+
+Do you want to know how it was deduced? (yes, no) > yes.
+
+[ ... the proof tree for Panic Disorder is printed ... ]
+\end{lstlisting}
+
+
+\subsection{Facts}
+
+The \texttt{facts} command displays the facts that the user has temporarily
+asserted through the interface during the current consultation. Each fact is
+printed in the form \texttt{(Answer, Attribute, Value, Certainty)}, where:
+
+\begin{itemize}
+  \item \texttt{Answer} is the type of response, \texttt{yes} or \texttt{no}. For
+        facts asserted through binary (yes/no) questions, the value is
+        \texttt{yes} when the patient answered affirmatively and \texttt{no} when
+        the answer was negative. For facts asserted through multiple-choice
+        questions the value is always \texttt{yes}, since the answer corresponds
+        to the option selected by the user;
+  \item \texttt{Attribute} is the symptom or feature being investigated;
+  \item \texttt{Value} is the item or option associated with the answer;
+  \item \texttt{Certainty} is the certainty value, in $[0.0, 1.0]$, that the user
+        associated with the answer.
+\end{itemize}
+
+An example of the output produced by this command is the following:
+
+\begin{lstlisting}
+> facts.
+
+Asserted facts:
+
+(yes, panic_attacks, recurrent_unexpected, 0.9)
+(no, medical_condition, present, 0.95)
+(yes, avoidance, social_situations, 0.8)
+\end{lstlisting}
+
+
+\subsection{Help}
+
+The \texttt{help} command reprints the menu listing all the commands accepted by
+the system, together with a short description of each, exactly as shown at
+start-up. It is useful as a quick reminder of the available functionalities
+during a consultation:
+
+\begin{lstlisting}
+> help.
+
+Available commands:
+
+	investigation.	- Run the full investigation of all disorders;
+	control.	- Run the check of a single disorder;
+	facts.		- Show the asserted facts;
+	help.		- Show the list of available commands;
+	clean.		- Clear the memory;
+	quit.		- Close the interface.
+\end{lstlisting}
+
+
+\subsection{Clean}
+
+The \texttt{clean} command clears the entire working memory. Unlike the implicit
+clean-up performed at the beginning of every investigation or control --- which
+removes only the proof-tree traces --- this command removes \emph{both} the proof
+trees and all the facts asserted by the user during the session. It is therefore
+used whenever the expert wants to start a brand-new consultation, with no
+information carried over from previous runs:
+
+\begin{lstlisting}
+> clean.
+\end{lstlisting}
+
+
+\subsection{Quit}
+
+The \texttt{quit} command closes the user interface and terminates the system.
+Before halting, it also clears the working memory, so that no facts or proof
+trees are left behind:
+
+\begin{lstlisting}
+> quit.
+\end{lstlisting}

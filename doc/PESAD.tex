@@ -1,0 +1,132 @@
+%==============================================================================
+%  PESAD - Prolog Expert System for Anxiety, Obsessive-Compulsive and Trauma-Related Disorders
+%  Technical report (English edition)
+%==============================================================================
+\documentclass[11pt,a4paper,oneside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.6cm]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{fancyhdr}
+\usepackage[hidelinks,colorlinks=true,linkcolor=darkblue,citecolor=darkblue,urlcolor=darkblue]{hyperref}
+
+\definecolor{darkblue}{RGB}{20,40,110}
+\definecolor{codegray}{RGB}{120,120,120}
+\definecolor{codekw}{RGB}{160,30,90}
+\definecolor{codestr}{RGB}{20,110,60}
+\definecolor{codebg}{RGB}{248,248,248}
+
+% ---- Prolog listing style ---------------------------------------------------
+\lstdefinelanguage{Prolog}{
+  morekeywords={is,mod,rem,div,not,fail,true,false,dynamic,multifile,discontiguous,
+    assert,asserta,assertz,retract,retractall,findall,member,length,nth1,
+    predsort,min_list,max_list,format,write,writeln,nl,read,repeat,halt,consult,reconsult},
+  sensitive=true,
+  morecomment=[l]{\%},
+  morestring=[b]',
+}
+\lstset{
+  language=Prolog,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{codekw}\bfseries,
+  commentstyle=\color{codegray}\itshape,
+  stringstyle=\color{codestr},
+  numbers=left,
+  numberstyle=\tiny\color{codegray},
+  numbersep=8pt,
+  frame=single,
+  rulecolor=\color{codegray!40},
+  breaklines=true,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  tabsize=2,
+  captionpos=b,
+  xleftmargin=14pt,
+  framexleftmargin=14pt,
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape PESAD --- Prolog Expert System (DSM-5-TR)}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\raggedbottom
+
+\newcommand{\cf}{\textit{CF}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+%==============================================================================
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \vspace*{1.5cm}
+  {\scshape\LARGE University of Pisa\par}
+  \vspace{0.3cm}
+  {\scshape\large Department of Computer Science\par}
+  \vspace{0.2cm}
+  {\itshape Fundamentals of Artificial Intelligence\par}
+  \vfill
+  {\Huge\bfseries PESAD\par}
+  \vspace{0.4cm}
+  {\Large Prolog Expert System for Anxiety, Obsessive-Compulsive\\ and Trauma-Related Disorders\par}
+  \vspace{0.8cm}
+  {\large A rule-based expert system for the diagnosis of mental\\ disorders under uncertainty (DSM-5-TR)\par}
+  \vfill
+  {\large\bfseries Donato Meoli\par}
+  \vspace{0.5cm}
+  {\large Technical report\par}
+  \vfill
+\end{titlepage}
+
+\pagenumbering{roman}
+\begin{abstract}
+\noindent
+PESAD (\emph{Prolog Expert System for Anxiety, Obsessive-Compulsive and
+Trauma-Related Disorders}) is a rule-based expert system, written in SWI-Prolog,
+that supports the diagnosis of the disorders of the DSM-5-TR Anxiety,
+Obsessive-Compulsive and Related, and Trauma- and Stressor-Related chapters. The
+system reasons under uncertainty by
+means of \emph{certainty factors}, propagating a degree of belief from the
+elementary symptoms reported by the clinician up to the candidate diagnoses. It
+offers two reasoning modes ---an \emph{investigation} mode that ranks all
+plausible disorders and a \emph{control} mode that verifies a single
+hypothesis--- and it is able to justify its conclusions, both by explaining
+\emph{why} a question is asked and by displaying the proof tree that shows
+\emph{how} a conclusion was reached. This report describes the theoretical
+background of expert systems, the analysis of the clinical domain, the
+acquisition and conceptualization of the knowledge, and the implementation of
+the system: its modular architecture, the knowledge-acquisition protocols, the
+certainty-factor calculus, the explanation module and the bilingual user
+interface.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\input{sections/introduction}
+\input{sections/domain}
+\input{sections/identification}
+\input{sections/conceptualization}
+\input{sections/implementation}
+\input{sections/usage}
+\input{sections/validation}
+
+\input{sections/bibliography}
+
+\end{document}
