@@ -1,5 +1,7 @@
 # PESAD :brain:
 
+[![CI](https://github.com/dmeoli/PESAD/actions/workflows/ci.yml/badge.svg)](https://github.com/dmeoli/PESAD/actions/workflows/ci.yml)
+
 PESAD (Prolog Expert System for Anxiety, Obsessive-Compulsive and Trauma-Related Disorders) is a rule-based expert system for diagnosing, under uncertainty, the disorders of the DSM-5-TR Anxiety, Obsessive-Compulsive and Related, and Trauma- and Stressor-Related chapters.
 
 This code was developed during the Artificial Intelligence Fundamentals course @ [Department of Computer Science](https://www.di.unipi.it/en/) @ [University of Pisa](https://www.unipi.it/index.php/english).
