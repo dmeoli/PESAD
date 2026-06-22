@@ -14,10 +14,42 @@ has a free tier.
 | **Google Cloud `e2-micro`** | perpetual (1/mo, US regions) | Small always-free VM. Same approach as Oracle. |
 | **Fly.io** | small free allowance | Easiest (deploys the Dockerfile). Requires a card; usage beyond the allowance is billed. |
 
-On a **VM** the quickest path is the **`setup.sh`** script (below); you can also
-use Docker or the plain systemd unit. On **Fly.io** you deploy the Dockerfile.
+CI builds and publishes the image to **`ghcr.io/dmeoli/pesad:latest`** on every
+push to `master`, so the recommended path is to **pull that image with Docker**
+on the VM — no clone, no build. A from-source systemd path is also provided.
 
-## Option 0 — one-shot script (recommended, any Ubuntu/Debian VM)
+## Option A — Docker from GHCR (recommended)
+
+**One-time:** make the package public so the VM can pull without logging in —
+GitHub → your profile → **Packages** → **pesad** → **Package settings** →
+**Change visibility** → **Public**. (Or, to keep it private, run
+`docker login ghcr.io -u dmeoli` with a PAT that has `read:packages` on the VM.)
+
+**From your machine** (uses the SSH key for the VM):
+
+```bash
+make deploy VM=ubuntu@<VM_IP> TOKEN=<TELEGRAM_TOKEN>   # first time
+make logs   VM=ubuntu@<VM_IP>                          # follow logs
+# later, to update to the latest image (token already saved):
+make deploy VM=ubuntu@<VM_IP>
+```
+
+**Or directly on the VM:**
+
+```bash
+command -v docker >/dev/null || curl -fsSL https://get.docker.com | sudo sh
+sudo mkdir -p /opt/pesad && cd /opt/pesad
+curl -fsSL https://raw.githubusercontent.com/dmeoli/PESAD/master/docker-compose.yml \
+  | sudo tee docker-compose.yml >/dev/null
+echo "TELEGRAM_TOKEN=<TELEGRAM_TOKEN>" | sudo tee .env >/dev/null
+sudo docker compose pull && sudo docker compose up -d
+sudo docker compose logs -f       # check it started
+```
+
+`restart: unless-stopped` keeps it alive across crashes and reboots; updating is
+`docker compose pull && docker compose up -d`.
+
+## Option B — systemd from source (no Docker, no public image)
 
 SSH into the VM, then run (token as argument):
 
@@ -30,39 +62,6 @@ It installs SWI-Prolog (with `library(mqi)`) + Python, clones the repo to
 `/opt/PESAD`, creates the virtualenv, writes `.env`, and installs and starts the
 `pesad-bot` systemd service (always-on, auto-restart). Re-running it pulls the
 latest code and restarts. Follow logs with `journalctl -u pesad-bot -f`.
-
-## Option A — Docker (any VM, or Fly.io)
-
-From the repository root:
-
-```bash
-export TELEGRAM_TOKEN="123456789:your-bot-token"   # or put it in a .env file
-docker compose up -d --build
-docker compose logs -f          # check it started
-```
-
-`restart: unless-stopped` keeps it alive across crashes and reboots.
-
-## Option B — systemd (VM, no Docker)
-
-```bash
-# on the VM, as root-ish:
-sudo apt update && sudo apt install -y swi-prolog python3 python3-venv git
-sudo git clone https://github.com/dmeoli/PESAD.git /opt/PESAD
-cd /opt/PESAD/telegram_bot
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-printf 'TELEGRAM_TOKEN=123456789:your-bot-token\n' > .env
-
-sudo cp pesad-bot.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now pesad-bot
-sudo systemctl status pesad-bot          # check
-journalctl -u pesad-bot -f               # logs
-```
-
-Edit the paths in `pesad-bot.service` if you clone somewhere other than
-`/opt/PESAD`. Ensure SWI-Prolog ships `library(mqi)`:
-`swipl -g "use_module(library(mqi)),halt"`.
 
 ## Scaling note
 
