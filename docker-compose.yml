@@ -5,6 +5,8 @@ services:
     restart: unless-stopped              # auto-restart on crash / reboot -> always on
     environment:
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+    labels:
+      - com.centurylinklabs.watchtower.scope=pesad   # watched by this stack's watchtower
     # Token: put TELEGRAM_TOKEN in a .env file next to this compose file, or
     # export it in the shell before `docker compose up -d`.
 
@@ -20,4 +22,7 @@ services:
     environment:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_POLL_INTERVAL=120
+      - WATCHTOWER_SCOPE=pesad             # only act within this scope; leave other stacks' watchtowers alone
+    labels:
+      - com.centurylinklabs.watchtower.scope=pesad
     command: pesad-bot                     # watch only this bot
