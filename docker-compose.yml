@@ -7,3 +7,17 @@ services:
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
     # Token: put TELEGRAM_TOKEN in a .env file next to this compose file, or
     # export it in the shell before `docker compose up -d`.
+
+  # Auto-update: pulls a fresh ghcr.io/dmeoli/pesad:latest after each CI push and
+  # restarts the bot. Maintained fork (containrrr is unmaintained, breaks on Docker 29+).
+  watchtower:
+    image: ghcr.io/nicholas-fedor/watchtower:latest
+    container_name: pesad-watchtower      # unique name: coexists with other stacks
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${HOME}/.docker/config.json:/config.json:ro
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=120
+    command: pesad-bot                     # watch only this bot
