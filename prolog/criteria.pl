@@ -76,7 +76,7 @@ disorder_nc(associated_general_medical_condition,Patient,CF,TV) :-
 
 %===============================ANXIETY DISORDERS===============================
 
-%--------------------------Separation Anxiety Disorder--------------------------
+%-------------------------Separation Anxiety Disorder---------------------------
 disorder_nc(separation_anxiety_disorder,Patient,CF,TV) :-
 	symptomatic_manifestation(excessive_separation_fear,Patient,CF1,true),
 	symptomatic_feature(separation_anxiety_duration,Patient,CF2,true),
@@ -109,7 +109,7 @@ symptomatic_manifestation(consistent_failure_to_speak,_,CF,TV) :-
 	symptom([speaks_in_other_situations],1,CF2),
 	certainty(consistent_failure_to_speak,3,[CF1,CF2],0.98,CF,TV).
 
-%--------------------------------Specific Phobia--------------------------------
+%-------------------------------Specific Phobia---------------------------------
 disorder_nc(specific_phobia,Patient,CF,TV) :-
 	symptomatic_manifestation(specific_phobic_anxiety,Patient,CF1,true),
 	symptomatic_manifestation(phobic_avoidance,Patient,CF2,true),
@@ -143,7 +143,7 @@ specific_phobia_type(other_type,_,CF,TV) :-
 	symptom([fear_of_other_stimuli],1,CF1),
 	certainty(other_type,2,[CF1],0.99,CF,TV).
 
-%----------------------------Social Anxiety Disorder----------------------------
+%---------------------------Social Anxiety Disorder-----------------------------
 disorder_nc(social_anxiety_disorder,Patient,CF,TV) :-
 	symptomatic_manifestation(social_phobic_anxiety,Patient,CF1,true),
 	symptomatic_manifestation(phobic_avoidance,Patient,CF2,true),
@@ -174,7 +174,7 @@ symptomatic_manifestation(panic_consequences_concern,_,CF,TV) :-
 	symptom([worry_about_new_panic_attacks,worry_about_panic_consequences,maladaptive_behaviour_change_due_to_panic],1,CF1),
 	certainty(panic_consequences_concern,3,[CF1],0.98,CF,TV).
 
-%----------------------------------Agoraphobia----------------------------------
+%---------------------------------Agoraphobia-----------------------------------
 disorder_nc(agoraphobia,Patient,CF,TV) :-
 	symptomatic_manifestation(agoraphobic_anxiety,Patient,CF1,true),
 	symptomatic_manifestation(phobic_avoidance,Patient,CF2,true),
@@ -213,7 +213,7 @@ symptomatic_manifestation(generalized_anxiety_symptoms,_,CF,TV) :-
 
 %==================OBSESSIVE-COMPULSIVE AND RELATED DISORDERS===================
 
-%-------------------------Obsessive-Compulsive Disorder-------------------------
+%------------------------Obsessive-Compulsive Disorder--------------------------
 disorder_nc(obsessive_compulsive_disorder,Patient,CF,TV) :-
 	symptomatic_manifestation(obsessions_or_compulsions,Patient,CF1,true),
 	symptomatic_feature(time_consuming_more_than_one_hour,Patient,CF2,true),
@@ -245,7 +245,7 @@ symptomatic_manifestation(repetitive_appearance_behaviours,_,CF,TV) :-
 	symptom([mirror_checking,excessive_grooming,skin_picking_for_appearance,reassurance_seeking,comparing_appearance_with_others],1,CF1),
 	certainty(repetitive_appearance_behaviours,3,[CF1],0.97,CF,TV).
 
-%-------------------------------Hoarding Disorder-------------------------------
+%------------------------------Hoarding Disorder--------------------------------
 disorder_nc(hoarding_disorder,Patient,CF,TV) :-
 	symptomatic_manifestation(hoarding_behaviour,Patient,CF1,true),
 	symptomatic_manifestation(significant_distress,Patient,CF2,true),
@@ -299,7 +299,7 @@ symptomatic_feature(insufficient_care,_,CF,TV) :-
 	symptom([social_neglect_or_deprivation,repeated_changes_of_caregivers,rearing_limiting_attachment],1,CF1),
 	certainty(insufficient_care,3,[CF1],0.97,CF,TV).
 
-%--------------------Disinhibited Social Engagement Disorder--------------------
+%-------------------Disinhibited Social Engagement Disorder---------------------
 disorder_nc(disinhibited_social_engagement_disorder,Patient,CF,TV) :-
 	symptomatic_manifestation(disinhibited_behaviour_with_strangers,Patient,CF1,true),
 	symptomatic_feature(insufficient_care,Patient,CF2,true),
@@ -309,7 +309,7 @@ symptomatic_manifestation(disinhibited_behaviour_with_strangers,_,CF,TV) :-
 	symptom([reduced_reticence_with_unfamiliar_adults,overly_familiar_behaviour,does_not_check_back_with_caregiver,willing_to_go_off_with_strangers],2,CF1),
 	certainty(disinhibited_behaviour_with_strangers,3,[CF1],0.98,CF,TV).
 
-%-------------------------Posttraumatic Stress Disorder-------------------------
+%------------------------Posttraumatic Stress Disorder--------------------------
 %	Preschool subtype (children 6 years and younger): fewer required symptoms, merged clusters.
 disorder_nc(posttraumatic_stress_disorder,preschool,CF,TV) :-
 	!,
@@ -359,7 +359,7 @@ symptomatic_manifestation(arousal_alterations,_,CF,TV) :-
 	symptom([irritability_or_aggression,reckless_or_self_destructive_behaviour,hypervigilance,exaggerated_startle_response,difficulty_concentrating,sleep_disturbance],2,CF1),
 	certainty(arousal_alterations,3,[CF1],0.98,CF,TV).
 
-%-----------------------------Acute Stress Disorder-----------------------------
+%----------------------------Acute Stress Disorder------------------------------
 disorder_nc(acute_stress_disorder,Patient,CF,TV) :-
 	symptomatic_manifestation(traumatic_exposure,Patient,CF1,true),
 	symptomatic_manifestation(acute_stress_symptoms,Patient,CF2,true),
@@ -372,7 +372,7 @@ symptomatic_manifestation(acute_stress_symptoms,_,CF,TV) :-
 	symptom([intrusive_memories,distressing_dreams,dissociative_flashbacks,distress_at_trauma_cues,reduced_positive_emotions,altered_sense_of_reality,dissociative_amnesia_of_trauma,avoidance_of_trauma_thoughts_or_feelings,avoidance_of_external_trauma_reminders,sleep_disturbance,irritability_or_aggression,hypervigilance,difficulty_concentrating,exaggerated_startle_response],9,CF1),
 	certainty(acute_stress_symptoms,3,[CF1],0.97,CF,TV).
 
-%------------------------------Adjustment Disorder------------------------------
+%-----------------------------Adjustment Disorder-------------------------------
 disorder_nc(adjustment_disorder,Patient,CF,TV) :-
 	symptomatic_manifestation(reaction_to_stressor,Patient,CF1,true),
 	symptomatic_feature(adjustment_onset_within_three_months,Patient,CF2,true),
@@ -403,7 +403,7 @@ symptomatic_manifestation(grief_associated_symptoms,_,CF,TV) :-
 	certainty(grief_associated_symptoms,3,[CF1],0.98,CF,TV).
 
 
-%---------------------------DURATION / ONSET FEATURES---------------------------
+%--------------------------DURATION / ONSET FEATURES----------------------------
 symptomatic_feature(duration_at_least_one_month,_,CF,TV) :-
 	symptoms_duration([one_to_three_months,three_to_six_months,six_months_or_more],CF1),
 	certainty(duration_at_least_one_month,3,[CF1],1.0,CF,TV).
@@ -429,7 +429,7 @@ symptomatic_feature(bereavement_at_least_twelve_months,_,CF,TV) :-
 	certainty(bereavement_at_least_twelve_months,3,[CF1],1.0,CF,TV).
 
 
-%---------------------------QUESTIONS TO ASK THE USER---------------------------
+%--------------------------QUESTIONS TO ASK THE USER----------------------------
 attack_type(L,CF) :-
 	multiple_ask(attack_type,[unexpected_attack,cued_attack],L,CF).
 

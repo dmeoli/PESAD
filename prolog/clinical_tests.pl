@@ -94,7 +94,7 @@ apply_overrides([F|Fs]) :-
 	apply_overrides(Fs).
 
 
-%---------------------------------CLINICAL CASES-------------------------------
+%--------------------------------CLINICAL CASES---------------------------------
 %	case(Id, Description, AgeGroup, Overrides, ExpectedTopDiagnosis).
 
 case(panic_disorder, '34-year-old: recurrent unexpected panic attacks, 3 months of anticipatory worry, no substance/medical cause', adult,
@@ -206,7 +206,7 @@ case(no_diagnosis, '35-year-old: mild, non-specific work stress only, no syndrom
 	none).
 
 
-%-----------------------------------TEST RUNNER-------------------------------
+%---------------------------------TEST RUNNER-----------------------------------
 %	run_case(Method, Id, Result): runs one case under the given uncertainty method.
 run_case(Method, Id, Result) :-
 	retractall(uncertainty_method(_)),

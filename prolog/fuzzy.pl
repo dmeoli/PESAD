@@ -18,7 +18,7 @@
 :- dynamic known_value/2.
 
 
-%--------------------------------MEMBERSHIP-FUNCTION PRIMITIVES----------------
+%------------------------MEMBERSHIP-FUNCTION PRIMITIVES-------------------------
 
 %	ramp_up(X,A,B,Mu): 0 for X=<A, 1 for X>=B, linear in between (open right shoulder).
 ramp_up(X,A,_,0.0) :- X =< A, !.
@@ -37,7 +37,7 @@ trapezoid(X,A,B,C,D,Mu) :-
 	Mu is min(Up,Down).
 
 
-%---------------------------------NAMED MEMBERSHIP FUNCTIONS-------------------
+%--------------------------NAMED MEMBERSHIP FUNCTIONS---------------------------
 
 %	duration_membership(Allowed_Options, Months, Mu):
 %		the allowed discrete options identify the diagnostic duration threshold;
@@ -64,7 +64,7 @@ insight_membership(poor,Degree,Mu)                :- trapezoid(Degree,0.1,0.3,0.
 insight_membership(absent_or_delusional,Degree,Mu):- ramp_down(Degree,0.2,0.4,Mu).
 
 
-%--------------------------------GRADED VALUE ACQUISITION----------------------
+%---------------------------GRADED VALUE ACQUISITION----------------------------
 
 %	graded_value(Variable, Value): returns the crisp value for Variable, asking
 %	the user for a number the first time and caching it in known_value/2.

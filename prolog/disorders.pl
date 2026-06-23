@@ -241,5 +241,5 @@ disorder(prolonged_grief_disorder,Patient,CF) :-
 	certainty(prolonged_grief_disorder,1,[CF1,CF2,CF3],0.97,CF,true).
 
 
-%----------------------------LIST OF CODED DISORDERS----------------------------
+%---------------------------LIST OF CODED DISORDERS-----------------------------
 goals_list([separation_anxiety_disorder,selective_mutism,specific_phobia_animal_type,specific_phobia_natural_environment_type,specific_phobia_blood_injection_injury_type,specific_phobia_situational_type,specific_phobia_other_type,social_anxiety_disorder,panic_disorder,agoraphobia,generalized_anxiety_disorder,substance_induced_anxiety_disorder,anxiety_disorder_due_to_another_medical_condition,obsessive_compulsive_disorder_with_good_or_fair_insight,obsessive_compulsive_disorder_with_poor_insight,obsessive_compulsive_disorder_with_absent_insight,body_dysmorphic_disorder_with_good_or_fair_insight,body_dysmorphic_disorder_with_poor_insight,body_dysmorphic_disorder_with_absent_insight,hoarding_disorder_with_good_or_fair_insight,hoarding_disorder_with_poor_insight,hoarding_disorder_with_absent_insight,trichotillomania,excoriation_disorder,substance_induced_ocrd,ocrd_due_to_another_medical_condition,reactive_attachment_disorder,disinhibited_social_engagement_disorder,posttraumatic_stress_disorder,acute_stress_disorder,adjustment_disorder,prolonged_grief_disorder]).
