@@ -28,7 +28,7 @@ jobs:
         run: pip install -r telegram_bot/requirements.txt ruff
 
       - name: Lint
-        run: ruff check telegram_bot/pesad_bot.py tests/smoke_bridge.py
+        run: ruff check --select E4,E7,E9,F telegram_bot/pesad_bot.py tests/smoke_bridge.py
 
       - name: Compile
         run: python -m py_compile telegram_bot/pesad_bot.py
