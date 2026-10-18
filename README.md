@@ -74,6 +74,6 @@ The Prolog system under `prolog/` is organized by responsibility:
 | `bot_io.pl` | I/O abstraction (`ui_read/2`): terminal vs Telegram-bot mode |
 | `bot_boot.pl`, `bot_session.pl` | Bot bootstrap (per-chat thread-local state) and MQI session API |
 
-## License [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## License
 
 This software is released under the MIT License. See the [LICENSE](LICENSE) file for details. 
