@@ -18,6 +18,9 @@ label(en, method_request, 'Select the uncertainty method:') :- !.
 label(en, method_cf, 'Certainty factors (minimum t-norm)') :- !.
 label(en, method_fuzzy, 'Fuzzy logic (product t-norm)') :- !.
 label(en, method_fuzzy_membership, 'Fuzzy logic with membership functions (graded duration/frequency)') :- !.
+label(en, method_lukasiewicz, 'Fuzzy logic (Lukasiewicz t-norm)') :- !.
+label(en, method_hamacher, 'Fuzzy logic (Hamacher product t-norm)') :- !.
+label(en, method_einstein, 'Fuzzy logic (Einstein product t-norm)') :- !.
 label(en, duration_months, 'For how many months have the symptoms been present (enter a number)') :- !.
 label(en, panic_attacks_count, 'How many panic attacks have occurred (enter a number)') :- !.
 label(en, command_investigation, '	investigation.	- Run the full investigation of all disorders;') :- !.

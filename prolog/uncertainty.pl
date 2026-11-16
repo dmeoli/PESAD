@@ -4,8 +4,9 @@
 %
 %	description:
 %		Uncertainty management: certainty-factor calculus (antecedent and
-%		consequent certainty), certainty-based ordering and inference-level
-%		index bookkeeping for the proof trees.
+%		consequent certainty, with a t-norm chosen by the uncertainty method),
+%		certainty-based ordering and inference-level index bookkeeping for the
+%		proof trees.
 %
 %	author:
 %		Donato Meoli
@@ -70,13 +71,14 @@ certainty(Goal,Goal_Type,Antecedent_CF_List,Rule_CF,Consequent_CF,Truth_Value) :
 
 %	antecedent_certainty(Antecedent_CF_List,Antecedent_CF):
 % 	computes the certainty of the antecedent part of a rule that requires all facts to be true.
-%		The conjunction is evaluated with the active t-norm: the "cf" method uses the
-%		Goedel t-norm (minimum, i.e. the weakest link), the "fuzzy" method uses the
-%		product t-norm (the algebraic product of all the premises).
+%		The conjunction is evaluated with the t-norm of the active method: the Goedel
+%		t-norm (minimum, i.e. the weakest link) for cf and fuzzy_membership, the
+%		product t-norm for fuzzy, and the Lukasiewicz, Hamacher and Einstein product
+%		t-norms for the methods of the same name.
 antecedent_certainty(Antecedent_CF_List,Antecedent_CF) :-
-	( current_uncertainty_method(fuzzy)
-	-> product_list(Antecedent_CF_List,Antecedent_CF)
-	;  min_list(Antecedent_CF_List,Antecedent_CF) ).
+	current_uncertainty_method(Method),
+	method_t_norm(Method,T_Norm),
+	foldl(t_norm(T_Norm),Antecedent_CF_List,1.0,Antecedent_CF).
 
 %	current_uncertainty_method(Method): the active uncertainty method (defaults to cf).
 current_uncertainty_method(Method) :-
@@ -84,11 +86,28 @@ current_uncertainty_method(Method) :-
 	!.
 current_uncertainty_method(cf).
 
-%	product_list(List,Product): the product t-norm of a list of certainties.
-product_list([],1.0).
-product_list([X|Xs],Product) :-
-	product_list(Xs,Rest_Product),
-	Product is X*Rest_Product.
+%	method_t_norm(Method,T_Norm): the t-norm that evaluates conjunctions under Method.
+method_t_norm(cf,minimum).
+method_t_norm(fuzzy_membership,minimum).
+method_t_norm(fuzzy,product).
+method_t_norm(lukasiewicz,lukasiewicz).
+method_t_norm(hamacher,hamacher).
+method_t_norm(einstein,einstein).
+
+%	t_norm(T_Norm,A,B,C): C is the t-norm T_Norm of the certainties A and B
+%		(the argument order suits foldl/4; 1.0 is the neutral element of all of them).
+t_norm(minimum,A,B,C) :-
+	C is min(A,B).
+t_norm(product,A,B,C) :-
+	C is A*B.
+t_norm(lukasiewicz,A,B,C) :-
+	C is max(0.0,A+B-1).
+t_norm(hamacher,A,B,C) :-
+	(   A =:= 0, B =:= 0
+	->  C = 0.0
+	;   C is A*B/(A+B-A*B) ).
+t_norm(einstein,A,B,C) :-
+	C is A*B/(2-(A+B-A*B)).
 
 %	consequent_certainty(Goal,Inference_Level,Antecedent_CF,Rule_CF,Consequent_CF,Truth_Value):
 %		computes the certainty of the consequent part of a rule.

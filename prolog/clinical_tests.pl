@@ -16,7 +16,8 @@
 %		  differential  a neighbouring disorder ranks first, goal absent;
 %		plus comorbidity, specifier, age-rule and uncertainty cases. A goal is
 %		present when its certainty is at least 50%. Every case runs under the
-%		three uncertainty methods (cf, fuzzy, fuzzy_membership); the suite
+%		uncertainty methods (cf, fuzzy, fuzzy_membership, lukasiewicz,
+%		hamacher, einstein); the suite
 %		ends with a goal x case-type table and exits with status 1 on any
 %		failure. Launch with: swipl clinical_tests.pl
 %
@@ -565,7 +566,9 @@ extra(uncertain_ptsd,uncertainty,'PTSD with graded answers (0.7-0.9)',
 	  y(persistent_negative_beliefs,0.8), y(detachment_from_others,0.7), y(inability_to_feel_positive_emotions,0.7),
 	  y(hypervigilance,0.8), y(exaggerated_startle_response,0.8), y(sleep_disturbance,0.7),
 	  y(occupational_distress,0.8), y(social_distress,0.7), c(symptoms_duration,three_to_six_months) ],
-	[ranks_first(posttraumatic_stress_disorder)]).
+	% under Lukasiewicz the doubts of the premises add up and the conjunction falls to 0
+	[when([cf,fuzzy,fuzzy_membership,hamacher,einstein],ranks_first(posttraumatic_stress_disorder)),
+	 when([lukasiewicz],absent(posttraumatic_stress_disorder))]).
 extra(borderline_phobia,uncertainty,'spider phobia for 5 months: only the graded duration still supports it',
 	[v(sp_base),y(fear_of_animals),c(symptoms_duration,three_to_six_months),value(duration_months,5)],
 	[when([cf,fuzzy],absent(specific_phobia_animal_type)),when([fuzzy_membership],top(specific_phobia_animal_type))]).
@@ -657,7 +660,7 @@ check(_,R,ranks_first(G)) :- !,
 	R = [goal(_,Max)|_], CF >= Max - 1.0e-9.
 check(_,R,none) :- threshold(T), ( R = [goal(_,Max)|_] -> Max < T ; true ).
 
-methods([cf,fuzzy,fuzzy_membership]).
+methods([cf,fuzzy,fuzzy_membership,lukasiewicz,hamacher,einstein]).
 
 %	run_all: runs every case under every method, printing the failures.
 run_all :-
@@ -712,10 +715,16 @@ report_table :-
 		( maplist(cell(G),[typical,subthreshold,exclusion,differential],Cs),
 		  atomic_list_concat(Cs,' | ',Row),
 		  format('| ~w | ~w |~n',[G,Row]) )),
-	format('~n~w~n',['| other case | type | cf | fuzzy | fuzzy_membership |']),
-	format('~w~n',['| --- | --- | --- | --- | --- |']),
+	methods(Ms),
+	atomic_list_concat(Ms,' | ',Header),
+	format('~n| other case | type | ~w |~n',[Header]),
+	length(Ms,N),
+	length(Dashes,N),
+	maplist(=('---'),Dashes),
+	atomic_list_concat(Dashes,' | ',Rule),
+	format('| --- | --- | ~w |~n',[Rule]),
 	forall(extra(Id,T,_,_,_),
-		( findall(R,( member(M,[cf,fuzzy,fuzzy_membership]), result(Id,none-T,M,R) ),Rs),
+		( findall(R,( member(M,Ms), result(Id,none-T,M,R) ),Rs),
 		  atomic_list_concat(Rs,' | ',Row),
 		  format('| ~w | ~w | ~w |~n',[Id,T,Row]) )).
 

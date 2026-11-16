@@ -106,11 +106,17 @@ METHOD_HELP = {
            "1 · Fattori di certezza — t-norma minimo, prudente e robusto (consigliato)\n"
            "2 · Fuzzy (prodotto) — combinazione più morbida: le incertezze si moltiplicano\n"
            "3 · Fuzzy con funzioni di appartenenza — chiede durate/frequenze numeriche e le sfuma\n"
+           "4 · Fuzzy (Lukasiewicz) — la più severa: basta poca incertezza su più premesse per azzerare\n"
+           "5 · Fuzzy (prodotto di Hamacher) — fra minimo e prodotto\n"
+           "6 · Fuzzy (prodotto di Einstein) — un po' più severa del prodotto\n"
            "Nel dubbio scegli 1."),
     "en": ("ℹ️ How the uncertainties are combined:\n"
            "1 · Certainty factors — minimum t-norm, cautious and robust (recommended)\n"
            "2 · Fuzzy (product) — softer combination: uncertainties multiply\n"
            "3 · Fuzzy with membership functions — asks numeric durations/frequencies and grades them\n"
+           "4 · Fuzzy (Lukasiewicz) — the strictest: small doubts on several premises add up to zero\n"
+           "5 · Fuzzy (Hamacher product) — between minimum and product\n"
+           "6 · Fuzzy (Einstein product) — slightly stricter than the product\n"
            "If unsure, pick 1."),
 }
 

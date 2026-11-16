@@ -36,7 +36,8 @@ PESAD_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BOOTSTRAP = os.path.join(PESAD_DIR, "prolog", "bot_boot.pl")
 
 LANGUAGES = {"en": "1", "it": "2"}  # answers to the language question
-DEFAULT_METHOD = "1"                # certainty factors (minimum t-norm)
+METHODS = {"cf": "1", "fuzzy": "2", "fuzzy_membership": "3",  # answers to the
+           "lukasiewicz": "4", "hamacher": "5", "einstein": "6"}  # method question
 CERTAINTY_VALUES = ("0.0", "0.25", "0.5", "0.75", "1.0")
 
 
@@ -72,7 +73,7 @@ class Screen:
         """The answer options as a list of {'value', 'label'} dicts."""
         if self.type == "certainty":
             return [{"value": v, "label": v} for v in CERTAINTY_VALUES]
-        if self.type in ("criterion", "choice"):
+        if self.type in ("criterion", "choice", "number"):
             return list(self.topic["options"])
         return []
 
@@ -88,7 +89,7 @@ class Screen:
                 if option["value"] == value:
                     return str(i)
             return None
-        if self.type == "number":
+        if self.type == "number":  # the options are typical values only
             try:
                 return value if float(value) >= 0 else None
             except ValueError:
@@ -169,20 +170,20 @@ class Engine:
             screen = await self.answer(session_id, raw)
         return screen
 
-    async def begin(self, session_id, lang):
-        """Start an investigation in `lang` with the default uncertainty
-        method, and return its first question."""
+    async def begin(self, session_id, lang, method="cf"):
+        """Start an investigation in `lang` with the uncertainty `method`
+        (a key of METHODS), and return its first question."""
         return await self.replay(
-            session_id, [LANGUAGES[lang], DEFAULT_METHOD, "investigation"])
+            session_id, [LANGUAGES[lang], METHODS[method], "investigation"])
 
-    async def consult(self, lang, answers):
+    async def consult(self, lang, answers, method="cf"):
         """Stateless consultation: start a fresh session in `lang`, apply the
         option values `answers` in order and return the screen reached.
         Raises InvalidAnswer for the first answer that is not an option of
         its screen. The session is always discarded."""
         session_id = "web-" + uuid.uuid4().hex
         try:
-            screen = await self.begin(session_id, lang)
+            screen = await self.begin(session_id, lang, method)
             for index, value in enumerate(answers):
                 raw = screen.encode(value)
                 if raw is None:

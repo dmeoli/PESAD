@@ -124,7 +124,7 @@ parse_answer(Raw, Term) :-
 %		  item(Attribute, Item)       criterion question (yes/no)
 %		  certainty(Key)              certainty degree of the last answer
 %		  choice(Attribute, Options)  multiple-choice question
-%		  graded(Variable)            numeric (graded) value
+%		  graded(Variable)            numeric (graded) value, with typical values
 %		  diagnosis(Goals)            ranked goal(Goal, CF) list of a run
 ui_topic(Topic) :-
 	retractall(current_topic(_)),
@@ -162,8 +162,12 @@ topic_dict(menu_why, choice(Attribute, Options_List),
 		( member(Option, Options_List), decode(Option, Label) ),
 		Options).
 topic_dict(number, graded(Variable),
-	   _{type: number, id: Variable, text: Text}) :-
-	question_text(Variable, Text).
+	   _{type: number, id: Variable, text: Text, options: Options}) :-
+	question_text(Variable, Text),
+	graded_options(Variable, Values),
+	findall(_{value: Value, label: Value},
+		( member(Number, Values), format(string(Value), '~w', [Number]) ),
+		Options).
 topic_dict(simple, diagnosis(Goals),
 	   _{type: diagnosis, title: Title, goals: Items, ranking: Ranking,
 	     none: None, disclaimer: Disclaimer}) :-

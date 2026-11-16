@@ -72,25 +72,30 @@ select_uncertainty_method :-
 	decode(method_request,T_Method_Request),
 	write(T_Method_Request),
 	white_lines(1),
-	decode(method_cf,T_Method_CF),
-	write('	1: '), write(T_Method_CF), nl,
-	decode(method_fuzzy,T_Method_Fuzzy),
-	write('	2: '), write(T_Method_Fuzzy), nl,
-	decode(method_fuzzy_membership,T_Method_Fuzzy_Membership),
-	write('	3: '), write(T_Method_Fuzzy_Membership), nl,
+	forall(method_choice(Number,Method),
+		( atom_concat(method_,Method,Key),
+		  decode(Key,T_Method),
+		  write('	'), write(Number), write(': '), write(T_Method), nl )),
 	repeat,
 	write(' > '),
 	ui_read(method,Choice),
 	set_uncertainty_method(Choice),
 	!.
 
-set_uncertainty_method(1)     :- !, assertz(uncertainty_method(cf)).
-set_uncertainty_method(cf)    :- !, assertz(uncertainty_method(cf)).
-set_uncertainty_method(2)     :- !, assertz(uncertainty_method(fuzzy)).
-set_uncertainty_method(fuzzy) :- !, assertz(uncertainty_method(fuzzy)).
-set_uncertainty_method(3)                 :- !, assertz(uncertainty_method(fuzzy_membership)).
-set_uncertainty_method(fuzzy_membership)  :- !, assertz(uncertainty_method(fuzzy_membership)).
-set_uncertainty_method(_)     :- decode(answer_error,T_Answer_Error), write(T_Answer_Error), nl, fail.
+set_uncertainty_method(Choice) :-
+	method_choice(Number,Method),
+	( Choice == Number ; Choice == Method ),
+	!,
+	assertz(uncertainty_method(Method)).
+set_uncertainty_method(_) :- decode(answer_error,T_Answer_Error), write(T_Answer_Error), nl, fail.
+
+%	method_choice(Number,Method): the menu number of each uncertainty method.
+method_choice(1,cf).
+method_choice(2,fuzzy).
+method_choice(3,fuzzy_membership).
+method_choice(4,lukasiewicz).
+method_choice(5,hamacher).
+method_choice(6,einstein).
 
 %	welcome:
 %		prints the system presentation message

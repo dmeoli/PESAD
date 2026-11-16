@@ -18,6 +18,9 @@ label(it, method_request, 'Seleziona il metodo di gestione dell''incertezza:') :
 label(it, method_cf, 'Fattori di certezza (t-norma minimo)') :- !.
 label(it, method_fuzzy, 'Logica fuzzy (t-norma prodotto)') :- !.
 label(it, method_fuzzy_membership, 'Logica fuzzy con funzioni di appartenenza (durata/frequenza graduali)') :- !.
+label(it, method_lukasiewicz, 'Logica fuzzy (t-norma di Lukasiewicz)') :- !.
+label(it, method_hamacher, 'Logica fuzzy (t-norma prodotto di Hamacher)') :- !.
+label(it, method_einstein, 'Logica fuzzy (t-norma prodotto di Einstein)') :- !.
 label(it, duration_months, 'Da quanti mesi sono presenti i sintomi (inserire un numero)') :- !.
 label(it, panic_attacks_count, 'Quanti attacchi di panico si sono verificati (inserire un numero)') :- !.
 label(it, command_investigation, '	investigation.	- Avvia l''investigazione completa dei disturbi;') :- !.

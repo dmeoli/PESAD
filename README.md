@@ -24,8 +24,11 @@ $ swipl prolog/start.pl
 ```
 
 At start-up the system asks you to choose the interface language (English or
-Italian) and the uncertainty method (certainty factors / minimum t-norm, the
-default, or fuzzy / product t-norm). Only the questions, diagnoses and
+Italian) and the uncertainty method, i.e., the t-norm that combines the premises
+of a rule: certainty factors (minimum, the default), fuzzy logic with the
+product, Lukasiewicz, Hamacher product or Einstein product t-norm, or fuzzy
+membership functions over graded durations and frequencies (with the minimum).
+Only the questions, diagnoses and
 explanations the user reads are shown in the selected language, while the
 commands are always in English: `investigation`, `control`, `facts`, `help`,
 `clean`, `quit`.
@@ -58,7 +61,9 @@ engine over the SWI-Prolog Machine Query Interface. See
 The same engine also serves a stateless web API (FastAPI) for the expert-system
 section of [dmeoli.github.io](https://dmeoli.github.io). Each request carries the
 language and all the answers given so far; the server starts a fresh Prolog
-session, replays them and returns the next question or the result:
+session, replays them and returns the next question or the result. The optional
+`backend` chooses the uncertainty method as at start-up: `cf` (the default),
+`fuzzy`, `fuzzy_membership`, `lukasiewicz`, `hamacher` or `einstein`:
 
 ```
 $ curl -X POST https://pesad-372868569544.europe-west1.run.app/step \
@@ -93,7 +98,7 @@ The Prolog system under `prolog/` is organized by responsibility:
 | `start.pl` | Terminal bootstrap: directives and module loading, runs `main/0` |
 | `shell.pl` | User shell: REPL loop, language selection, command dispatch, result presentation, `decode`/`explain` localization |
 | `ask.pl` | Knowledge acquisition: the criterion / multiple / selective question protocols |
-| `uncertainty.pl` | Certainty calculus (switchable min / product t-norm), certainty-based ordering, inference-level indexes |
+| `uncertainty.pl` | Certainty calculus (t-norm chosen by the uncertainty method), certainty-based ordering, inference-level indexes |
 | `explanation.pl` | Proof-tree printing (how a conclusion was reached) |
 | `memory.pl` | Working-memory management (facts and proof trees) |
 | `utils.pl` | General-purpose helpers |

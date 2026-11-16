@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "web_api"))
 
 from fastapi.testclient import TestClient  # noqa: E402
 
-from app import MAX_ANSWERS, app  # noqa: E402
+from app import MAX_ANSWERS, METHODS, app  # noqa: E402
 
 # Neutral answers to the multiple-choice questions (as in clinical_tests.pl).
 CHOICES = {
@@ -32,6 +32,8 @@ CHOICES = {
     "insight_level": "insight_good_or_fair",
     "substance_onset": "onset_during_intoxication",
     "ocrd_presentation": "with_ocd_like_symptoms",
+    "duration_months": "0",          # graded values of fuzzy_membership
+    "panic_attacks_count": "1",
 }
 
 # A 22-year-old with a marked fear of spiders, avoided for over a year.
@@ -41,7 +43,8 @@ PHOBIA = {
             "fear_out_of_proportion_to_actual_danger", "fear_of_animals",
             "occupational_distress", "social_distress"},
     "choices": {"phobic_reaction_type": "avoidance",
-                "symptoms_duration": "six_months_or_more"},
+                "symptoms_duration": "six_months_or_more",
+                "duration_months": "12"},
 }
 NOTHING = {"yes": set(), "choices": {}}
 
@@ -59,11 +62,12 @@ def choose(question, case):
     return answer
 
 
-def consult(client, lang, case):
+def consult(client, lang, case, backend="cf"):
     """Run a whole consultation and return the result."""
     answers = []
     while True:
-        r = client.post("/step", json={"lang": lang, "answers": answers})
+        r = client.post("/step", json={"lang": lang, "answers": answers,
+                                       "backend": backend})
         assert r.status_code == 200, (r.status_code, r.text)
         screen = r.json()
         assert screen["step"] == len(answers)
@@ -97,6 +101,11 @@ def main():
             assert result["text"] and result["disclaimer"]
             print(f"test_web_api: {lang} consultations OK ({len(answers)} answers)")
 
+        for backend in METHODS:
+            result, _ = consult(client, "en", PHOBIA, backend)
+            assert result["items"][0]["id"] == "specific_phobia_animal_type", backend
+            print(f"test_web_api: {backend} consultation OK")
+
         first = client.post("/step", json={"lang": "it", "answers": []}).json()
         assert first["id"] == "patient" and first["disclaimer"]
         assert {o["label"] for o in first["options"]} >= {">= 18 anni"}
@@ -104,6 +113,7 @@ def main():
         for body in ({"lang": "en", "answers": ["maybe"]},      # not an option
                      {"lang": "en", "answers": ["adult", "why"]},
                      {"lang": "fr", "answers": []},
+                     {"lang": "en", "answers": [], "backend": "bayes"},
                      {"lang": "en", "answers": "adult"},
                      {"lang": "en", "answers": ["no"] * (MAX_ANSWERS + 1)}):
             r = client.post("/step", json=body)

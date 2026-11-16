@@ -8,7 +8,7 @@ A stateless HTTP front-end over the engine layer (../pesad_engine), for the
 expert-system section of the author's site. Every request carries the whole
 consultation so far:
 
-    POST /step  {"lang": "en" | "it", "answers": ["<value>", ...]}
+    POST /step  {"lang": "en" | "it", "backend": "cf", "answers": ["<value>", ...]}
 
 and the server starts a fresh Prolog session, replays the answers and returns
 the screen reached: the next question, or the result of the investigation.
@@ -29,7 +29,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, StringConstraints
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from pesad_engine import Engine, InvalidAnswer  # noqa: E402
+from pesad_engine import METHODS, Engine, InvalidAnswer  # noqa: E402
 
 MAX_ANSWERS = 1000       # a complete investigation takes about 260 answers
 MAX_BODY_BYTES = 64 * 1024
@@ -38,6 +38,7 @@ ORIGINS = ["https://dmeoli.github.io", "http://localhost:8780"]
 
 class Step(BaseModel):
     lang: Literal["en", "it"]
+    backend: Literal[tuple(METHODS)] = "cf"
     answers: list[Annotated[str, StringConstraints(max_length=64)]] = Field(
         default_factory=list, max_length=MAX_ANSWERS)
 
@@ -89,7 +90,7 @@ async def health():
 
 @app.post("/step")
 async def step(body: Step, request: Request):
-    screen = await request.app.state.engine.consult(body.lang, body.answers)
+    screen = await request.app.state.engine.consult(body.lang, body.answers, body.backend)
     reply = web_screen(screen, len(body.answers))
     if reply["kind"] == "question" and reply["step"] == 0:
         reply["disclaimer"] = request.app.state.disclaimer[body.lang]
