@@ -86,6 +86,7 @@ known_question_condition(Attribute,Item,Remaining_Items,Required_Items_Number,Ce
 	white_lines(2),
 	decode(Item,Extended_Item),
 	write(Extended_Item),
+	ui_topic(item(Attribute,Item)),
 	get_criterion_response(Answer),
 	check_type_criterion_response(Answer,Attribute,Item,Remaining_Items,Required_Items_Number,Certainty,Facts_List).
 
@@ -141,11 +142,13 @@ check_format_criterion_response(_,_) :-
 %	check_type_criterion_response(Answer,Attribute,Item,Remaining_Items,Required_Items_Number,Certainty,Facts_List):
 %		processes the answer given by the user.
 check_type_criterion_response(yes,Attribute,Item,Remaining_Items,Required_Items_Number,Certainty,Facts_List) :-
+	ui_topic(certainty(Item)),
 	ask_certainty(Answer_Certainty),
 	asserta(known(yes,Attribute,Item,Answer_Certainty)),
 	add_element(fact(yes,Item,Answer_Certainty),Facts_List,Updated_Facts_List),
 	ask_question(Attribute,Remaining_Items,Required_Items_Number,Certainty,Updated_Facts_List).
 check_type_criterion_response(no,Attribute,Item,Remaining_Items,Required_Items_Number,Certainty,Facts_List) :-
+	ui_topic(certainty(Item)),
 	ask_certainty(Answer_Certainty),
 	asserta(known(no,Attribute,Item,Answer_Certainty)),
 	Computed_Answer_Certainty is 1-Answer_Certainty,
@@ -221,6 +224,7 @@ multiple_ask(Attribute,Options_List,Allowed_Options_List,Certainty) :-
 	write('?'),
 	white_lines(1),
 	show_options(Options_List),
+	ui_topic(choice(Attribute,Options_List)),
 	get_multiple_response(Chosen_Option,Encoded_Chosen_Option,Options_List),
 	check_type_multiple_response(Encoded_Chosen_Option,Answer,Attribute,Options_List,Allowed_Options_List,Certainty).
 
@@ -281,6 +285,7 @@ check_type_multiple_response(why,_,Attribute,Options_List,Allowed_Options_List,C
 	multiple_ask(Attribute,Options_List,Allowed_Options_List,Certainty).
 check_type_multiple_response(Chosen_Option,Answer,Attribute,Options_List,Allowed_Options_List,Certainty) :-
 	parse_response(1,Chosen_Option,Answer,Options_List),
+	ui_topic(certainty(Attribute)),
 	ask_certainty(Answer_Certainty),
 	asserta(known(yes,Attribute,Answer,Answer_Certainty)),
 	compute_certainty_multiple_ask(Attribute,Certainty,Answer,Answer_Certainty,Options_List,Allowed_Options_List).
@@ -323,6 +328,7 @@ selective_ask(Attribute,Allowed_Option,Options_List) :-
 	write(Extended_Attribute),
 	white_lines(1),
 	show_options(Options_List),
+	ui_topic(choice(Attribute,Options_List)),
 	get_multiple_response(Chosen_Option,Encoded_Chosen_Option,Options_List),
 	check_type_selective_response(Encoded_Chosen_Option,Answer,Attribute,Options_List,Allowed_Option).
 

@@ -9,19 +9,21 @@ available as a Telegram bot, without rewriting the inference engine.
 
 How it works
 ------------
-The engine is driven over the SWI-Prolog Machine Query Interface (library(mqi),
-via the `swiplserver` package). On the Prolog side (see ../bot_boot.pl and
-../bot_session.pl) every chat owns a dedicated worker thread that runs the usual
-`main/0` consultation; each interactive `read/1` was replaced by `ui_read/2`,
-which suspends the worker on a message queue until the next answer arrives.
+The engine is reached through the engine layer (../pesad_engine), shared with
+the web API, which drives SWI-Prolog over the Machine Query Interface. On the
+Prolog side (see ../prolog/bot_boot.pl and ../prolog/bot_session.pl) every chat
+owns a dedicated worker thread that runs the usual `main/0` consultation; each
+interactive `read/1` was replaced by `ui_read/2`, which suspends the worker on a
+message queue until the next answer arrives.
 
-So the bot only ever exchanges *turns* with Prolog:
-  - bot_start(SessionId, Kind, Text)         -> first turn of a new consultation
-  - bot_answer(SessionId, Raw, Kind, Text)   -> deliver an answer, get next turn
-  - bot_cancel(SessionId)                    -> abort a consultation
+So the bot only ever exchanges *turns* (engine screens) with Prolog:
+  - engine.open(chat)            -> first turn of a new consultation
+  - engine.answer(chat, raw)     -> deliver an answer, get next turn
+  - engine.replay(chat, raws)    -> restart and re-feed answers (back button)
+  - engine.cancel(chat)          -> abort a consultation
 
-`Kind` tells us which keyboard to render; `Text` is the captured console output
-to display. `Kind == 'final'` means the consultation ended (Text is its epilogue).
+`kind` tells us which keyboard to render; `text` is the captured console output
+to display. `kind == 'final'` means the consultation ended (text is its epilogue).
 
 Author: Donato Meoli
 """
@@ -30,8 +32,8 @@ import asyncio
 import logging
 import os
 import re
+import sys
 
-from swiplserver import PrologMQI
 from telegram import (Update, InlineKeyboardButton, InlineKeyboardMarkup,
                       constants)
 from telegram.ext import (Application, CommandHandler, CallbackQueryHandler,
@@ -43,21 +45,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger("pesad-bot")
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from pesad_engine import CERTAINTY_VALUES, Engine  # noqa: E402
+
 # --------------------------------------------------------------------------- #
 # Paths / configuration
 # --------------------------------------------------------------------------- #
 
-PESAD_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BOOTSTRAP = os.path.join(PESAD_DIR, "prolog", "bot_boot.pl")
 TG_MAX = constants.MessageLimit.MAX_TEXT_LENGTH  # 4096
-
-DISCLAIMER = (
-    "⚠️ *PESAD* is an academic rule-based expert system over the DSM-5-TR "
-    "criteria. It is *not* a medical device and does *not* replace a qualified "
-    "mental-health professional. Use it for educational purposes only.\n"
-    "_PESAD è un sistema esperto accademico a scopo didattico: non sostituisce "
-    "il parere di un professionista._"
-)
 
 # Command buttons (Kind == 'command'); the payloads are the engine commands.
 COMMANDS = [
@@ -70,71 +65,9 @@ COMMANDS = [
 ]
 
 # Certainty presets (Kind == 'certainty'); payloads must be floats for the engine.
-CERTAINTIES = [
-    ("0.0", "0.0"), ("0.25", "0.25"), ("0.5", "0.5"),
-    ("0.75", "0.75"), ("1.0", "1.0"),
-]
+CERTAINTIES = [(value, value) for value in CERTAINTY_VALUES]
 
 OPTION_RE = re.compile(r"^[ \t]*(\d+):[ \t]*(.+?)[ \t]*$", re.MULTILINE)
-
-
-# --------------------------------------------------------------------------- #
-# Prolog bridge (single MQI connection, serialised with an asyncio lock)
-# --------------------------------------------------------------------------- #
-
-class PrologBridge:
-    def __init__(self):
-        self._mqi = None
-        self._thread = None
-        self._lock = asyncio.Lock()
-
-    def _connect(self):
-        self._mqi = PrologMQI()
-        self._thread = self._mqi.create_thread()
-        self._thread.query(f"consult({pl_atom(BOOTSTRAP)})")
-        logger.info("Prolog engine loaded from %s", BOOTSTRAP)
-
-    async def start(self):
-        await asyncio.to_thread(self._connect)
-
-    async def stop(self):
-        if self._mqi is not None:
-            await asyncio.to_thread(self._mqi.stop)
-
-    async def _query(self, goal):
-        async with self._lock:
-            return await asyncio.to_thread(self._thread.query, goal)
-
-    async def turn_start(self, session_id):
-        goal = f"bot_start({pl_str(session_id)}, Kind, Text)"
-        return _solution(await self._query(goal))
-
-    async def turn_answer(self, session_id, raw):
-        goal = f"bot_answer({pl_str(session_id)}, {pl_str(raw)}, Kind, Text)"
-        return _solution(await self._query(goal))
-
-    async def cancel(self, session_id):
-        await self._query(f"bot_cancel({pl_str(session_id)})")
-
-
-def _solution(result):
-    """Extract (Kind, Text) from a swiplserver result, or raise."""
-    if not result or result is True:
-        raise RuntimeError(f"unexpected Prolog result: {result!r}")
-    sol = result[0]
-    return str(sol["Kind"]), str(sol["Text"])
-
-
-def pl_str(value):
-    """Render a Python value as a Prolog double-quoted string literal."""
-    s = str(value).replace("\\", "\\\\").replace('"', '\\"')
-    return f'"{s}"'
-
-
-def pl_atom(value):
-    """Render a path/atom as a Prolog single-quoted atom literal."""
-    s = str(value).replace("\\", "\\\\").replace("'", "\\'")
-    return f"'{s}'"
 
 
 # --------------------------------------------------------------------------- #
@@ -288,23 +221,23 @@ async def deliver(context, chat_id, kind, text):
 
 async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
-    bridge: PrologBridge = context.application.bot_data["bridge"]
+    engine: Engine = context.application.bot_data["engine"]
     context.chat_data["history"] = []
-    await update.message.reply_markdown(DISCLAIMER)
+    await update.message.reply_markdown(context.application.bot_data["disclaimer"])
     try:
-        kind, text = await bridge.turn_start(str(chat_id))
+        screen = await engine.open(str(chat_id))
     except Exception:
-        logger.exception("bot_start failed")
+        logger.exception("engine.open failed")
         await update.message.reply_text("⚠️ Engine error on start. Try again.")
         return
-    await deliver(context, chat_id, kind, text)
+    await deliver(context, chat_id, screen.kind, screen.text)
 
 
 async def cancel_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
-    bridge: PrologBridge = context.application.bot_data["bridge"]
+    engine: Engine = context.application.bot_data["engine"]
     context.chat_data["history"] = []
-    await bridge.cancel(str(chat_id))
+    await engine.cancel(str(chat_id))
     await update.message.reply_text("Consultation cancelled. Send /start to begin again.")
 
 
@@ -316,7 +249,7 @@ async def push_answer(update: Update, context: ContextTypes.DEFAULT_TYPE, raw: s
     back on the previous question. 'why' answers are not recorded because they
     only print an explanation and leave the working memory unchanged."""
     chat_id = update.effective_chat.id
-    bridge: PrologBridge = context.application.bot_data["bridge"]
+    engine: Engine = context.application.bot_data["engine"]
     sid = str(chat_id)
     history = context.chat_data.setdefault("history", [])
 
@@ -327,14 +260,12 @@ async def push_answer(update: Update, context: ContextTypes.DEFAULT_TYPE, raw: s
             return
         history.pop()
         try:
-            kind, text = await bridge.turn_start(sid)
-            for past in history:
-                kind, text = await bridge.turn_answer(sid, past)
+            screen = await engine.replay(sid, history)
         except Exception:
             logger.exception("back replay failed")
             await context.bot.send_message(chat_id, "⚠️ Engine error. Send /start to restart.")
             return
-        await deliver(context, chat_id, kind, text)
+        await deliver(context, chat_id, screen.kind, screen.text)
         return
 
     # Remember the chosen interface language (the answer to the first turn) so
@@ -343,17 +274,17 @@ async def push_answer(update: Update, context: ContextTypes.DEFAULT_TYPE, raw: s
         context.chat_data["lang"] = "it" if raw in ("2", "it") else "en"
 
     try:
-        kind, text = await bridge.turn_answer(sid, raw)
+        screen = await engine.answer(sid, raw)
     except Exception:
-        logger.exception("bot_answer failed")
+        logger.exception("engine.answer failed")
         await context.bot.send_message(chat_id, "⚠️ Engine error. Send /start to restart.")
         return
 
     if raw != "why":
         history.append(raw)
-    if kind == "final":
+    if screen.kind == "final":
         context.chat_data["history"] = []
-    await deliver(context, chat_id, kind, text)
+    await deliver(context, chat_id, screen.kind, screen.text)
 
 
 async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -371,15 +302,21 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --------------------------------------------------------------------------- #
 
 async def post_init(application: Application):
-    bridge = PrologBridge()
-    await bridge.start()
-    application.bot_data["bridge"] = bridge
+    engine = Engine()
+    await engine.start()
+    logger.info("Prolog engine loaded")
+    application.bot_data["engine"] = engine
+    # The disclaimer comes from the locales, in both languages (the language
+    # is chosen only after it is shown).
+    en = await engine.label("en", "disclaimer")
+    it = await engine.label("it", "disclaimer")
+    application.bot_data["disclaimer"] = f"⚠️ {en}\n_{it}_"
 
 
 async def post_shutdown(application: Application):
-    bridge = application.bot_data.get("bridge")
-    if bridge:
-        await bridge.stop()
+    engine = application.bot_data.get("engine")
+    if engine:
+        await engine.stop()
 
 
 def load_env_file():

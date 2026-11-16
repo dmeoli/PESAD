@@ -166,6 +166,7 @@ solve(investigation) :-
 	investigate_goals(Goals_List),
 	descending_order_goals(Goals_List,Sorted_Goals_List),
 	display_investigation(Sorted_Goals_List),
+	ui_topic(diagnosis(Sorted_Goals_List)),
 	investigation_how(Sorted_Goals_List).
 
 %	display_investigation(Goals_List):
@@ -261,6 +262,7 @@ solve(control) :-
 	delete_tree(Goal_Name),
 	solve_goal(Goal_Name,CF),
 	display_control(Goal_Name,CF),
+	ui_topic(diagnosis([goal(Goal_Name,CF)])),
 	control_how(Goal_Name).
 
 %	selection_goal(Goal):

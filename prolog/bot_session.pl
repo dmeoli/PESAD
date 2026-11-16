@@ -14,11 +14,13 @@
 %		so concurrent chats never see each other's facts.
 %
 %		API (all deterministic, all quick - they only hand messages over):
-%		  bot_start(+SessionId, -Kind, -Text)
-%		  bot_answer(+SessionId, +Raw, -Kind, -Text)
+%		  bot_start(+SessionId, -Kind, -Text, -Topic)
+%		  bot_answer(+SessionId, +Raw, -Kind, -Text, -Topic)
 %		  bot_cancel(+SessionId)
 %		Kind is the answer kind the front-end must render (see bot_io.pl), or
 %		the atom 'final' when the consultation is over and Text is its epilogue.
+%		Topic is the JSON description of the pending question, or "" (see
+%		topic_json/2 in bot_io.pl).
 %
 %	author:
 %		Donato Meoli
@@ -28,41 +30,41 @@
 :- dynamic session_queue/3.    % session_queue(SessionId, InQueue, OutQueue)
 :- dynamic session_thread/2.   % session_thread(SessionId, ThreadId)
 
-%	bot_start(+SessionId, -Kind, -Text):
+%	bot_start(+SessionId, -Kind, -Text, -Topic):
 %		(re)start a consultation for SessionId and return its first turn.
-bot_start(SessionId, Kind, Text) :-
+bot_start(SessionId, Kind, Text, Topic) :-
 	cleanup_session(SessionId),
 	message_queue_create(In),
 	message_queue_create(Out),
 	assertz(session_queue(SessionId, In, Out)),
 	thread_create(worker_main(SessionId), Tid, [detached(true)]),
 	assertz(session_thread(SessionId, Tid)),
-	next_turn(Out, Kind, Text),
+	next_turn(Out, Kind, Text, Topic),
 	maybe_finalize(SessionId, Kind).
 
-%	bot_answer(+SessionId, +Raw, -Kind, -Text):
+%	bot_answer(+SessionId, +Raw, -Kind, -Text, -Topic):
 %		deliver the user's raw answer to the worker and return the next turn.
-bot_answer(SessionId, Raw, Kind, Text) :-
+bot_answer(SessionId, Raw, Kind, Text, Topic) :-
 	session_queue(SessionId, In, Out),
 	!,
 	thread_send_message(In, answer(Raw)),
-	next_turn(Out, Kind, Text),
+	next_turn(Out, Kind, Text, Topic),
 	maybe_finalize(SessionId, Kind).
 bot_answer(_SessionId, _Raw, expired,
-	   "Session expired. Send /start to begin a new consultation.").
+	   "Session expired. Send /start to begin a new consultation.", "").
 
 %	bot_cancel(+SessionId):
 %		abort and forget a running consultation.
 bot_cancel(SessionId) :-
 	cleanup_session(SessionId).
 
-%	next_turn(+OutQueue, -Kind, -Text):
+%	next_turn(+OutQueue, -Kind, -Text, -Topic):
 %		block until the worker emits its next turn (a prompt or the epilogue).
-next_turn(Out, Kind, Text) :-
+next_turn(Out, Kind, Text, Topic) :-
 	thread_get_message(Out, Msg),
-	( Msg = turn(K, T)  -> Kind = K, Text = T
-	; Msg = final(T)    -> Kind = final, Text = T
-	; /* otherwise */      Kind = final, Text = "Internal error." ).
+	( Msg = turn(K, T, P) -> Kind = K, Text = T, Topic = P
+	; Msg = final(T)      -> Kind = final, Text = T, Topic = ""
+	; /* otherwise */        Kind = final, Text = "Internal error.", Topic = "" ).
 
 %	maybe_finalize(+SessionId, +Kind):
 %		once the worker reported 'final', drop its (now idle) queues. The thread

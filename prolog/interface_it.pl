@@ -46,6 +46,11 @@ label(it, deduced, ' e'' stato dedotto da') :- !.
 label(it, stated, ' e'' stato detto') :- !.
 label(it, code, ' Codice: ') :- !.
 label(it, facts, '============================ FATTI ============================') :- !.
+label(it, answer_yes, 'Sì') :- !.
+label(it, answer_no, 'No') :- !.
+label(it, ranking_note, 'Disturbi supportati dalle risposte, in ordine di grado di certezza.') :- !.
+label(it, no_diagnosis, 'Le risposte non supportano nessuno dei disturbi della base di conoscenza.') :- !.
+label(it, disclaimer, 'PESAD è un sistema esperto accademico basato sui criteri del DSM-5-TR. Non è un dispositivo medico, non fornisce una diagnosi e non sostituisce il parere di un professionista della salute mentale. Va usato solo a scopo didattico.') :- !.
 
 % ---- domain labels ----
 label(it, abrupt_surge_of_fear_or_discomfort, 'Avverte un improvviso aumento di paura o disagio intensi che raggiunge il picco in pochi minuti') :- !.

@@ -46,6 +46,11 @@ label(en, deduced, ' was deduced from') :- !.
 label(en, stated, ' was stated') :- !.
 label(en, code, ' Code: ') :- !.
 label(en, facts, '============================ FACTS ============================') :- !.
+label(en, answer_yes, 'Yes') :- !.
+label(en, answer_no, 'No') :- !.
+label(en, ranking_note, 'Disorders supported by the answers, ranked by certainty degree.') :- !.
+label(en, no_diagnosis, 'The answers do not support any of the disorders in the knowledge base.') :- !.
+label(en, disclaimer, 'PESAD is an academic rule-based expert system over the DSM-5-TR criteria. It is not a medical device, it does not provide a diagnosis and it does not replace a qualified mental-health professional. Use it for educational purposes only.') :- !.
 
 % ---- domain labels ----
 label(en, abrupt_surge_of_fear_or_discomfort, 'Experiences an abrupt surge of intense fear or discomfort that peaks within minutes') :- !.

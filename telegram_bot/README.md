@@ -26,16 +26,18 @@ SWI-Prolog facilities:
   certainty | menu | menu_why | number | final`) tells the front-end which
   keyboard to render. In terminal mode `ui_read` is just `read/1`, so
   `swipl prolog/start.pl` keeps working exactly as before.
-- **MQI transport.** Python drives Prolog over the Machine Query Interface
-  (`library(mqi)` ⇄ the `swiplserver` package) with three predicates from
-  [`../prolog/bot_session.pl`](../prolog/bot_session.pl): `bot_start/3`, `bot_answer/4`,
+- **MQI transport.** The bot goes through the engine layer
+  [`../pesad_engine`](../pesad_engine/__init__.py), shared with the web API, which
+  drives Prolog over the Machine Query Interface (`library(mqi)` ⇄ the
+  `swiplserver` package) with three predicates from
+  [`../prolog/bot_session.pl`](../prolog/bot_session.pl): `bot_start/4`, `bot_answer/5`,
   `bot_cancel/1`.
 
 ```
-Telegram  ──polling──►  pesad_bot.py  ──MQI──►  bot_session.pl
-                                                   │  (per-chat worker thread)
-                                                   ▼
-                                  main/0 → ui_read/2 ⇄ message queues
+Telegram  ──polling──►  pesad_bot.py  ──pesad_engine──MQI──►  bot_session.pl
+                                                                 │  (per-chat worker thread)
+                                                                 ▼
+                                                main/0 → ui_read/2 ⇄ message queues
 ```
 
 ## Prerequisites

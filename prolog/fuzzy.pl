@@ -77,6 +77,7 @@ graded_value(Variable,Value) :-
 	write(Question),
 	write('?'),
 	white_lines(1),
+	ui_topic(graded(Variable)),
 	repeat,
 	write(' > '),
 	ui_read(number,Input),
