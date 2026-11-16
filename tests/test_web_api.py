@@ -5,8 +5,9 @@ Drives complete consultations through POST /step, the way the site does:
 every request carries all the answers given so far, and the next answer is
 chosen from the question returned. Each language is run on a vignette that
 leads to a disorder (a specific phobia, animal type) and on one that leads to
-none, plus the request checks (bad answers, limits, CORS). Exits non-zero on
-any mismatch so it can gate CI.
+none, plus the request checks (bad answers, limits, CORS). POST /evaluate is
+run on test results (DIVA-5, ASRS, IQ and achievement scores) under every
+backend. Exits non-zero on any mismatch so it can gate CI.
 """
 
 import os
@@ -32,6 +33,11 @@ CHOICES = {
     "insight_level": "insight_good_or_fair",
     "substance_onset": "onset_during_intoxication",
     "ocrd_presentation": "with_ocd_like_symptoms",
+    "adhd_severity": "severity_mild",
+    "learning_disorder_severity": "severity_mild",
+    "idd_severity": "severity_mild",
+    "asd_social_communication_support": "requiring_support",
+    "asd_restricted_behaviour_support": "requiring_support",
     "duration_months": "0",          # graded values of fuzzy_membership
     "panic_attacks_count": "1",
 }
@@ -80,6 +86,81 @@ def consult(client, lang, case, backend="cf"):
         assert len(answers) < MAX_ANSWERS
 
 
+# An adult with a DIVA-5 of 7 inattention and 3 hyperactivity symptoms,
+# childhood symptoms confirmed by a parent, in 3 settings, impairing at work.
+DIVA = [{"finding": "diva5_inattention_count", "value": 7},
+        {"finding": "diva5_hyperactivity_count", "value": 3},
+        {"finding": "diva5_childhood_inattention_count", "value": 6},
+        {"finding": "informant_confirms_childhood_symptoms", "value": True},
+        {"finding": "settings_with_symptoms", "value": 3},
+        {"finding": "symptom_duration_months", "value": 240},
+        {"item": "occupational_distress", "value": True},
+        {"item": "adhd_symptoms_better_explained_by_other_disorder", "value": False}]
+INATTENTIVE = "attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation"
+COMBINED = "attention_deficit_hyperactivity_disorder_combined_presentation"
+
+
+def goal(reply, goal_id):
+    return next(g for g in reply["goals"] if g["id"] == goal_id)
+
+
+def check_evaluate(client):
+    """POST /evaluate on test results, and its request checks."""
+    catalogue = client.get("/findings").json()
+    assert {f["id"] for f in catalogue["findings"]} >= {"diva5_inattention_count", "iq_full_scale"}
+    assert "careless_mistakes" in catalogue["items"]
+
+    for backend in METHODS:
+        r = client.post("/evaluate", json={"lang": "en", "backend": backend, "age": 30, "facts": DIVA})
+        assert r.status_code == 200, (r.status_code, r.text)
+        reply = r.json()
+        assert reply["age_band"] == "adult" and reply["disclaimer"]
+        g = goal(reply, INATTENTIVE)
+        assert g["status"] == "present" and g["certainty"] >= 0.5, (backend, g["status"])
+        assert g["icd10cm"] == "F90.0" and g["icd11"] == "6A05.0" and g["tree"] and g["explanation"]
+        assert {c["status"] for c in g["criteria"]} == {"met"}, backend
+        assert any(d["family"] == "autism_spectrum_disorder" for d in g["differentials"])
+        assert goal(reply, COMBINED)["status"] == "absent", backend
+        print(f"test_web_api: /evaluate {backend} OK")
+
+    # a screening scale alone leaves the diagnosis open and lists what is missing
+    reply = client.post("/evaluate", json={"lang": "it", "age": 25, "facts": [
+        {"finding": "asrs_inattention_count", "value": 8},
+        {"finding": "asrs_hyperactivity_count", "value": 7}]}).json()
+    g = goal(reply, COMBINED)
+    assert g["status"] == "undetermined" and g["certainty"] < 0.5 <= g["upper"]
+    assert "several_symptoms_before_age_twelve" in {m["id"] for m in g["missing"]}
+    assert g["name"].startswith("Disturbo da Deficit")
+
+    # IQ and achievement scores, restricted to the goals asked for
+    reply = client.post("/evaluate", json={"age": 10, "goals": [
+        "specific_learning_disorder_with_impairment_in_reading", "intellectual_developmental_disorder_mild"],
+        "facts": [{"finding": "iq_full_scale", "value": 104},
+                  {"finding": "reading_standard_score", "value": 72},
+                  {"finding": "intervention_months", "value": 9},
+                  {"finding": "school_report_learning_difficulties", "value": True},
+                  {"finding": "symptom_duration_months", "value": 14},
+                  {"item": "inaccurate_or_slow_word_reading", "value": True},
+                  {"item": "other_functional_distress", "value": True, "certainty": 0.9},
+                  {"item": "learning_difficulties_better_accounted_for_by_other_factors", "value": False}]}).json()
+    assert [g["id"] for g in reply["goals"]] == [
+        "specific_learning_disorder_with_impairment_in_reading", "intellectual_developmental_disorder_mild"]
+    assert goal(reply, "specific_learning_disorder_with_impairment_in_reading")["status"] == "present"
+    assert goal(reply, "intellectual_developmental_disorder_mild")["status"] == "absent"
+
+    for body, index in (({"age": 30, "facts": [{"finding": "wisc_vi", "value": 1}]}, 0),
+                        ({"age": 30, "facts": [{"finding": "diva5_inattention_count", "value": 12}]}, 0),
+                        ({"age": 30, "facts": [{"item": "careless_mistakes", "value": True},
+                                               {"item": "careless_mistakes", "choice": "x", "value": True}]}, 1),
+                        ({"facts": []}, None),
+                        ({"age": 30, "goals": ["no_such_goal"]}, None)):
+        r = client.post("/evaluate", json=body)
+        assert r.status_code == 400 and r.json()["index"] == index, (body, r.status_code, r.text)
+    for body in ({"age": 30, "chapters": ["neuro"]}, {"age": 300},
+                 {"age": 30, "facts": [{"item": "a", "value": True, "extra": 1}]}):
+        assert client.post("/evaluate", json=body).status_code == 400, body
+
+
 def main():
     with TestClient(app) as client:
         assert client.get("/").json() == {"ok": True}
@@ -105,6 +186,8 @@ def main():
             result, _ = consult(client, "en", PHOBIA, backend)
             assert result["items"][0]["id"] == "specific_phobia_animal_type", backend
             print(f"test_web_api: {backend} consultation OK")
+
+        check_evaluate(client)
 
         first = client.post("/step", json={"lang": "it", "answers": []}).json()
         assert first["id"] == "patient" and first["disclaimer"]

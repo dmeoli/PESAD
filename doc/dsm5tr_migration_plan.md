@@ -12,6 +12,13 @@ and the Prolog knowledge base. **Review this before any code is written.**
 > separate goals. All specifiers are now modelled (one goal each), except the
 > panic attack specifier, which DSM-5-TR says cannot be coded. Every goal is
 > covered by the validation suite `prolog/clinical_tests.pl`.
+>
+> Extension (2026-11-16): the Neurodevelopmental Disorders chapter (intellectual
+> developmental disorder, language disorder, social (pragmatic) communication
+> disorder, autism spectrum disorder, ADHD, specific learning disorder,
+> developmental coordination disorder, tic disorders) follows the same four
+> levels; see `criteria_sheet_neurodevelopmental.md`, which also documents the
+> evaluation from test results of `prolog/evaluate.pl`.
 
 Reference edition: **DSM-5-TR (2022)**. Scope: full coverage of the three related
 chapters. The DSM-IV-TR knowledge base is **replaced** (kept only in git history).

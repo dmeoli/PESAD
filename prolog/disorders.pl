@@ -4,11 +4,12 @@
 %
 %	description:
 %		Knowledge base - codable disorders (DSM-5-TR) across the Anxiety,
-%		Obsessive-Compulsive and Related, and Trauma- and Stressor-Related
-%		chapters. Each disorder/3 rule is a diagnostic goal combining
-%		sub-disorders, types, specifiers and exclusions; also holds the entry
-%		points solve_goal/2, investigate_goals/1, the goals list and the
-%		ICD-10-CM / ICD-11 codes of every goal.
+%		Obsessive-Compulsive and Related, Trauma- and Stressor-Related and
+%		Neurodevelopmental chapters. Each disorder/3 rule is a diagnostic
+%		goal combining sub-disorders, types, specifiers and exclusions; also
+%		holds the entry points solve_goal/2, investigate_goals/1, the goals
+%		list, the ICD-10-CM / ICD-11 codes and the chapter of every goal and
+%		the differentials to rule out.
 %
 %	author:
 %		Donato Meoli
@@ -331,6 +332,191 @@ disorder(prolonged_grief_disorder,Patient,CF) :-
 	certainty(prolonged_grief_disorder,1,[CF1,CF2,CF3],0.97,CF,true).
 
 
+%=========================NEURODEVELOPMENTAL DISORDERS==========================
+
+%	Intellectual Developmental Disorder (Intellectual Disability), by current
+%	severity (separately coded; DSM-5-TR rates it on adaptive functioning)
+disorder(intellectual_developmental_disorder_mild,Patient,CF) :-
+	disorder_nc(intellectual_developmental_disorder,Patient,CF1,true),
+	selected(CF1,idd_severity(severity_mild)),
+	certainty(intellectual_developmental_disorder_mild,1,[CF1],0.97,CF,true).
+disorder(intellectual_developmental_disorder_moderate,Patient,CF) :-
+	disorder_nc(intellectual_developmental_disorder,Patient,CF1,true),
+	selected(CF1,idd_severity(severity_moderate)),
+	certainty(intellectual_developmental_disorder_moderate,1,[CF1],0.97,CF,true).
+disorder(intellectual_developmental_disorder_severe,Patient,CF) :-
+	disorder_nc(intellectual_developmental_disorder,Patient,CF1,true),
+	selected(CF1,idd_severity(severity_severe)),
+	certainty(intellectual_developmental_disorder_severe,1,[CF1],0.97,CF,true).
+disorder(intellectual_developmental_disorder_profound,Patient,CF) :-
+	disorder_nc(intellectual_developmental_disorder,Patient,CF1,true),
+	selected(CF1,idd_severity(severity_profound)),
+	certainty(intellectual_developmental_disorder_profound,1,[CF1],0.97,CF,true).
+
+%	Language Disorder
+disorder(language_disorder,Patient,CF) :-
+	disorder_nc(language_disorder,Patient,CF1,true),
+	certainty(language_disorder,1,[CF1],0.96,CF,true).
+
+%	Social (Pragmatic) Communication Disorder
+disorder(social_pragmatic_communication_disorder,Patient,CF) :-
+	disorder_nc(social_pragmatic_communication_disorder,Patient,CF1,true),
+	certainty(social_pragmatic_communication_disorder,1,[CF1],0.96,CF,true).
+
+%	Autism Spectrum Disorder; the four combinations of the intellectual and
+%	language impairment specifiers (one ICD-11 code each); the level of support
+%	needed in each of the two domains
+disorder(autism_spectrum_disorder,Patient,CF) :-
+	disorder_nc(autism_spectrum_disorder,Patient,CF1,true),
+	certainty(autism_spectrum_disorder,1,[CF1],0.97,CF,true).
+disorder(autism_spectrum_disorder_without_intellectual_or_language_impairment,Patient,CF) :-
+	asd_impairments(Patient,false,false,CF1),
+	certainty(autism_spectrum_disorder_without_intellectual_or_language_impairment,1,CF1,0.97,CF,true).
+disorder(autism_spectrum_disorder_with_intellectual_without_language_impairment,Patient,CF) :-
+	asd_impairments(Patient,true,false,CF1),
+	certainty(autism_spectrum_disorder_with_intellectual_without_language_impairment,1,CF1,0.97,CF,true).
+disorder(autism_spectrum_disorder_with_language_without_intellectual_impairment,Patient,CF) :-
+	asd_impairments(Patient,false,true,CF1),
+	certainty(autism_spectrum_disorder_with_language_without_intellectual_impairment,1,CF1,0.97,CF,true).
+disorder(autism_spectrum_disorder_with_intellectual_and_language_impairment,Patient,CF) :-
+	asd_impairments(Patient,true,true,CF1),
+	certainty(autism_spectrum_disorder_with_intellectual_and_language_impairment,1,CF1,0.97,CF,true).
+disorder(autism_spectrum_disorder_social_communication_level_1,Patient,CF) :-
+	disorder_nc(autism_spectrum_disorder,Patient,CF1,true),
+	selected(CF1,asd_support(social_communication,requiring_support)),
+	certainty(autism_spectrum_disorder_social_communication_level_1,1,[CF1],0.97,CF,true).
+disorder(autism_spectrum_disorder_social_communication_level_2,Patient,CF) :-
+	disorder_nc(autism_spectrum_disorder,Patient,CF1,true),
+	selected(CF1,asd_support(social_communication,requiring_substantial_support)),
+	certainty(autism_spectrum_disorder_social_communication_level_2,1,[CF1],0.97,CF,true).
+disorder(autism_spectrum_disorder_social_communication_level_3,Patient,CF) :-
+	disorder_nc(autism_spectrum_disorder,Patient,CF1,true),
+	selected(CF1,asd_support(social_communication,requiring_very_substantial_support)),
+	certainty(autism_spectrum_disorder_social_communication_level_3,1,[CF1],0.97,CF,true).
+disorder(autism_spectrum_disorder_restricted_behaviour_level_1,Patient,CF) :-
+	disorder_nc(autism_spectrum_disorder,Patient,CF1,true),
+	selected(CF1,asd_support(restricted_behaviour,requiring_support)),
+	certainty(autism_spectrum_disorder_restricted_behaviour_level_1,1,[CF1],0.97,CF,true).
+disorder(autism_spectrum_disorder_restricted_behaviour_level_2,Patient,CF) :-
+	disorder_nc(autism_spectrum_disorder,Patient,CF1,true),
+	selected(CF1,asd_support(restricted_behaviour,requiring_substantial_support)),
+	certainty(autism_spectrum_disorder_restricted_behaviour_level_2,1,[CF1],0.97,CF,true).
+disorder(autism_spectrum_disorder_restricted_behaviour_level_3,Patient,CF) :-
+	disorder_nc(autism_spectrum_disorder,Patient,CF1,true),
+	selected(CF1,asd_support(restricted_behaviour,requiring_very_substantial_support)),
+	certainty(autism_spectrum_disorder_restricted_behaviour_level_3,1,[CF1],0.97,CF,true).
+
+%	asd_impairments(Patient,Intellectual,Language,CFs): autism spectrum
+%	disorder with (true) or without (false) accompanying intellectual and
+%	language impairment, as the list of certainties of the rule.
+asd_impairments(Patient,Intellectual,Language,[CF1,CF2,CF3]) :-
+	disorder_nc(autism_spectrum_disorder,Patient,CF1,true),
+	unless_absent([CF1],
+		( symptomatic_feature(accompanying_intellectual_impairment,Patient,CF2,Intellectual),
+		  symptomatic_feature(accompanying_language_impairment,Patient,CF3,Language) ),[CF2,CF3]).
+
+%	Attention-Deficit/Hyperactivity Disorder, by presentation (separately
+%	coded), in partial remission, and by current severity
+disorder(attention_deficit_hyperactivity_disorder_combined_presentation,Patient,CF) :-
+	disorder_nc(attention_deficit_hyperactivity_disorder,Patient,CF1,true),
+	unless_absent([CF1],
+		( symptomatic_manifestation(inattention_symptoms,Patient,CF2,true),
+		  symptomatic_manifestation(hyperactivity_impulsivity_symptoms,Patient,CF3,true) ),[CF2,CF3]),
+	certainty(attention_deficit_hyperactivity_disorder_combined_presentation,1,[CF1,CF2,CF3],0.97,CF,true).
+disorder(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,Patient,CF) :-
+	disorder_nc(attention_deficit_hyperactivity_disorder,Patient,CF1,true),
+	unless_absent([CF1],
+		( symptomatic_manifestation(inattention_symptoms,Patient,CF2,true),
+		  symptomatic_manifestation(hyperactivity_impulsivity_symptoms,Patient,CF3,false) ),[CF2,CF3]),
+	certainty(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,1,[CF1,CF2,CF3],0.97,CF,true).
+disorder(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation,Patient,CF) :-
+	disorder_nc(attention_deficit_hyperactivity_disorder,Patient,CF1,true),
+	unless_absent([CF1],
+		( symptomatic_manifestation(hyperactivity_impulsivity_symptoms,Patient,CF2,true),
+		  symptomatic_manifestation(inattention_symptoms,Patient,CF3,false) ),[CF2,CF3]),
+	certainty(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation,1,[CF1,CF2,CF3],0.97,CF,true).
+disorder(attention_deficit_hyperactivity_disorder_in_partial_remission,Patient,CF) :-
+	disorder_nc(adhd_in_partial_remission,Patient,CF1,true),
+	certainty(attention_deficit_hyperactivity_disorder_in_partial_remission,1,[CF1],0.96,CF,true).
+disorder(attention_deficit_hyperactivity_disorder_mild,Patient,CF) :-
+	disorder_nc(attention_deficit_hyperactivity_disorder,Patient,CF1,true),
+	selected(CF1,adhd_severity(severity_mild)),
+	certainty(attention_deficit_hyperactivity_disorder_mild,1,[CF1],0.97,CF,true).
+disorder(attention_deficit_hyperactivity_disorder_moderate,Patient,CF) :-
+	disorder_nc(attention_deficit_hyperactivity_disorder,Patient,CF1,true),
+	selected(CF1,adhd_severity(severity_moderate)),
+	certainty(attention_deficit_hyperactivity_disorder_moderate,1,[CF1],0.97,CF,true).
+disorder(attention_deficit_hyperactivity_disorder_severe,Patient,CF) :-
+	disorder_nc(attention_deficit_hyperactivity_disorder,Patient,CF1,true),
+	selected(CF1,adhd_severity(severity_severe)),
+	certainty(attention_deficit_hyperactivity_disorder_severe,1,[CF1],0.97,CF,true).
+
+%	Specific Learning Disorder, by impaired academic domain (each one coded)
+%	and by current severity
+disorder(specific_learning_disorder_with_impairment_in_reading,Patient,CF) :-
+	disorder_nc(specific_learning_disorder,Patient,CF1,true),
+	unless_absent([CF1],symptomatic_manifestation(reading_impairment,Patient,CF2,true),[CF2]),
+	certainty(specific_learning_disorder_with_impairment_in_reading,1,[CF1,CF2],0.96,CF,true).
+disorder(specific_learning_disorder_with_impairment_in_written_expression,Patient,CF) :-
+	disorder_nc(specific_learning_disorder,Patient,CF1,true),
+	unless_absent([CF1],symptomatic_manifestation(written_expression_impairment,Patient,CF2,true),[CF2]),
+	certainty(specific_learning_disorder_with_impairment_in_written_expression,1,[CF1,CF2],0.96,CF,true).
+disorder(specific_learning_disorder_with_impairment_in_mathematics,Patient,CF) :-
+	disorder_nc(specific_learning_disorder,Patient,CF1,true),
+	unless_absent([CF1],symptomatic_manifestation(mathematics_impairment,Patient,CF2,true),[CF2]),
+	certainty(specific_learning_disorder_with_impairment_in_mathematics,1,[CF1,CF2],0.96,CF,true).
+disorder(specific_learning_disorder_mild,Patient,CF) :-
+	learning_disorder(Patient,CFs),
+	selected_all(CFs,learning_disorder_severity(severity_mild)),
+	certainty(specific_learning_disorder_mild,1,CFs,0.96,CF,true).
+disorder(specific_learning_disorder_moderate,Patient,CF) :-
+	learning_disorder(Patient,CFs),
+	selected_all(CFs,learning_disorder_severity(severity_moderate)),
+	certainty(specific_learning_disorder_moderate,1,CFs,0.96,CF,true).
+disorder(specific_learning_disorder_severe,Patient,CF) :-
+	learning_disorder(Patient,CFs),
+	selected_all(CFs,learning_disorder_severity(severity_severe)),
+	certainty(specific_learning_disorder_severe,1,CFs,0.96,CF,true).
+
+%	learning_disorder(Patient,CFs): the criteria of specific learning disorder
+%	in at least one academic domain.
+learning_disorder(Patient,[CF1,CF2]) :-
+	disorder_nc(specific_learning_disorder,Patient,CF1,true),
+	unless_absent([CF1],symptomatic_manifestation(any_academic_domain_impairment,Patient,CF2,true),[CF2]).
+
+%	selected_all(CFs,Ask): selected/2 over a rule with several certainties.
+selected_all(CFs,Ask) :-
+	min_list(CFs,CF),
+	selected(CF,Ask).
+
+%	Developmental Coordination Disorder
+disorder(developmental_coordination_disorder,Patient,CF) :-
+	disorder_nc(developmental_coordination_disorder,Patient,CF1,true),
+	certainty(developmental_coordination_disorder,1,[CF1],0.96,CF,true).
+
+%	Tic Disorders: Tourette's disorder, persistent (chronic) motor or vocal tic
+%	disorder by its "motor tics only" / "vocal tics only" specifier (the
+%	tics are of one kind, criterion A), provisional tic disorder; criterion
+%	D (substance/medical) is the shared exclusion
+disorder(tourettes_disorder,Patient,CF) :-
+	primary(tourettes_disorder,Patient,CF1,CF2,CF3),
+	certainty(tourettes_disorder,1,[CF1,CF2,CF3],0.97,CF,true).
+disorder(persistent_tic_disorder_with_motor_tics_only,Patient,CF) :-
+	primary(persistent_tic_disorder,Patient,CF1,CF2,CF3),
+	unless_absent([CF1],
+		( symptomatic_feature(motor_tics,Patient,CF4,true),
+		  symptomatic_feature(vocal_tics,Patient,CF5,false) ),[CF4,CF5]),
+	certainty(persistent_tic_disorder_with_motor_tics_only,1,[CF1,CF2,CF3,CF4,CF5],0.97,CF,true).
+disorder(persistent_tic_disorder_with_vocal_tics_only,Patient,CF) :-
+	primary(persistent_tic_disorder,Patient,CF1,CF2,CF3),
+	unless_absent([CF1],
+		( symptomatic_feature(vocal_tics,Patient,CF4,true),
+		  symptomatic_feature(motor_tics,Patient,CF5,false) ),[CF4,CF5]),
+	certainty(persistent_tic_disorder_with_vocal_tics_only,1,[CF1,CF2,CF3,CF4,CF5],0.97,CF,true).
+disorder(provisional_tic_disorder,Patient,CF) :-
+	primary(provisional_tic_disorder,Patient,CF1,CF2,CF3),
+	certainty(provisional_tic_disorder,1,[CF1,CF2,CF3],0.96,CF,true).
+
 %---------------------------LIST OF CODED DISORDERS-----------------------------
 goals_list(L) :-
 	findall(G,disorder_codes(G,_,_),L).
@@ -399,3 +585,93 @@ disorder_codes(adjustment_disorder_unspecified,'F43.20','6B43').
 disorder_codes(adjustment_disorder_acute,'F43.2x','6B43').
 disorder_codes(adjustment_disorder_persistent,'F43.2x','6B43').
 disorder_codes(prolonged_grief_disorder,'F43.8','6B42').
+disorder_codes(intellectual_developmental_disorder_mild,'F70','6A00.0').
+disorder_codes(intellectual_developmental_disorder_moderate,'F71','6A00.1').
+disorder_codes(intellectual_developmental_disorder_severe,'F72','6A00.2').
+disorder_codes(intellectual_developmental_disorder_profound,'F73','6A00.3').
+disorder_codes(language_disorder,'F80.2','6A01.2').
+disorder_codes(social_pragmatic_communication_disorder,'F80.82','6A01.22').
+disorder_codes(autism_spectrum_disorder,'F84.0','6A02').
+disorder_codes(autism_spectrum_disorder_without_intellectual_or_language_impairment,'F84.0','6A02.0').
+disorder_codes(autism_spectrum_disorder_with_intellectual_without_language_impairment,'F84.0','6A02.1').
+disorder_codes(autism_spectrum_disorder_with_language_without_intellectual_impairment,'F84.0','6A02.2').
+disorder_codes(autism_spectrum_disorder_with_intellectual_and_language_impairment,'F84.0','6A02.3 (6A02.5 without functional language)').
+disorder_codes(autism_spectrum_disorder_social_communication_level_1,'F84.0','6A02').
+disorder_codes(autism_spectrum_disorder_social_communication_level_2,'F84.0','6A02').
+disorder_codes(autism_spectrum_disorder_social_communication_level_3,'F84.0','6A02').
+disorder_codes(autism_spectrum_disorder_restricted_behaviour_level_1,'F84.0','6A02').
+disorder_codes(autism_spectrum_disorder_restricted_behaviour_level_2,'F84.0','6A02').
+disorder_codes(autism_spectrum_disorder_restricted_behaviour_level_3,'F84.0','6A02').
+disorder_codes(attention_deficit_hyperactivity_disorder_combined_presentation,'F90.2','6A05.2').
+disorder_codes(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,'F90.0','6A05.0').
+disorder_codes(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation,'F90.1','6A05.1').
+disorder_codes(attention_deficit_hyperactivity_disorder_in_partial_remission,'F90.x','6A05').
+disorder_codes(attention_deficit_hyperactivity_disorder_mild,'F90.x','6A05').
+disorder_codes(attention_deficit_hyperactivity_disorder_moderate,'F90.x','6A05').
+disorder_codes(attention_deficit_hyperactivity_disorder_severe,'F90.x','6A05').
+disorder_codes(specific_learning_disorder_with_impairment_in_reading,'F81.0','6A03.0').
+disorder_codes(specific_learning_disorder_with_impairment_in_written_expression,'F81.81','6A03.1').
+disorder_codes(specific_learning_disorder_with_impairment_in_mathematics,'F81.2','6A03.2').
+disorder_codes(specific_learning_disorder_mild,'F81.x','6A03').
+disorder_codes(specific_learning_disorder_moderate,'F81.x','6A03').
+disorder_codes(specific_learning_disorder_severe,'F81.x','6A03').
+disorder_codes(developmental_coordination_disorder,'F82','6A04').
+disorder_codes(tourettes_disorder,'F95.2','8A05.00').
+disorder_codes(persistent_tic_disorder_with_motor_tics_only,'F95.1','8A05.01').
+disorder_codes(persistent_tic_disorder_with_vocal_tics_only,'F95.1','8A05.02').
+disorder_codes(provisional_tic_disorder,'F95.0','8A05.03 (transient motor tics)').
+
+
+%-----------------------------CHAPTERS / DIFFERENTIALS--------------------------
+%	chapter_first_goal(Chapter,Goal): each chapter is the run of the goals
+%	list from its first goal to the next chapter's first goal.
+chapter_first_goal(anxiety,separation_anxiety_disorder).
+chapter_first_goal(obsessive_compulsive,obsessive_compulsive_disorder_with_good_or_fair_insight).
+chapter_first_goal(trauma,reactive_attachment_disorder).
+chapter_first_goal(neurodevelopmental,intellectual_developmental_disorder_mild).
+
+%	goal_chapter(Goal,Chapter)
+goal_chapter(Goal,Chapter) :-
+	goals_list(Goals),
+	nth1(I,Goals,Goal),
+	findall(J-C,( chapter_first_goal(C,F), nth1(J,Goals,F), J =< I ),Starts),
+	max_member(_-Chapter,Starts).
+
+%	family(Family,Goal): the goals that share one disorder (its specifiers and
+%	subtypes), named by the prefix of their identifiers.
+family(Family,Goal) :-
+	family_prefix(Family,Prefix),
+	goals_list(Goals),
+	member(Goal,Goals),
+	sub_atom(Goal,0,_,_,Prefix).
+
+family_prefix(intellectual_developmental_disorder,intellectual_developmental_disorder).
+family_prefix(language_disorder,language_disorder).
+family_prefix(social_pragmatic_communication_disorder,social_pragmatic_communication_disorder).
+family_prefix(autism_spectrum_disorder,autism_spectrum_disorder).
+family_prefix(attention_deficit_hyperactivity_disorder,attention_deficit_hyperactivity_disorder).
+family_prefix(specific_learning_disorder,specific_learning_disorder).
+family_prefix(developmental_coordination_disorder,developmental_coordination_disorder).
+family_prefix(tic_disorders,tourettes_disorder).
+family_prefix(tic_disorders,persistent_tic_disorder).
+family_prefix(tic_disorders,provisional_tic_disorder).
+family_prefix(separation_anxiety_disorder,separation_anxiety_disorder).
+family_prefix(selective_mutism,selective_mutism).
+family_prefix(social_anxiety_disorder,social_anxiety_disorder).
+family_prefix(generalized_anxiety_disorder,generalized_anxiety_disorder).
+family_prefix(obsessive_compulsive_disorder,obsessive_compulsive_disorder).
+family_prefix(reactive_attachment_disorder,reactive_attachment_disorder).
+family_prefix(disinhibited_social_engagement_disorder,disinhibited_social_engagement_disorder).
+family_prefix(posttraumatic_stress_disorder,posttraumatic_stress_disorder).
+family_prefix(adjustment_disorder,adjustment_disorder).
+
+%	differentials(Family,Families): the disorders that the differential
+%	diagnosis section of DSM-5-TR asks to rule out (those in the knowledge base).
+differentials(intellectual_developmental_disorder,[specific_learning_disorder,language_disorder,autism_spectrum_disorder,social_pragmatic_communication_disorder]).
+differentials(language_disorder,[intellectual_developmental_disorder,autism_spectrum_disorder,social_pragmatic_communication_disorder,selective_mutism]).
+differentials(social_pragmatic_communication_disorder,[autism_spectrum_disorder,language_disorder,intellectual_developmental_disorder,attention_deficit_hyperactivity_disorder,social_anxiety_disorder]).
+differentials(autism_spectrum_disorder,[social_pragmatic_communication_disorder,language_disorder,intellectual_developmental_disorder,attention_deficit_hyperactivity_disorder,selective_mutism,reactive_attachment_disorder,social_anxiety_disorder,obsessive_compulsive_disorder]).
+differentials(attention_deficit_hyperactivity_disorder,[autism_spectrum_disorder,specific_learning_disorder,intellectual_developmental_disorder,reactive_attachment_disorder,disinhibited_social_engagement_disorder,generalized_anxiety_disorder,separation_anxiety_disorder,posttraumatic_stress_disorder,adjustment_disorder]).
+differentials(specific_learning_disorder,[intellectual_developmental_disorder,attention_deficit_hyperactivity_disorder,language_disorder,developmental_coordination_disorder]).
+differentials(developmental_coordination_disorder,[intellectual_developmental_disorder,attention_deficit_hyperactivity_disorder,autism_spectrum_disorder]).
+differentials(tic_disorders,[obsessive_compulsive_disorder,autism_spectrum_disorder,attention_deficit_hyperactivity_disorder]).

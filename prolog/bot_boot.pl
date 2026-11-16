@@ -54,6 +54,8 @@ load_pesad :-
 	                      'shell.pl',
 	                      'disorders.pl',
 	                      'criteria.pl',
+	                      'findings.pl',
+	                      'evaluate.pl',
 	                      'bot_session.pl' ]),
 	       ( atomic_list_concat([Dir, '/', File], Path),
 	         reconsult(Path) )).

@@ -14,7 +14,8 @@
 %		  subthreshold  one symptom, count or duration short, goal absent;
 %		  exclusion     an exclusion criterion holds, goal absent;
 %		  differential  a neighbouring disorder ranks first, goal absent;
-%		plus comorbidity, specifier, age-rule and uncertainty cases. A goal is
+%		plus comorbidity, specifier, age-rule and uncertainty cases, and
+%		evaluations from facts (test results, see evaluate.pl). A goal is
 %		present when its certainty is at least 50%. Every case runs under the
 %		uncertainty methods (cf, fuzzy, fuzzy_membership, lukasiewicz,
 %		hamacher, einstein); the suite
@@ -50,6 +51,8 @@
 :- reconsult('shell.pl').
 :- reconsult('disorders.pl').
 :- reconsult('criteria.pl').
+:- reconsult('findings.pl').
+:- reconsult('evaluate.pl').
 
 %	threshold(T): a goal is present when its certainty is at least T.
 threshold(0.5).
@@ -57,28 +60,10 @@ threshold(0.5).
 
 %-----------------------------ASKABLE ITEMS / DEFAULTS--------------------------
 
-%	body_member(Body, Goal): true for each goal occurring in a clause body.
-body_member((A,B),G) :- !, ( body_member(A,G) ; body_member(B,G) ).
-body_member((A;B),G) :- !, ( body_member(A,G) ; body_member(B,G) ).
-body_member((A->B),G) :- !, ( body_member(A,G) ; body_member(B,G) ).
-body_member(unless_absent(_,G0,_),G) :- !, body_member(G0,G).
-body_member(G,G).
-
-%	askable_symptoms(Items): every yes/no item the engine may ask,
-%	auto-discovered from the criteria clauses and the single-item criteria.
+%	askable_symptoms(Items): every yes/no item the engine may ask (see
+%	askable_items/1 in evaluate.pl).
 askable_symptoms(Items) :-
-	findall(I,
-		( member(P,[symptomatic_manifestation,symptomatic_feature,specific_phobia_type,disorder_nc]),
-		  Head =.. [P,_,_,_,_],
-		  clause(Head,Body),
-		  body_member(Body,Goal),
-		  ( Goal = symptom(L,_,_) ; Goal = etiological_evidence(L,_,_) ),
-		  is_list(L),
-		  member(I,L) ),
-		Raw),
-	findall(I,single_item_criterion(I),Single),
-	append(Raw,Single,All),
-	sort(All,Items).
+	askable_items(Items).
 
 %	A neutral default for every multiple-choice question, so that unanswered
 %	ones support no diagnosis.
@@ -98,7 +83,12 @@ selective_defaults([
 	insight_level-insight_good_or_fair,
 	substance_onset-onset_during_intoxication,
 	ocrd_presentation-with_ocd_like_symptoms,
-	adjustment_subtype-unspecified_adjustment
+	adjustment_subtype-unspecified_adjustment,
+	adhd_severity-severity_mild,
+	learning_disorder_severity-severity_mild,
+	idd_severity-severity_mild,
+	asd_social_communication_support-requiring_support,
+	asd_restricted_behaviour_support-requiring_support
 ]).
 
 %	Crisp values of the fuzzy_membership method, derived from the discrete answers.
@@ -277,6 +267,95 @@ vignette(pgd_adult,adult,
 	  y(intense_loneliness), y(grief_symptoms_nearly_every_day_last_month),
 	  y(bereavement_reaction_exceeds_cultural_norms), y(occupational_distress), y(social_distress),
 	  c(bereavement_time,twelve_months_or_more) ]).
+
+
+% Neurodevelopmental disorders.
+% 9-year-old with a full-scale IQ of 62 confirmed by the clinical assessment,
+% who needs help with dressing, money and school tasks; delays since infancy.
+vignette(idd_base,child,
+	[ y(intellectual_deficits_on_standardized_testing), y(intellectual_deficits_on_clinical_assessment),
+	  y(adaptive_functioning_deficits), y(onset_in_early_developmental_period) ]).
+% 5-year-old with few words and short, ungrammatical sentences, well below
+% age on a language test; hearing is normal.
+vignette(ld_base,preschool,
+	[ y(reduced_vocabulary), y(limited_sentence_structure), y(language_abilities_substantially_below_age),
+	  y(onset_in_early_developmental_period), y(social_distress), y(other_functional_distress) ]).
+% 8-year-old with fluent grammar who greets nobody, talks to teachers as to
+% classmates, cannot take turns and takes idioms literally; no restricted
+% interests or routines.
+vignette(scd_base,child,
+	[ y(deficits_in_social_use_of_communication), y(difficulty_adapting_communication_to_context),
+	  y(difficulty_following_conversation_rules), y(difficulty_understanding_nonliteral_language),
+	  y(onset_in_early_developmental_period), y(social_distress), y(other_functional_distress) ]).
+% 7-year-old with little reciprocal conversation, poor eye contact and no
+% friends, who lines up objects and insists on the same route, and is
+% absorbed by train timetables; signs since age 2.
+vignette(autism_base,child,
+	[ y(social_emotional_reciprocity_deficits), y(nonverbal_communication_deficits), y(relationship_deficits),
+	  y(insistence_on_sameness), y(restricted_fixated_interests), y(onset_in_early_developmental_period),
+	  y(social_distress), y(other_functional_distress) ]).
+% 9-year-old, careless, distractible and restless at home and at school since
+% the first grade: 7 inattention and 6 hyperactivity-impulsivity symptoms.
+vignette(adhd_child,child,
+	[ y(careless_mistakes), y(difficulty_sustaining_attention), y(does_not_seem_to_listen),
+	  y(fails_to_follow_through_on_tasks), y(difficulty_organizing_tasks), y(loses_things_necessary_for_tasks),
+	  y(easily_distracted), y(fidgets_or_squirms), y(leaves_seat_when_remaining_seated_is_expected),
+	  y(runs_about_or_feels_restless), y(often_on_the_go), y(talks_excessively), y(interrupts_or_intrudes_on_others),
+	  y(several_symptoms_before_age_twelve), y(symptoms_in_two_or_more_settings), y(social_distress),
+	  y(other_functional_distress), c(symptoms_duration,six_months_or_more) ]).
+% 34-year-old who misses deadlines, loses keys and drifts off in meetings, as
+% at school; 5 inattention and 2 hyperactivity-impulsivity symptoms.
+vignette(adhd_inatt_adult,adult,
+	[ y(careless_mistakes), y(difficulty_sustaining_attention), y(difficulty_organizing_tasks),
+	  y(loses_things_necessary_for_tasks), y(forgetful_in_daily_activities), y(fidgets_or_squirms),
+	  y(talks_excessively), y(several_symptoms_before_age_twelve), y(symptoms_in_two_or_more_settings),
+	  y(occupational_distress), y(social_distress), c(symptoms_duration,six_months_or_more) ]).
+% 7-year-old who cannot stay seated, climbs the furniture, blurts out answers
+% and interrupts, at home and at school; attentive enough with the tasks.
+vignette(adhd_hyper_child,child,
+	[ y(fidgets_or_squirms), y(leaves_seat_when_remaining_seated_is_expected), y(runs_about_or_feels_restless),
+	  y(often_on_the_go), y(blurts_out_answers), y(interrupts_or_intrudes_on_others), y(easily_distracted),
+	  y(several_symptoms_before_age_twelve), y(symptoms_in_two_or_more_settings), y(social_distress),
+	  y(other_functional_distress), c(symptoms_duration,six_months_or_more) ]).
+% 28-year-old diagnosed with ADHD at 10, now with 3 inattention and 2
+% hyperactivity symptoms that still disturb work.
+vignette(adhd_remission,adult,
+	[ y(full_adhd_criteria_previously_met), y(careless_mistakes), y(difficulty_organizing_tasks),
+	  y(forgetful_in_daily_activities), y(fidgets_or_squirms), y(talks_excessively), y(occupational_distress),
+	  c(symptoms_duration,six_months_or_more) ]).
+% 10-year-old who reads slowly and guesses words, scores 72 on a reading
+% test, after a year of targeted tutoring; IQ in the normal range.
+vignette(sld_reading,child,
+	[ y(inaccurate_or_slow_word_reading), y(reading_skills_below_age), y(difficulties_persist_despite_interventions),
+	  y(learning_difficulties_began_in_school_years), y(other_functional_distress), c(symptoms_duration,six_months_or_more) ]).
+% 11-year-old with many spelling and grammar errors, written expression score 74.
+vignette(sld_written,child,
+	[ y(difficulties_with_spelling), y(difficulties_with_written_expression), y(written_expression_skills_below_age),
+	  y(difficulties_persist_despite_interventions), y(learning_difficulties_began_in_school_years),
+	  y(other_functional_distress), c(symptoms_duration,six_months_or_more) ]).
+% 9-year-old who counts on the fingers and cannot recall number facts, math score 70.
+vignette(sld_math,child,
+	[ y(difficulties_with_number_sense_or_calculation), y(mathematics_skills_below_age),
+	  y(difficulties_persist_despite_interventions), y(learning_difficulties_began_in_school_years),
+	  y(other_functional_distress), c(symptoms_duration,six_months_or_more) ]).
+% 8-year-old, clumsy, at the 3rd percentile of a motor test, who cannot ride a
+% bike or use cutlery like his peers; neurological examination normal.
+vignette(dcd_base,child,
+	[ y(motor_skills_substantially_below_age), y(clumsy_slow_or_inaccurate_motor_performance),
+	  y(motor_deficits_interfere_with_daily_activities), y(onset_in_early_developmental_period) ]).
+% 11-year-old with eye blinking, head jerks and throat clearing for two years, from age 7.
+vignette(tourette_base,child,
+	[ y(multiple_motor_tics), y(motor_tics), y(vocal_tics), y(tics_persisted_more_than_one_year),
+	  y(tic_onset_before_age_eighteen) ]).
+% 12-year-old with eye blinking only, for three years.
+vignette(ptd_motor,child,
+	[ y(motor_tics), y(tics_persisted_more_than_one_year), y(tic_onset_before_age_eighteen) ]).
+% 13-year-old with sniffing and throat clearing only, for eighteen months.
+vignette(ptd_vocal,adolescent,
+	[ y(vocal_tics), y(tics_persisted_more_than_one_year), y(tic_onset_before_age_eighteen) ]).
+% 6-year-old with eye blinking that began four months ago.
+vignette(prov_tic,preschool,
+	[ y(motor_tics), y(tic_onset_before_age_eighteen) ]).
 
 
 %------------------------------PER-GOAL TEST PLANS------------------------------
@@ -519,6 +598,157 @@ plan(prolonged_grief_disorder,exclusion,'grief better explained by major depress
 plan(prolonged_grief_disorder,differential,'witnessed violent death with full PTSD that explains the picture',[v(pgd_adult),v(ptsd_adult),y(grief_better_explained_by_other_disorder)],[top(posttraumatic_stress_disorder),absent(prolonged_grief_disorder)]).
 
 
+% Intellectual developmental disorder, by severity
+idd_level(intellectual_developmental_disorder_mild,severity_mild,intellectual_developmental_disorder_moderate).
+idd_level(intellectual_developmental_disorder_moderate,severity_moderate,intellectual_developmental_disorder_severe).
+idd_level(intellectual_developmental_disorder_severe,severity_severe,intellectual_developmental_disorder_profound).
+idd_level(intellectual_developmental_disorder_profound,severity_profound,intellectual_developmental_disorder_mild).
+idd_level_of(N,L) :- idd_level(N,L,_).
+
+plan(G,typical,'IQ 62 confirmed clinically, adaptive deficits since infancy',[v(idd_base),c(idd_severity,L)],[present(G),top(G)]) :-
+	idd_level(G,L,_).
+plan(G,subthreshold,'low test score not confirmed by the clinical assessment (A requires both)',[v(idd_base),c(idd_severity,L),-intellectual_deficits_on_clinical_assessment],[absent(G)]) :-
+	idd_level(G,L,_).
+plan(G,exclusion,'deficits acquired after the developmental period (C): a neurocognitive disorder',[v(idd_base),c(idd_severity,L),-onset_in_early_developmental_period],[absent(G)]) :-
+	idd_level(G,L,_).
+plan(G,differential,'another severity level',[v(idd_base),c(idd_severity,L2)],[top(N),absent(G)]) :-
+	idd_level(G,_,N), idd_level_of(N,L2).
+
+% Language disorder
+plan(language_disorder,typical,'5-year-old, small vocabulary and short sentences, well below age',[v(ld_base)],[present(language_disorder),top(language_disorder)]).
+plan(language_disorder,subthreshold,'abilities not substantially below age (B)',[v(ld_base),-language_abilities_substantially_below_age],[absent(language_disorder)]).
+plan(language_disorder,exclusion,'the difficulties come from a hearing loss (D)',[v(ld_base),y(language_difficulties_attributable_to_sensory_or_medical_condition)],[absent(language_disorder)]).
+plan(language_disorder,differential,'intellectual disability explains the language delay (D)',[v(ld_base),v(idd_base),age(preschool),y(language_difficulties_better_explained_by_intellectual_disability)],[top(intellectual_developmental_disorder_mild),absent(language_disorder)]).
+
+% Social (pragmatic) communication disorder
+plan(social_pragmatic_communication_disorder,typical,'8-year-old, all 4 pragmatic deficits, no restricted interests',[v(scd_base)],[present(social_pragmatic_communication_disorder),top(social_pragmatic_communication_disorder)]).
+plan(social_pragmatic_communication_disorder,subthreshold,'3 of the 4 deficits (A requires all)',[v(scd_base),-difficulty_understanding_nonliteral_language],[absent(social_pragmatic_communication_disorder)]).
+plan(social_pragmatic_communication_disorder,exclusion,'deficits from low structural language abilities (D)',[v(scd_base),y(pragmatic_deficits_better_explained_by_other_condition)],[absent(social_pragmatic_communication_disorder)]).
+plan(social_pragmatic_communication_disorder,differential,'the same deficits with 2 restricted, repetitive behaviours: autism',[v(scd_base),v(autism_base)],[top(autism_spectrum_disorder),absent(social_pragmatic_communication_disorder)]).
+
+% Autism spectrum disorder
+plan(autism_spectrum_disorder,typical,'7-year-old, all 3 social deficits, routines and fixated interests',[v(autism_base)],[present(autism_spectrum_disorder),top(autism_spectrum_disorder)]).
+plan(autism_spectrum_disorder,subthreshold,'only 1 restricted, repetitive pattern (B requires 2)',[v(autism_base),-restricted_fixated_interests],[absent(autism_spectrum_disorder)]).
+plan(autism_spectrum_disorder,exclusion,'social communication not below the developmental level of an intellectual disability (E)',[v(autism_base),y(autistic_features_better_explained_by_intellectual_disability)],[absent(autism_spectrum_disorder)]).
+plan(autism_spectrum_disorder,differential,'pragmatic deficits without restricted, repetitive behaviours',[v(scd_base)],[top(social_pragmatic_communication_disorder),absent(autism_spectrum_disorder)]).
+
+%	asd_spec(Goal,Answers,Neighbour): the intellectual / language specifier pairs.
+asd_spec(autism_spectrum_disorder_without_intellectual_or_language_impairment,[],autism_spectrum_disorder_with_language_without_intellectual_impairment).
+asd_spec(autism_spectrum_disorder_with_intellectual_without_language_impairment,[y(accompanying_intellectual_impairment)],autism_spectrum_disorder_with_intellectual_and_language_impairment).
+asd_spec(autism_spectrum_disorder_with_language_without_intellectual_impairment,[y(accompanying_language_impairment)],autism_spectrum_disorder_without_intellectual_or_language_impairment).
+asd_spec(autism_spectrum_disorder_with_intellectual_and_language_impairment,[y(accompanying_intellectual_impairment),y(accompanying_language_impairment)],autism_spectrum_disorder_with_intellectual_without_language_impairment).
+
+plan(G,typical,'autism with the reported intellectual and language profile',[v(autism_base)|A],[present(G),top(G)]) :-
+	asd_spec(G,A,_).
+plan(G,subthreshold,'only 1 restricted, repetitive pattern (B)',S,[absent(G)]) :-
+	asd_spec(G,A,_), append([v(autism_base)|A],[-insistence_on_sameness],S).
+plan(G,exclusion,'better explained by intellectual disability (E)',S,[absent(G)]) :-
+	asd_spec(G,A,_), append([v(autism_base)|A],[y(autistic_features_better_explained_by_intellectual_disability)],S).
+plan(G,differential,'another intellectual / language profile',[v(autism_base)|A2],[top(N),absent(G)]) :-
+	asd_spec(G,_,N), asd_spec(N,A2,_).
+
+%	asd_level(Goal,Question,Level,Neighbour): the levels of support.
+asd_level(autism_spectrum_disorder_social_communication_level_1,asd_social_communication_support,requiring_support,autism_spectrum_disorder_social_communication_level_2).
+asd_level(autism_spectrum_disorder_social_communication_level_2,asd_social_communication_support,requiring_substantial_support,autism_spectrum_disorder_social_communication_level_3).
+asd_level(autism_spectrum_disorder_social_communication_level_3,asd_social_communication_support,requiring_very_substantial_support,autism_spectrum_disorder_social_communication_level_1).
+asd_level(autism_spectrum_disorder_restricted_behaviour_level_1,asd_restricted_behaviour_support,requiring_support,autism_spectrum_disorder_restricted_behaviour_level_2).
+asd_level(autism_spectrum_disorder_restricted_behaviour_level_2,asd_restricted_behaviour_support,requiring_substantial_support,autism_spectrum_disorder_restricted_behaviour_level_3).
+asd_level(autism_spectrum_disorder_restricted_behaviour_level_3,asd_restricted_behaviour_support,requiring_very_substantial_support,autism_spectrum_disorder_restricted_behaviour_level_1).
+
+plan(G,typical,'autism with the reported level of support',[v(autism_base),c(Q,L)],[present(G),top(G)]) :-
+	asd_level(G,Q,L,_).
+plan(G,subthreshold,'2 of the 3 social deficits (A requires all)',[v(autism_base),c(Q,L),-relationship_deficits],[absent(G)]) :-
+	asd_level(G,Q,L,_).
+plan(G,exclusion,'better explained by intellectual disability (E)',[v(autism_base),c(Q,L),y(autistic_features_better_explained_by_intellectual_disability)],[absent(G)]) :-
+	asd_level(G,Q,L,_).
+plan(G,differential,'another level of support in the same domain',[v(autism_base),c(Q,L2)],[top(N),absent(G)]) :-
+	asd_level(G,Q,_,N), asd_level(N,Q,L2,_).
+
+% ADHD, by presentation
+plan(attention_deficit_hyperactivity_disorder_combined_presentation,typical,'9-year-old, 7 inattention and 6 hyperactivity symptoms, home and school',[v(adhd_child)],[present(attention_deficit_hyperactivity_disorder_combined_presentation),top(attention_deficit_hyperactivity_disorder_combined_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_combined_presentation,subthreshold,'only 5 hyperactivity symptoms in a child (A2 requires 6)',[v(adhd_child),-talks_excessively],[absent(attention_deficit_hyperactivity_disorder_combined_presentation),present(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_combined_presentation,exclusion,'the symptoms are better explained by another mental disorder (E)',[v(adhd_child),y(adhd_symptoms_better_explained_by_other_disorder)],[absent(attention_deficit_hyperactivity_disorder_combined_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_combined_presentation,differential,'hyperactivity without enough inattention',[v(adhd_hyper_child)],[top(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation),absent(attention_deficit_hyperactivity_disorder_combined_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,typical,'34-year-old, 5 inattention symptoms (5 suffice from age 17)',[v(adhd_inatt_adult)],[present(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation),top(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,subthreshold,'adult with 4 inattention symptoms (A1)',[v(adhd_inatt_adult),-forgetful_in_daily_activities],[absent(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,exclusion,'the inattention occurs only with a substance (E)',[v(adhd_inatt_adult),y(adhd_symptoms_better_explained_by_other_disorder)],[absent(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,differential,'both domains above threshold: combined',[v(adhd_child)],[top(attention_deficit_hyperactivity_disorder_combined_presentation),absent(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation,typical,'7-year-old, 6 hyperactivity symptoms, 1 inattention',[v(adhd_hyper_child)],[present(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation),top(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation,subthreshold,'5 hyperactivity symptoms in a child (A2)',[v(adhd_hyper_child),-blurts_out_answers],[absent(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation,exclusion,'restlessness only at home: one setting (C)',[v(adhd_hyper_child),-symptoms_in_two_or_more_settings],[absent(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation,differential,'both domains above threshold: combined',[v(adhd_child)],[top(attention_deficit_hyperactivity_disorder_combined_presentation),absent(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation)]).
+plan(attention_deficit_hyperactivity_disorder_in_partial_remission,typical,'ADHD in childhood, 3 + 2 symptoms now, still impairing',[v(adhd_remission)],[present(attention_deficit_hyperactivity_disorder_in_partial_remission),top(attention_deficit_hyperactivity_disorder_in_partial_remission)]).
+plan(attention_deficit_hyperactivity_disorder_in_partial_remission,subthreshold,'the residual symptoms no longer impair',[v(adhd_remission),-occupational_distress],[absent(attention_deficit_hyperactivity_disorder_in_partial_remission)]).
+plan(attention_deficit_hyperactivity_disorder_in_partial_remission,exclusion,'full criteria were never met',[v(adhd_remission),-full_adhd_criteria_previously_met],[absent(attention_deficit_hyperactivity_disorder_in_partial_remission)]).
+plan(attention_deficit_hyperactivity_disorder_in_partial_remission,differential,'full criteria met again in the last 6 months',[v(adhd_inatt_adult),y(full_adhd_criteria_previously_met)],[top(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation),absent(attention_deficit_hyperactivity_disorder_in_partial_remission)]).
+
+% ADHD, by severity
+adhd_level(attention_deficit_hyperactivity_disorder_mild,severity_mild,attention_deficit_hyperactivity_disorder_moderate).
+adhd_level(attention_deficit_hyperactivity_disorder_moderate,severity_moderate,attention_deficit_hyperactivity_disorder_severe).
+adhd_level(attention_deficit_hyperactivity_disorder_severe,severity_severe,attention_deficit_hyperactivity_disorder_mild).
+
+plan(G,typical,'combined ADHD of the reported severity',[v(adhd_child),c(adhd_severity,L)],[present(G),top(G)]) :-
+	adhd_level(G,L,_).
+plan(G,subthreshold,'the symptoms began after age 12 (B)',[v(adhd_child),c(adhd_severity,L),-several_symptoms_before_age_twelve],[absent(G)]) :-
+	adhd_level(G,L,_).
+plan(G,exclusion,'better explained by another mental disorder (E)',[v(adhd_child),c(adhd_severity,L),y(adhd_symptoms_better_explained_by_other_disorder)],[absent(G)]) :-
+	adhd_level(G,L,_).
+plan(G,differential,'another severity',[v(adhd_child),c(adhd_severity,L2)],[top(N),absent(G)]) :-
+	adhd_level(G,_,N), adhd_level(N,L2,_).
+
+% Specific learning disorder, by domain
+sld_domain(specific_learning_disorder_with_impairment_in_reading,sld_reading,specific_learning_disorder_with_impairment_in_mathematics,sld_math).
+sld_domain(specific_learning_disorder_with_impairment_in_written_expression,sld_written,specific_learning_disorder_with_impairment_in_reading,sld_reading).
+sld_domain(specific_learning_disorder_with_impairment_in_mathematics,sld_math,specific_learning_disorder_with_impairment_in_written_expression,sld_written).
+
+plan(G,typical,'difficulties of the domain, standardized score well below age, despite tutoring',[v(V)],[present(G),top(G)]) :-
+	sld_domain(G,V,_,_).
+plan(G,subthreshold,'difficulties for only 4 months (A requires 6)',[v(V),c(symptoms_duration,three_to_six_months)],[absent(G)]) :-
+	sld_domain(G,V,_,_).
+plan(G,exclusion,'inadequate instruction in the language of the school (D)',[v(V),y(learning_difficulties_better_accounted_for_by_other_factors)],[absent(G)]) :-
+	sld_domain(G,V,_,_).
+plan(G,differential,'another academic domain',[v(V2)],[top(N),absent(G)]) :-
+	sld_domain(G,_,N,V2).
+
+% Specific learning disorder, by severity
+sld_level(specific_learning_disorder_mild,severity_mild,specific_learning_disorder_moderate).
+sld_level(specific_learning_disorder_moderate,severity_moderate,specific_learning_disorder_severe).
+sld_level(specific_learning_disorder_severe,severity_severe,specific_learning_disorder_mild).
+
+plan(G,typical,'reading disorder of the reported severity',[v(sld_reading),c(learning_disorder_severity,L)],[present(G),top(G)]) :-
+	sld_level(G,L,_).
+plan(G,subthreshold,'reading difficulties not below age on testing (B)',[v(sld_reading),c(learning_disorder_severity,L),-reading_skills_below_age],[absent(G)]) :-
+	sld_level(G,L,_).
+plan(G,exclusion,'the difficulties are those of an intellectual disability (D)',[v(sld_reading),c(learning_disorder_severity,L),y(learning_difficulties_explained_by_intellectual_disability)],[absent(G)]) :-
+	sld_level(G,L,_).
+plan(G,differential,'another severity',[v(sld_reading),c(learning_disorder_severity,L2)],[top(N),absent(G)]) :-
+	sld_level(G,_,N), sld_level(N,L2,_).
+
+% Developmental coordination disorder
+plan(developmental_coordination_disorder,typical,'8-year-old, clumsy, 3rd percentile on a motor test',[v(dcd_base)],[present(developmental_coordination_disorder),top(developmental_coordination_disorder)]).
+plan(developmental_coordination_disorder,subthreshold,'clumsy but without interference in daily life (B)',[v(dcd_base),-motor_deficits_interfere_with_daily_activities],[absent(developmental_coordination_disorder)]).
+plan(developmental_coordination_disorder,exclusion,'cerebral palsy (D)',[v(dcd_base),y(motor_deficits_due_to_neurological_condition)],[absent(developmental_coordination_disorder)]).
+plan(developmental_coordination_disorder,differential,'motor delay explained by intellectual disability (D)',[v(dcd_base),v(idd_base),y(motor_deficits_explained_by_intellectual_disability_or_visual_impairment)],[top(intellectual_developmental_disorder_mild),absent(developmental_coordination_disorder)]).
+
+% Tic disorders
+plan(tourettes_disorder,typical,'motor and vocal tics for two years, from age 7',[v(tourette_base)],[present(tourettes_disorder),top(tourettes_disorder)]).
+plan(tourettes_disorder,subthreshold,'a single motor tic with a vocal tic (A requires multiple motor tics)',[v(tourette_base),-multiple_motor_tics],[absent(tourettes_disorder)]).
+plan(tourettes_disorder,exclusion,'tics caused by a stimulant (D)',[v(tourette_base),y(substance_intoxication_or_withdrawal_or_medication_use),y(symptoms_developed_during_or_after_substance_use),y(substance_capable_of_producing_symptoms),y(social_distress)],[absent(tourettes_disorder)]).
+plan(tourettes_disorder,differential,'the same tics for less than 1 year: provisional',[v(tourette_base),-tics_persisted_more_than_one_year],[top(provisional_tic_disorder),absent(tourettes_disorder)]).
+plan(persistent_tic_disorder_with_motor_tics_only,typical,'eye blinking only, for three years',[v(ptd_motor)],[present(persistent_tic_disorder_with_motor_tics_only),top(persistent_tic_disorder_with_motor_tics_only)]).
+plan(persistent_tic_disorder_with_motor_tics_only,subthreshold,'tics that began at age 19 (C)',[v(ptd_motor),age(adult),-tic_onset_before_age_eighteen],[absent(persistent_tic_disorder_with_motor_tics_only)]).
+plan(persistent_tic_disorder_with_motor_tics_only,exclusion,'Tourette''s disorder in the past (E)',[v(ptd_motor),y(criteria_ever_met_for_tourettes_disorder)],[absent(persistent_tic_disorder_with_motor_tics_only)]).
+plan(persistent_tic_disorder_with_motor_tics_only,differential,'vocal tics only',[v(ptd_vocal)],[top(persistent_tic_disorder_with_vocal_tics_only),absent(persistent_tic_disorder_with_motor_tics_only)]).
+plan(persistent_tic_disorder_with_vocal_tics_only,typical,'sniffing and throat clearing for eighteen months',[v(ptd_vocal)],[present(persistent_tic_disorder_with_vocal_tics_only),top(persistent_tic_disorder_with_vocal_tics_only)]).
+plan(persistent_tic_disorder_with_vocal_tics_only,subthreshold,'vocal tics for less than 1 year (B)',[v(ptd_vocal),-tics_persisted_more_than_one_year],[absent(persistent_tic_disorder_with_vocal_tics_only)]).
+plan(persistent_tic_disorder_with_vocal_tics_only,exclusion,'Tourette''s disorder in the past (E)',[v(ptd_vocal),y(criteria_ever_met_for_tourettes_disorder)],[absent(persistent_tic_disorder_with_vocal_tics_only)]).
+plan(persistent_tic_disorder_with_vocal_tics_only,differential,'motor tics only',[v(ptd_motor)],[top(persistent_tic_disorder_with_motor_tics_only),absent(persistent_tic_disorder_with_vocal_tics_only)]).
+plan(provisional_tic_disorder,typical,'eye blinking for four months',[v(prov_tic)],[present(provisional_tic_disorder),top(provisional_tic_disorder)]).
+plan(provisional_tic_disorder,subthreshold,'tics that began at age 20 (C)',[v(prov_tic),age(adult),-tic_onset_before_age_eighteen],[absent(provisional_tic_disorder)]).
+plan(provisional_tic_disorder,exclusion,'a persistent tic disorder in the past (E)',[v(prov_tic),y(criteria_ever_met_for_persistent_tic_disorder)],[absent(provisional_tic_disorder)]).
+plan(provisional_tic_disorder,differential,'tics for more than 1 year: persistent',[v(ptd_motor)],[top(persistent_tic_disorder_with_motor_tics_only),absent(provisional_tic_disorder)]).
+
+
 %---------------------------------OTHER CASES-----------------------------------
 %	extra(Id, Type, Description, Spec, Expectations).
 
@@ -552,6 +782,25 @@ extra(ptsd_preschool_media_exposure,age_rule,'preschool exposure only through re
 extra(pgd_adolescent_nine_months,age_rule,'adolescent bereaved 9 months ago (A: >= 6 months in youth)',[v(pgd_adult),age(adolescent),c(bereavement_time,six_to_twelve_months)],[present(prolonged_grief_disorder)]).
 extra(rad_in_adult,age_rule,'attachment criteria refer to a child',[v(rad_base),age(adult)],[absent(reactive_attachment_disorder)]).
 extra(rad_after_age_five,age_rule,'disturbance not evident before age 5 (F)',[v(rad_base),age(child),-disturbance_evident_before_age_five],[absent(reactive_attachment_disorder)]).
+
+% neurodevelopmental comorbidity and differentials (also across chapters)
+extra(adhd_and_asd,comorbidity,'autism with combined ADHD (both diagnosed since DSM-5)',[v(autism_base),v(adhd_child)],[present(autism_spectrum_disorder),present(attention_deficit_hyperactivity_disorder_combined_presentation)]).
+extra(asd_not_scd,differential,'pragmatic deficits with autistic social deficits and 2 restricted patterns: autism, not SCD',[v(scd_base),v(autism_base)],[present(autism_spectrum_disorder),absent(social_pragmatic_communication_disorder)]).
+extra(scd_not_asd,differential,'pragmatic deficits without restricted patterns: SCD, not autism',[v(scd_base),y(social_emotional_reciprocity_deficits),y(nonverbal_communication_deficits),y(relationship_deficits)],[present(social_pragmatic_communication_disorder),absent(autism_spectrum_disorder)]).
+extra(ptsd_not_adhd,differential,'adult with PTSD and inattention that began after the trauma: PTSD, not ADHD (B)',[v(ptsd_adult),y(difficulty_sustaining_attention),y(easily_distracted),y(forgetful_in_daily_activities),y(careless_mistakes),y(difficulty_organizing_tasks),y(symptoms_in_two_or_more_settings),c(symptoms_duration,six_months_or_more)],[present(posttraumatic_stress_disorder),absent(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+extra(gad_not_adhd,differential,'worried adult, restless and unfocused only through the worry: GAD, not ADHD (E)',[v(gad_adult),y(difficulty_sustaining_attention),y(easily_distracted),y(forgetful_in_daily_activities),y(careless_mistakes),y(difficulty_organizing_tasks),y(several_symptoms_before_age_twelve),y(symptoms_in_two_or_more_settings),y(adhd_symptoms_better_explained_by_other_disorder)],[present(generalized_anxiety_disorder),absent(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+extra(adhd_and_gad,comorbidity,'adult ADHD since childhood with a separate generalized anxiety',[v(gad_adult),v(adhd_inatt_adult)],[present(generalized_anxiety_disorder),present(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+extra(sld_not_idd,differential,'reading difficulties with an intellectual disability that accounts for them: IDD, not SLD (D)',[v(idd_base),v(sld_reading),y(learning_difficulties_explained_by_intellectual_disability)],[present(intellectual_developmental_disorder_mild),absent(specific_learning_disorder_with_impairment_in_reading)]).
+extra(sld_with_idd,comorbidity,'reading difficulties in excess of a mild intellectual disability: both',[v(idd_base),v(sld_reading)],[present(intellectual_developmental_disorder_mild),present(specific_learning_disorder_with_impairment_in_reading)]).
+extra(asd_with_idd,comorbidity,'autism with intellectual disability, social communication below the developmental level',[v(autism_base),v(idd_base),y(accompanying_intellectual_impairment)],[present(intellectual_developmental_disorder_mild),present(autism_spectrum_disorder_with_intellectual_without_language_impairment)]).
+extra(tourette_not_persistent,differential,'motor and vocal tics: Tourette''s, neither persistent specifier',[v(tourette_base)],[present(tourettes_disorder),absent(persistent_tic_disorder_with_motor_tics_only),absent(persistent_tic_disorder_with_vocal_tics_only)]).
+
+% neurodevelopmental age rules
+extra(adhd_five_symptoms_child,age_rule,'child with 5 inattention symptoms (A1 requires 6 under age 17)',[v(adhd_inatt_adult),age(child)],[absent(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+extra(adhd_five_symptoms_at_17,age_rule,'17-year-old with 5 inattention symptoms (5 suffice from age 17)',[v(adhd_inatt_adult),age(adolescent),value(age_years,17)],[present(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+extra(adhd_five_symptoms_at_16,age_rule,'16-year-old with the same 5 symptoms',[v(adhd_inatt_adult),age(adolescent),value(age_years,16)],[absent(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation)]).
+extra(sld_adult_history,age_rule,'adult without a recent test but with a documented history (B, from age 17)',[v(sld_reading),age(adult),-reading_skills_below_age,y(documented_history_of_impairing_learning_difficulties)],[present(specific_learning_disorder_with_impairment_in_reading)]).
+extra(sld_child_history,age_rule,'child with a documented history but no standardized test (B)',[v(sld_reading),-reading_skills_below_age,y(documented_history_of_impairing_learning_difficulties)],[absent(specific_learning_disorder_with_impairment_in_reading)]).
 
 % uncertainty: graded answers and the fuzzy-membership duration
 extra(uncertain_panic,uncertainty,'panic disorder with graded answers (0.6-0.9)',
@@ -677,6 +926,117 @@ report_failure(M,Id,D,E,Ranked) :-
 		( P is round(CF*100), format('        ~w) ~w  ~w%~n',[K,G,P]) )).
 
 
+%----------------------------EVALUATION FROM FACTS------------------------------
+%	evaluation_case(Id, Description, Request, Expectations): a request of
+%	POST /evaluate (as parsed from JSON) run under every method. Expectations
+%	are status(Goal,Status), criterion(Goal,Criterion,Status),
+%	missing(Goal,Item) and error(Index).
+
+evaluation_case(diva_inattentive,'DIVA-5 7/3 with childhood symptoms confirmed by an informant',
+	_{age:30, facts:[_{finding:diva5_inattention_count, value:7}, _{finding:diva5_hyperactivity_count, value:3},
+		_{finding:diva5_childhood_inattention_count, value:6}, _{finding:informant_confirms_childhood_symptoms, value:true},
+		_{finding:settings_with_symptoms, value:3}, _{finding:symptom_duration_months, value:240},
+		_{item:occupational_distress, value:true}, _{item:adhd_symptoms_better_explained_by_other_disorder, value:false}]},
+	[status(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,present),
+	 status(attention_deficit_hyperactivity_disorder_combined_presentation,absent),
+	 status(attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation,absent),
+	 criterion(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,several_symptoms_before_age_twelve,met)]).
+evaluation_case(diva_contradicted,'the same counts, but the informant contradicts the childhood symptoms',
+	_{age:30, facts:[_{finding:diva5_inattention_count, value:7}, _{finding:diva5_hyperactivity_count, value:3},
+		_{finding:diva5_childhood_inattention_count, value:6}, _{finding:informant_confirms_childhood_symptoms, value:false},
+		_{finding:settings_with_symptoms, value:3}, _{finding:symptom_duration_months, value:240},
+		_{item:occupational_distress, value:true}, _{item:adhd_symptoms_better_explained_by_other_disorder, value:false}]},
+	[status(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,absent),
+	 criterion(attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation,several_symptoms_before_age_twelve,not_met)]).
+evaluation_case(asrs_only,'a positive ASRS alone suggests ADHD but cannot establish it',
+	_{age:25, facts:[_{finding:asrs_inattention_count, value:8}, _{finding:asrs_hyperactivity_count, value:7}]},
+	[status(attention_deficit_hyperactivity_disorder_combined_presentation,undetermined),
+	 criterion(attention_deficit_hyperactivity_disorder_combined_presentation,inattention_symptoms,unknown),
+	 missing(attention_deficit_hyperactivity_disorder_combined_presentation,several_symptoms_before_age_twelve)]).
+evaluation_case(idd_from_scores,'IQ 58 and adaptive composite 55 with early delays, mild severity',
+	_{age:9, facts:[_{finding:iq_full_scale, value:58}, _{finding:adaptive_behaviour_composite, value:55},
+		_{finding:developmental_history_early_onset, value:true}, _{item:intellectual_deficits_on_clinical_assessment, value:true},
+		_{choice:idd_severity, value:severity_mild}]},
+	[status(intellectual_developmental_disorder_mild,present), status(intellectual_developmental_disorder_moderate,absent)]).
+evaluation_case(sld_from_scores,'reading score 72 with IQ 104, after 9 months of tutoring',
+	_{age:10, facts:[_{finding:iq_full_scale, value:104}, _{finding:reading_standard_score, value:72},
+		_{finding:intervention_months, value:9}, _{finding:school_report_learning_difficulties, value:true},
+		_{finding:symptom_duration_months, value:14}, _{item:inaccurate_or_slow_word_reading, value:true},
+		_{item:other_functional_distress, value:true}, _{item:learning_difficulties_better_accounted_for_by_other_factors, value:false}]},
+	[status(specific_learning_disorder_with_impairment_in_reading,present),
+	 status(specific_learning_disorder_with_impairment_in_mathematics,undetermined),
+	 status(intellectual_developmental_disorder_mild,absent)]).
+evaluation_case(sld_low_iq,'the same reading profile with IQ 62: the clinician must judge criterion D',
+	_{age:10, facts:[_{finding:iq_full_scale, value:62}, _{finding:reading_standard_score, value:72},
+		_{finding:intervention_months, value:9}, _{finding:school_report_learning_difficulties, value:true},
+		_{finding:symptom_duration_months, value:14}, _{item:inaccurate_or_slow_word_reading, value:true},
+		_{item:other_functional_distress, value:true}, _{item:learning_difficulties_better_accounted_for_by_other_factors, value:false}]},
+	[status(specific_learning_disorder_with_impairment_in_reading,undetermined),
+	 criterion(specific_learning_disorder_with_impairment_in_reading,learning_difficulties_explained_by_intellectual_disability,unknown)]).
+evaluation_case(raads_only,'a RAADS-R of 120 alone: autism undetermined',
+	_{age:30, facts:[_{finding:raads_r_total, value:120}]},
+	[status(autism_spectrum_disorder,undetermined),
+	 missing(autism_spectrum_disorder,social_emotional_reciprocity_deficits)]).
+evaluation_case(asd_confirmed,'RAADS-R confirmed by the clinical assessment, IQ 110, language 100',
+	_{age:30, facts:[_{finding:raads_r_total, value:120},
+		_{item:social_emotional_reciprocity_deficits, value:true}, _{item:nonverbal_communication_deficits, value:true},
+		_{item:relationship_deficits, value:true}, _{item:insistence_on_sameness, value:true},
+		_{item:restricted_fixated_interests, value:true}, _{finding:developmental_history_early_onset, value:true},
+		_{item:social_distress, value:true}, _{finding:iq_full_scale, value:110}, _{finding:language_standard_score, value:100},
+		_{finding:asd_support_level_social_communication, value:1}]},
+	[status(autism_spectrum_disorder,present),
+	 status(autism_spectrum_disorder_without_intellectual_or_language_impairment,present),
+	 status(autism_spectrum_disorder_with_intellectual_without_language_impairment,absent),
+	 status(autism_spectrum_disorder_social_communication_level_1,present),
+	 status(autism_spectrum_disorder_social_communication_level_2,absent),
+	 status(social_pragmatic_communication_disorder,absent)]).
+evaluation_case(no_facts,'only the age: everything undetermined, the data to collect listed',
+	_{age:8},
+	[status(attention_deficit_hyperactivity_disorder_combined_presentation,undetermined),
+	 missing(attention_deficit_hyperactivity_disorder_combined_presentation,careless_mistakes)]).
+evaluation_case(tics_from_records,'tics from age 7 for 30 months, motor and vocal, no substance or illness',
+	_{age:10, facts:[_{finding:tic_onset_age, value:7}, _{finding:tic_duration_months, value:30},
+		_{item:multiple_motor_tics, value:true}, _{item:motor_tics, value:true}, _{item:vocal_tics, value:true},
+		_{item:substance_intoxication_or_withdrawal_or_medication_use, value:false}, _{item:another_medical_condition, value:false}]},
+	[status(tourettes_disorder,present), status(provisional_tic_disorder,absent),
+	 status(persistent_tic_disorder_with_motor_tics_only,absent)]).
+evaluation_case(unknown_finding,'an unknown finding is rejected with its index',
+	_{age:8, facts:[_{item:careless_mistakes, value:true}, _{finding:wisc_v, value:100}]},[error(1)]).
+evaluation_case(out_of_range,'a count out of the range of the instrument is rejected',
+	_{age:30, facts:[_{finding:diva5_inattention_count, value:12}]},[error(0)]).
+evaluation_case(no_age,'the age is required',_{facts:[]},[error(null)]).
+
+%	run_evaluation(Method,Request,Response)
+run_evaluation(Method,Request,Response) :-
+	put_dict(_{lang:en, backend:Method},Request,Request1),
+	catch(evaluate(Request1,Response),evaluation_error(Index,Message),Response = error(Index,Message)).
+
+check_evaluation(error(I,_),error(I)) :- !.
+check_evaluation(error(_,_),_) :- !, fail.
+check_evaluation(R,status(G,S)) :- !,
+	member(X,R.goals), X.id == G, !, X.status == S.
+check_evaluation(R,criterion(G,C,S)) :- !,
+	member(X,R.goals), X.id == G, !,
+	member(Y,X.criteria), Y.id == C, !, Y.status == S.
+check_evaluation(R,missing(G,I)) :- !,
+	member(X,R.goals), X.id == G, !,
+	member(Y,X.missing), Y.id == I, !.
+
+report_evaluation_failure(M,Id,D,E,R) :-
+	format('~n[FAIL] (~w) ~w: ~w~n      expected: ~w~n',[M,Id,D,E]),
+	(   R = error(I,Msg)
+	->  format('      error ~w: ~w~n',[I,Msg])
+	;   forall(( member(X,R.goals), member(Exp,E), arg(1,Exp,G), X.id == G ),
+		format('      ~w: ~w [~w, ~w]~n',[X.id,X.status,X.certainty,X.upper])) ).
+
+run_evaluations :-
+	methods(Methods),
+	forall(( evaluation_case(Id,D,Request,E), member(M,Methods) ),
+		( run_evaluation(M,Request,R),
+		  ( forall(member(X,E), check_evaluation(R,X)) -> Res = pass ; Res = fail, report_evaluation_failure(M,Id,D,E,R) ),
+		  assertz(result(Id,none-evaluate,M,Res)) )).
+
+
 %-----------------------------CONSISTENCY CHECKS--------------------------------
 %	Every goal has a label in both languages, both codes and the four case
 %	types; every askable item and question has a label in both languages.
@@ -687,8 +1047,11 @@ consistency_errors(Errors) :-
 		  \+ plan(G,T,_,_,_), E = missing_case(G,T) ),
 		E1),
 	askable_symptoms(Items),
-	findall(K,( member(G,Goals) ; member(G,Items) ), Keys0),
-	append(Keys0,[insight_level,substance_onset,ocrd_presentation,adjustment_subtype,symptoms_duration,phobic_reaction_type],Keys),
+	findall(K,( member(K,Goals) ; member(K,Items) ), Keys0),
+	findall(N,( member(P,[symptomatic_manifestation,symptomatic_feature,disorder_nc]), H =.. [P,N,_,_,_], clause(H,_), atom(N) ),Nodes),
+	findall(Q,choice_question(Q,_),Questions),
+	findall(O,( choice_question(_,Os), member(O,Os) ),Options),
+	append([Keys0,Nodes,Questions,Options,[inattention_symptom_count,hyperactivity_impulsivity_symptom_count,missing_label]],Keys),
 	findall(missing_label(L,K),( member(K,Keys), member(L,[en,it]), \+ label(L,K,_) ),E2),
 	findall(missing_vignette(V),( plan(_,_,_,S,_), member(v(V),S), \+ vignette(V,_,_) ),E3),
 	append([E1,E2,E3],Errors).
@@ -723,7 +1086,7 @@ report_table :-
 	maplist(=('---'),Dashes),
 	atomic_list_concat(Dashes,' | ',Rule),
 	format('| --- | --- | ~w |~n',[Rule]),
-	forall(extra(Id,T,_,_,_),
+	forall(( extra(Id,T,_,_,_) ; evaluation_case(Id,_,_,_), T = evaluate ),
 		( findall(R,( member(M,Ms), result(Id,none-T,M,R) ),Rs),
 		  atomic_list_concat(Rs,' | ',Row),
 		  format('| ~w | ~w | ~w |~n',[Id,T,Row]) )).
@@ -740,6 +1103,7 @@ run_tests :-
 	consistency_errors(Errors),
 	forall(member(E,Errors),format('[FAIL] consistency: ~w~n',[E])),
 	run_all,
+	run_evaluations,
 	report_table,
 	format('~n================================================================~n'),
 	summary(Failed),

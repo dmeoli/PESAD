@@ -5,7 +5,7 @@
 [![Technical report](https://img.shields.io/badge/report-PDF-b31b1b?logo=adobeacrobatreader&logoColor=white)](doc/PESAD.pdf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-PESAD (Prolog Expert System for Anxiety, Obsessive-Compulsive and Trauma-Related Disorders) is a rule-based expert system for diagnosing, under uncertainty, the disorders of the DSM-5-TR Anxiety, Obsessive-Compulsive and Related, and Trauma- and Stressor-Related chapters.
+PESAD (Prolog Expert System for Anxiety, Obsessive-Compulsive and Trauma-Related Disorders) is a rule-based expert system for diagnosing, under uncertainty, the disorders of the DSM-5-TR Anxiety, Obsessive-Compulsive and Related, Trauma- and Stressor-Related, and Neurodevelopmental chapters.
 
 This code was developed during the Artificial Intelligence Fundamentals course @ [Department of Computer Science](https://www.di.unipi.it/en/) @ [University of Pisa](https://www.unipi.it/index.php/english).
 
@@ -36,10 +36,11 @@ commands are always in English: `investigation`, `control`, `facts`, `help`,
 ## Testing
 
 The validation suite runs original clinical vignettes, written from the
-DSM-5-TR criteria, through the whole inference under the three uncertainty
+DSM-5-TR criteria, through the whole inference under the six uncertainty
 methods. For every diagnostic goal it checks a typical case, a subthreshold
-case, an exclusion case and a differential case, plus comorbidity, specifier
-and age-rule cases, and prints a goal by case-type table:
+case, an exclusion case and a differential case, plus comorbidity, specifier,
+age-rule and cross-chapter differential cases and evaluations from test
+results, and prints a goal by case-type table:
 
 ```
 $ swipl prolog/clinical_tests.pl
@@ -80,6 +81,45 @@ stored and the answers are never logged. Run it locally with `make api` and test
 it with `make test-api`; `make deploy-api` builds it with Cloud Build and
 deploys it to Cloud Run.
 
+`POST /evaluate` runs the knowledge base without questions, on answers and test
+results given at once (for instance by a platform that administered the tests).
+The request carries `lang`, `backend`, the `age` in years (or the `age_band`),
+the `facts` and, optionally, the `goals` or the `chapters` to report (the
+neurodevelopmental chapter by default). A fact is one of
+`{"item": id, "value": true|false, "certainty": c}`,
+`{"choice": question, "value": option}`, `{"number": variable, "value": n}` and
+`{"finding": id, "value": score}`; `GET /findings` lists them. A finding is a
+test result (DIVA-5 symptom counts, ASRS, AQ, RAADS-R, IQ, adaptive and
+achievement standard scores, Movement ABC-2, school and informant reports) that
+becomes evidence for some criterion items, with a certainty given by the
+membership of the score to the cutoff
+([`doc/criteria_sheet_neurodevelopmental.md`](doc/criteria_sheet_neurodevelopmental.md));
+screening scales are provisional evidence, which cannot establish a criterion
+alone. The goals are evaluated twice, with every missing datum against the
+goal and then in its favour, so that for each goal the response gives:
+
+| Field | Content |
+| --- | --- |
+| `status` | `present`, `absent` or `undetermined` (the missing data could change it) |
+| `certainty`, `upper` | the certainty on the data given, and the highest one the missing data allow |
+| `criteria` | each criterion with `status` (`met`, `not_met`, `unknown`, `not_assessed`), its bounds and whether it is `required` true or false |
+| `missing` | the items, choices and numbers to collect, with their question |
+| `explanation`, `tree` | the proof tree, as text and as nested nodes |
+| `differentials` | the disorders to rule out, each with its best goal and status |
+| `icd10cm`, `icd11`, `chapter` | metadata |
+
+The response also lists the `derived` answers the findings produced. An invalid
+fact gives a 400 with the `index` of the fact.
+
+```
+$ curl -X POST https://pesad-372868569544.europe-west1.run.app/evaluate \
+       -H 'Content-Type: application/json' -d '{"lang": "en", "age": 30, "facts": [
+         {"finding": "diva5_inattention_count", "value": 7},
+         {"finding": "diva5_childhood_inattention_count", "value": 6},
+         {"finding": "settings_with_symptoms", "value": 3},
+         {"item": "occupational_distress", "value": true}]}'
+```
+
 ## Project structure
 
 ```
@@ -102,8 +142,10 @@ The Prolog system under `prolog/` is organized by responsibility:
 | `explanation.pl` | Proof-tree printing (how a conclusion was reached) |
 | `memory.pl` | Working-memory management (facts and proof trees) |
 | `utils.pl` | General-purpose helpers |
-| `disorders.pl` | Knowledge base: codable DSM-5-TR disorders (diagnostic goals) and entry points |
+| `disorders.pl` | Knowledge base: codable DSM-5-TR disorders (diagnostic goals), entry points, codes, chapters and differentials |
 | `criteria.pl` | Knowledge base: sub-disorders, types/specifiers, symptomatic manifestations/features, questions |
+| `findings.pl` | Knowledge base: the test results accepted by `/evaluate` and the items they support |
+| `evaluate.pl` | Evaluation from facts: loading of facts and findings, the two bounded runs, the JSON result |
 | `interface_en.pl`, `interface_it.pl` | English / Italian localization (`label/3`, `explanation/3`) |
 | `clinical_tests.pl` | Regression test suite over clinical vignettes |
 | `bot_io.pl` | I/O abstraction (`ui_read/2`): terminal vs bot mode, structured description of each question |

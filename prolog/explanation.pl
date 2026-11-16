@@ -87,14 +87,17 @@ show_assertion(Index_I,Index_II,Index_III) :-
 	Certainty is round(CF*100),
 	decode(Goal,Goal_Name),
 	write(Goal_Name),
-	decode(true_label,T_True),
-	write(T_True),
-	write(Certainty),
-	write('%'),
-	white_lines(1),
-	write('\t\t\t'),
-	decode(stated,T_Stated),
-	write(T_Stated),
+	(   TV == missing
+	->  decode(missing_label,T_Missing),
+	    write(T_Missing)
+	;   decode(true_label,T_True),
+	    write(T_True),
+	    write(Certainty),
+	    write('%'),
+	    white_lines(1),
+	    write('\t\t\t'),
+	    decode(stated,T_Stated),
+	    write(T_Stated) ),
 	white_lines(2),
 	fail.
 show_assertion(_,_,_).

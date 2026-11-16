@@ -43,5 +43,7 @@
 % Knowledge base.
 :- reconsult('disorders.pl').
 :- reconsult('criteria.pl').
+:- reconsult('findings.pl').
+:- reconsult('evaluate.pl').
 
 :- main.

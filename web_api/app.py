@@ -12,6 +12,14 @@ consultation so far:
 
 and the server starts a fresh Prolog session, replays the answers and returns
 the screen reached: the next question, or the result of the investigation.
+
+    POST /evaluate  {"lang", "backend", "age" | "age_band", "facts": [...],
+                     "goals" | "chapters"}
+
+evaluates the goals without questions, on answers and test results given at
+once, and returns for every goal its status, its certainty bounds, the
+criteria met, not met or unknown, the missing data, the proof tree and the
+differentials (see README.md); GET /findings lists what "facts" accepts.
 Nothing is stored and the answers are never logged.
 
 Author: Donato Meoli
@@ -26,12 +34,14 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, StringConstraints
+from pydantic import (BaseModel, ConfigDict, Field, StrictBool, StrictFloat,
+                      StrictInt, StringConstraints)
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pesad_engine import METHODS, Engine, InvalidAnswer  # noqa: E402
 
-MAX_ANSWERS = 1000       # a complete investigation takes about 260 answers
+MAX_ANSWERS = 1000       # a complete investigation takes about 370 answers
+MAX_FACTS = 500
 MAX_BODY_BYTES = 64 * 1024
 ORIGINS = ["https://dmeoli.github.io", "http://localhost:8780"]
 
@@ -43,12 +53,39 @@ class Step(BaseModel):
         default_factory=list, max_length=MAX_ANSWERS)
 
 
+Id = Annotated[str, StringConstraints(max_length=128, pattern=r"^[a-z0-9_]+$")]
+CHAPTERS = Literal["neurodevelopmental", "anxiety", "obsessive_compulsive", "trauma"]
+
+
+class Fact(BaseModel):
+    """One fact: exactly one of item, choice, number, finding, and its value."""
+    model_config = ConfigDict(extra="forbid")
+    item: Id | None = None
+    choice: Id | None = None
+    number: Id | None = None
+    finding: Id | None = None
+    value: StrictBool | StrictInt | StrictFloat | Id
+    certainty: float | None = Field(default=None, ge=0, le=1)
+
+
+class Evaluate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    lang: Literal["en", "it"] = "en"
+    backend: Literal[tuple(METHODS)] = "cf"
+    age: float | None = Field(default=None, ge=0, le=120)
+    age_band: Literal["preschool", "child", "adolescent", "adult"] | None = None
+    facts: list[Fact] = Field(default_factory=list, max_length=MAX_FACTS)
+    goals: list[Id] | None = Field(default=None, max_length=200)
+    chapters: list[CHAPTERS] | None = Field(default=None, max_length=4)
+
+
 @asynccontextmanager
 async def lifespan(app):
     app.state.engine = Engine()
     await app.state.engine.start()
     app.state.disclaimer = {lang: await app.state.engine.label(lang, "disclaimer")
                             for lang in ("en", "it")}
+    app.state.findings = await app.state.engine.findings()
     yield
     await app.state.engine.stop()
 
@@ -95,6 +132,20 @@ async def step(body: Step, request: Request):
     if reply["kind"] == "question" and reply["step"] == 0:
         reply["disclaimer"] = request.app.state.disclaimer[body.lang]
     return reply
+
+
+@app.post("/evaluate")
+async def evaluate(body: Evaluate, request: Request):
+    reply = await request.app.state.engine.evaluate(body.model_dump(exclude_none=True))
+    if "error" in reply:
+        return JSONResponse({"detail": reply["error"], "index": reply["index"]},
+                            status_code=400)
+    return reply
+
+
+@app.get("/findings")
+async def findings(request: Request):
+    return request.app.state.findings
 
 
 def web_screen(screen, step):

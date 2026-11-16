@@ -595,3 +595,226 @@ explanation(en, attempts_to_ignore_or_neutralize_thoughts, 'Trying to suppress o
 explanation(en, acts_aimed_at_reducing_distress, 'Acts aimed at reducing distress, unrealistically or excessively, complete the definition of a compulsion.') :- !.
 explanation(en, substance_onset, 'The onset relative to intoxication, withdrawal or medication use is the specifier of the induced disorders.') :- !.
 explanation(en, ocrd_presentation, 'The predominant symptoms are recorded as the specifier of the disorder due to another medical condition.') :- !.
+
+% ---- neurodevelopmental disorders (DSM-5-TR) ----
+label(en, missing_label, ' is unknown (missing data)') :- !.
+label(en, intellectual_developmental_disorder_mild, 'Intellectual Developmental Disorder, Mild') :- !.
+label(en, intellectual_developmental_disorder_moderate, 'Intellectual Developmental Disorder, Moderate') :- !.
+label(en, intellectual_developmental_disorder_severe, 'Intellectual Developmental Disorder, Severe') :- !.
+label(en, intellectual_developmental_disorder_profound, 'Intellectual Developmental Disorder, Profound') :- !.
+label(en, language_disorder, 'Language Disorder') :- !.
+label(en, social_pragmatic_communication_disorder, 'Social (Pragmatic) Communication Disorder') :- !.
+label(en, autism_spectrum_disorder, 'Autism Spectrum Disorder') :- !.
+label(en, autism_spectrum_disorder_without_intellectual_or_language_impairment, 'Autism Spectrum Disorder, Without Accompanying Intellectual or Language Impairment') :- !.
+label(en, autism_spectrum_disorder_with_intellectual_without_language_impairment, 'Autism Spectrum Disorder, With Accompanying Intellectual Impairment, Without Language Impairment') :- !.
+label(en, autism_spectrum_disorder_with_language_without_intellectual_impairment, 'Autism Spectrum Disorder, With Accompanying Language Impairment, Without Intellectual Impairment') :- !.
+label(en, autism_spectrum_disorder_with_intellectual_and_language_impairment, 'Autism Spectrum Disorder, With Accompanying Intellectual and Language Impairment') :- !.
+label(en, autism_spectrum_disorder_social_communication_level_1, 'Autism Spectrum Disorder, Social Communication: Requiring Support (Level 1)') :- !.
+label(en, autism_spectrum_disorder_social_communication_level_2, 'Autism Spectrum Disorder, Social Communication: Requiring Substantial Support (Level 2)') :- !.
+label(en, autism_spectrum_disorder_social_communication_level_3, 'Autism Spectrum Disorder, Social Communication: Requiring Very Substantial Support (Level 3)') :- !.
+label(en, autism_spectrum_disorder_restricted_behaviour_level_1, 'Autism Spectrum Disorder, Restricted, Repetitive Behaviours: Requiring Support (Level 1)') :- !.
+label(en, autism_spectrum_disorder_restricted_behaviour_level_2, 'Autism Spectrum Disorder, Restricted, Repetitive Behaviours: Requiring Substantial Support (Level 2)') :- !.
+label(en, autism_spectrum_disorder_restricted_behaviour_level_3, 'Autism Spectrum Disorder, Restricted, Repetitive Behaviours: Requiring Very Substantial Support (Level 3)') :- !.
+label(en, attention_deficit_hyperactivity_disorder_combined_presentation, 'Attention-Deficit/Hyperactivity Disorder, Combined Presentation') :- !.
+label(en, attention_deficit_hyperactivity_disorder_predominantly_inattentive_presentation, 'Attention-Deficit/Hyperactivity Disorder, Predominantly Inattentive Presentation') :- !.
+label(en, attention_deficit_hyperactivity_disorder_predominantly_hyperactive_impulsive_presentation, 'Attention-Deficit/Hyperactivity Disorder, Predominantly Hyperactive/Impulsive Presentation') :- !.
+label(en, attention_deficit_hyperactivity_disorder_in_partial_remission, 'Attention-Deficit/Hyperactivity Disorder, In Partial Remission') :- !.
+label(en, attention_deficit_hyperactivity_disorder_mild, 'Attention-Deficit/Hyperactivity Disorder, Mild') :- !.
+label(en, attention_deficit_hyperactivity_disorder_moderate, 'Attention-Deficit/Hyperactivity Disorder, Moderate') :- !.
+label(en, attention_deficit_hyperactivity_disorder_severe, 'Attention-Deficit/Hyperactivity Disorder, Severe') :- !.
+label(en, specific_learning_disorder_with_impairment_in_reading, 'Specific Learning Disorder, With Impairment in Reading') :- !.
+label(en, specific_learning_disorder_with_impairment_in_written_expression, 'Specific Learning Disorder, With Impairment in Written Expression') :- !.
+label(en, specific_learning_disorder_with_impairment_in_mathematics, 'Specific Learning Disorder, With Impairment in Mathematics') :- !.
+label(en, specific_learning_disorder_mild, 'Specific Learning Disorder, Mild') :- !.
+label(en, specific_learning_disorder_moderate, 'Specific Learning Disorder, Moderate') :- !.
+label(en, specific_learning_disorder_severe, 'Specific Learning Disorder, Severe') :- !.
+label(en, developmental_coordination_disorder, 'Developmental Coordination Disorder') :- !.
+label(en, tourettes_disorder, 'Tourette''s Disorder') :- !.
+label(en, persistent_tic_disorder_with_motor_tics_only, 'Persistent (Chronic) Motor or Vocal Tic Disorder, With Motor Tics Only') :- !.
+label(en, persistent_tic_disorder_with_vocal_tics_only, 'Persistent (Chronic) Motor or Vocal Tic Disorder, With Vocal Tics Only') :- !.
+label(en, provisional_tic_disorder, 'Provisional Tic Disorder') :- !.
+label(en, intellectual_developmental_disorder, 'Intellectual Developmental Disorder (Criteria A-C)') :- !.
+label(en, intellectual_function_deficits, 'Deficits in Intellectual Functions') :- !.
+label(en, language_acquisition_deficits, 'Difficulties in the Acquisition and Use of Language') :- !.
+label(en, social_communication_deficits, 'Deficits in the Social Use of Communication') :- !.
+label(en, social_interaction_deficits, 'Deficits in Social Communication and Interaction') :- !.
+label(en, restricted_repetitive_behaviours, 'Restricted, Repetitive Patterns of Behaviour, Interests or Activities') :- !.
+label(en, attention_deficit_hyperactivity_disorder, 'Attention-Deficit/Hyperactivity Disorder (Criteria A-E)') :- !.
+label(en, adhd_in_partial_remission, 'ADHD in Partial Remission') :- !.
+label(en, inattention_symptoms, 'Inattention (Criterion A1)') :- !.
+label(en, hyperactivity_impulsivity_symptoms, 'Hyperactivity and Impulsivity (Criterion A2)') :- !.
+label(en, inattention_or_hyperactivity, 'Inattention and/or Hyperactivity-Impulsivity (Criterion A)') :- !.
+label(en, inattention_symptom_count, 'Number of inattention symptoms (structured interview or rating scale)') :- !.
+label(en, hyperactivity_impulsivity_symptom_count, 'Number of hyperactivity-impulsivity symptoms (structured interview or rating scale)') :- !.
+label(en, specific_learning_disorder, 'Specific Learning Disorder (Criteria A-D)') :- !.
+label(en, reading_impairment, 'Impairment in Reading') :- !.
+label(en, written_expression_impairment, 'Impairment in Written Expression') :- !.
+label(en, mathematics_impairment, 'Impairment in Mathematics') :- !.
+label(en, any_academic_domain_impairment, 'Impairment in at Least One Academic Domain') :- !.
+label(en, motor_coordination_deficits, 'Motor Coordination Substantially Below Age') :- !.
+label(en, multiple_motor_and_vocal_tics, 'Multiple Motor and One or More Vocal Tics') :- !.
+label(en, persistent_tic_disorder, 'Persistent Tic Disorder (Criteria B, C, E)') :- !.
+label(en, motor_or_vocal_tics, 'Motor and/or Vocal Tics') :- !.
+label(en, adhd_severity, 'What is the current severity of the ADHD') :- !.
+label(en, learning_disorder_severity, 'What is the current severity of the learning disorder') :- !.
+label(en, idd_severity, 'What is the current severity, judged on adaptive functioning') :- !.
+label(en, asd_social_communication_support, 'How much support is needed for the deficits in social communication') :- !.
+label(en, asd_restricted_behaviour_support, 'How much support is needed for the restricted, repetitive behaviours') :- !.
+label(en, severity_mild, 'Mild') :- !.
+label(en, severity_moderate, 'Moderate') :- !.
+label(en, severity_severe, 'Severe') :- !.
+label(en, severity_profound, 'Profound') :- !.
+label(en, requiring_support, 'Level 1: requiring support') :- !.
+label(en, requiring_substantial_support, 'Level 2: requiring substantial support') :- !.
+label(en, requiring_very_substantial_support, 'Level 3: requiring very substantial support') :- !.
+label(en, intellectual_deficits_on_standardized_testing, 'An individually administered standardized intelligence test shows deficits in intellectual functions (about 2 SD below the mean, IQ 65-75 or less)') :- !.
+label(en, intellectual_deficits_on_clinical_assessment, 'The clinical assessment confirms deficits in reasoning, problem solving, planning, abstract thinking, judgement or learning') :- !.
+label(en, adaptive_functioning_deficits, 'Has deficits in adaptive functioning that, without ongoing support, limit daily activities (communication, social participation, independent living) across several environments') :- !.
+label(en, onset_in_early_developmental_period, 'The difficulties began in the early developmental period (they may become fully manifest only later)') :- !.
+label(en, reduced_vocabulary, 'Has a reduced vocabulary (word knowledge and use)') :- !.
+label(en, limited_sentence_structure, 'Has a limited sentence structure (grammar and word endings)') :- !.
+label(en, impaired_discourse, 'Has impairments in discourse (connecting sentences to explain, describe or converse)') :- !.
+label(en, language_abilities_substantially_below_age, 'Language abilities are substantially and quantifiably below those expected for age') :- !.
+label(en, language_difficulties_attributable_to_sensory_or_medical_condition, 'Are the language difficulties attributable to a hearing or other sensory impairment, a motor dysfunction or another medical or neurological condition') :- !.
+label(en, language_difficulties_better_explained_by_intellectual_disability, 'Are the language difficulties better explained by intellectual developmental disorder or global developmental delay') :- !.
+label(en, deficits_in_social_use_of_communication, 'Has deficits in using communication for social purposes (greeting, sharing information) appropriately to the context') :- !.
+label(en, difficulty_adapting_communication_to_context, 'Has difficulty changing communication to match the context or the listener') :- !.
+label(en, difficulty_following_conversation_rules, 'Has difficulty following the rules of conversation and storytelling (taking turns, rephrasing, regulating the interaction)') :- !.
+label(en, difficulty_understanding_nonliteral_language, 'Has difficulty understanding what is not explicitly stated and nonliteral or ambiguous language (inferences, idioms, humour)') :- !.
+label(en, pragmatic_deficits_better_explained_by_other_condition, 'Are the communication deficits attributable to a medical or neurological condition or to low structural language abilities, or better explained by intellectual disability, global developmental delay or another mental disorder') :- !.
+label(en, social_emotional_reciprocity_deficits, 'Has deficits in social-emotional reciprocity (abnormal approach, little back-and-forth conversation, reduced sharing of interests or emotions), now or in the past') :- !.
+label(en, nonverbal_communication_deficits, 'Has deficits in nonverbal communication (eye contact, gestures, facial expressions, integration of verbal and nonverbal), now or in the past') :- !.
+label(en, relationship_deficits, 'Has deficits in developing, maintaining and understanding relationships, now or in the past') :- !.
+label(en, stereotyped_or_repetitive_behaviour, 'Has stereotyped or repetitive movements, use of objects or speech (e.g., echolalia, lining up toys)') :- !.
+label(en, insistence_on_sameness, 'Insists on sameness, with inflexible routines or ritualized behaviour') :- !.
+label(en, restricted_fixated_interests, 'Has highly restricted, fixated interests, abnormal in intensity or focus') :- !.
+label(en, sensory_reactivity_or_interest, 'Is hyper- or hyporeactive to sensory input or has unusual sensory interests') :- !.
+label(en, autistic_features_better_explained_by_intellectual_disability, 'Are the social and behavioural features better explained by intellectual developmental disorder or global developmental delay (social communication not below the general developmental level)') :- !.
+label(en, accompanying_intellectual_impairment, 'Is there an accompanying intellectual impairment') :- !.
+label(en, accompanying_language_impairment, 'Is there an accompanying language impairment (current verbal functioning below age)') :- !.
+label(en, careless_mistakes, 'Often fails to give close attention to details or makes careless mistakes') :- !.
+label(en, difficulty_sustaining_attention, 'Often has difficulty sustaining attention in tasks or play') :- !.
+label(en, does_not_seem_to_listen, 'Often does not seem to listen when spoken to directly') :- !.
+label(en, fails_to_follow_through_on_tasks, 'Often does not follow through on instructions and fails to finish schoolwork, chores or duties') :- !.
+label(en, difficulty_organizing_tasks, 'Often has difficulty organizing tasks and activities') :- !.
+label(en, avoids_tasks_requiring_sustained_effort, 'Often avoids or dislikes tasks that require sustained mental effort') :- !.
+label(en, loses_things_necessary_for_tasks, 'Often loses things necessary for tasks or activities') :- !.
+label(en, easily_distracted, 'Is often easily distracted by extraneous stimuli or unrelated thoughts') :- !.
+label(en, forgetful_in_daily_activities, 'Is often forgetful in daily activities') :- !.
+label(en, fidgets_or_squirms, 'Often fidgets with or taps hands or feet, or squirms in the seat') :- !.
+label(en, leaves_seat_when_remaining_seated_is_expected, 'Often leaves the seat when remaining seated is expected') :- !.
+label(en, runs_about_or_feels_restless, 'Often runs about or climbs when inappropriate (in adolescents or adults, feels restless)') :- !.
+label(en, unable_to_engage_in_leisure_quietly, 'Is often unable to play or engage in leisure activities quietly') :- !.
+label(en, often_on_the_go, 'Is often "on the go", as if "driven by a motor"') :- !.
+label(en, talks_excessively, 'Often talks excessively') :- !.
+label(en, blurts_out_answers, 'Often blurts out an answer before a question has been completed') :- !.
+label(en, difficulty_waiting_turn, 'Often has difficulty waiting for their turn') :- !.
+label(en, interrupts_or_intrudes_on_others, 'Often interrupts or intrudes on others') :- !.
+label(en, several_symptoms_before_age_twelve, 'Several inattentive or hyperactive-impulsive symptoms were present before age 12') :- !.
+label(en, symptoms_in_two_or_more_settings, 'Several symptoms are present in two or more settings (home, school or work, with friends, other activities)') :- !.
+label(en, adhd_symptoms_better_explained_by_other_disorder, 'Do the symptoms occur only during a psychotic disorder, or are they better explained by another mental disorder (mood, anxiety, dissociative, personality) or by substance intoxication or withdrawal') :- !.
+label(en, full_adhd_criteria_previously_met, 'Were the full criteria for ADHD met in the past') :- !.
+label(en, inaccurate_or_slow_word_reading, 'Reads words inaccurately or slowly and with effort') :- !.
+label(en, difficulty_understanding_what_is_read, 'Has difficulty understanding the meaning of what is read') :- !.
+label(en, difficulties_with_spelling, 'Has difficulties with spelling') :- !.
+label(en, difficulties_with_written_expression, 'Has difficulties with written expression (grammar, punctuation, organization)') :- !.
+label(en, difficulties_with_number_sense_or_calculation, 'Has difficulties mastering number sense, number facts or calculation') :- !.
+label(en, difficulties_with_mathematical_reasoning, 'Has difficulties with mathematical reasoning') :- !.
+label(en, reading_skills_below_age, 'Standardized achievement tests place reading substantially below age (standard score about 78 or less)') :- !.
+label(en, written_expression_skills_below_age, 'Standardized achievement tests place written expression substantially below age (standard score about 78 or less)') :- !.
+label(en, mathematics_skills_below_age, 'Standardized achievement tests place mathematics substantially below age (standard score about 78 or less)') :- !.
+label(en, documented_history_of_impairing_learning_difficulties, 'There is a documented history of impairing learning difficulties') :- !.
+label(en, difficulties_persist_despite_interventions, 'The difficulties have persisted despite interventions targeting them') :- !.
+label(en, learning_difficulties_began_in_school_years, 'The learning difficulties began during the school-age years') :- !.
+label(en, learning_difficulties_explained_by_intellectual_disability, 'Are the learning difficulties accounted for by intellectual disability (and not in excess of it)') :- !.
+label(en, learning_difficulties_better_accounted_for_by_other_factors, 'Are the learning difficulties better accounted for by uncorrected vision or hearing, another mental or neurological disorder, psychosocial adversity, lack of proficiency in the language of instruction or inadequate instruction') :- !.
+label(en, motor_skills_substantially_below_age, 'The acquisition and execution of coordinated motor skills are substantially below age and opportunity (e.g., Movement ABC-2 at or below the 5th percentile)') :- !.
+label(en, clumsy_slow_or_inaccurate_motor_performance, 'Is clumsy, slow or inaccurate in motor skills (catching, using scissors or cutlery, handwriting, cycling, sports)') :- !.
+label(en, motor_deficits_interfere_with_daily_activities, 'The motor deficit significantly and persistently interferes with daily activities, school productivity, leisure and play') :- !.
+label(en, motor_deficits_explained_by_intellectual_disability_or_visual_impairment, 'Are the motor deficits better explained by intellectual disability or visual impairment') :- !.
+label(en, motor_deficits_due_to_neurological_condition, 'Are the motor deficits attributable to a neurological condition affecting movement (e.g., cerebral palsy, muscular dystrophy)') :- !.
+label(en, multiple_motor_tics, 'Has had multiple motor tics (sudden, rapid, recurrent, nonrhythmic movements)') :- !.
+label(en, motor_tics, 'Has had one or more motor tics') :- !.
+label(en, vocal_tics, 'Has had one or more vocal tics (sudden, rapid, recurrent vocalizations)') :- !.
+label(en, tics_persisted_more_than_one_year, 'The tics have persisted for more than 1 year since the first tic') :- !.
+label(en, tic_onset_before_age_eighteen, 'The tics began before age 18') :- !.
+label(en, criteria_ever_met_for_tourettes_disorder, 'Have the criteria for Tourette''s disorder ever been met') :- !.
+label(en, criteria_ever_met_for_persistent_tic_disorder, 'Have the criteria for persistent (chronic) motor or vocal tic disorder ever been met') :- !.
+explanation(en, adhd_severity, 'The severity specifier records how many symptoms exceed the threshold and how much they impair functioning.') :- !.
+explanation(en, learning_disorder_severity, 'The severity specifier records how much support the learning difficulties require.') :- !.
+explanation(en, idd_severity, 'DSM-5-TR rates intellectual developmental disorder on adaptive functioning, not on the IQ score.') :- !.
+explanation(en, asd_social_communication_support, 'The level of support is recorded separately for social communication and for restricted, repetitive behaviours.') :- !.
+explanation(en, asd_restricted_behaviour_support, 'The level of support is recorded separately for social communication and for restricted, repetitive behaviours.') :- !.
+explanation(en, intellectual_deficits_on_standardized_testing, 'Criterion A of intellectual developmental disorder requires the deficit to be confirmed by standardized testing; the IQ is entered by the clinician.') :- !.
+explanation(en, intellectual_deficits_on_clinical_assessment, 'Criterion A also requires the deficit to be confirmed by clinical assessment, not by the test score alone.') :- !.
+explanation(en, adaptive_functioning_deficits, 'Deficits in adaptive functioning are Criterion B of intellectual developmental disorder.') :- !.
+explanation(en, onset_in_early_developmental_period, 'Onset in the developmental period is required by the neurodevelopmental disorders.') :- !.
+explanation(en, reduced_vocabulary, 'Reduced vocabulary is one of the deficits of language disorder (Criterion A).') :- !.
+explanation(en, limited_sentence_structure, 'A limited sentence structure is one of the deficits of language disorder (Criterion A).') :- !.
+explanation(en, impaired_discourse, 'Impaired discourse is one of the deficits of language disorder (Criterion A).') :- !.
+explanation(en, language_abilities_substantially_below_age, 'Language disorder requires abilities substantially below age (Criterion B).') :- !.
+explanation(en, language_difficulties_attributable_to_sensory_or_medical_condition, 'Language disorder is excluded when a sensory, motor or medical condition accounts for the difficulties (Criterion D).') :- !.
+explanation(en, language_difficulties_better_explained_by_intellectual_disability, 'Language disorder is excluded when intellectual disability or global developmental delay explains the difficulties (Criterion D).') :- !.
+explanation(en, deficits_in_social_use_of_communication, 'All 4 deficits of Criterion A are required for social (pragmatic) communication disorder.') :- !.
+explanation(en, difficulty_adapting_communication_to_context, 'All 4 deficits of Criterion A are required for social (pragmatic) communication disorder.') :- !.
+explanation(en, difficulty_following_conversation_rules, 'All 4 deficits of Criterion A are required for social (pragmatic) communication disorder.') :- !.
+explanation(en, difficulty_understanding_nonliteral_language, 'All 4 deficits of Criterion A are required for social (pragmatic) communication disorder.') :- !.
+explanation(en, pragmatic_deficits_better_explained_by_other_condition, 'Social (pragmatic) communication disorder is excluded when these conditions account for the deficits; autism spectrum disorder is excluded through its restricted, repetitive behaviours (Criterion D).') :- !.
+explanation(en, social_emotional_reciprocity_deficits, 'Criterion A of autism spectrum disorder requires all 3 social-communication deficits.') :- !.
+explanation(en, nonverbal_communication_deficits, 'Criterion A of autism spectrum disorder requires all 3 social-communication deficits.') :- !.
+explanation(en, relationship_deficits, 'Criterion A of autism spectrum disorder requires all 3 social-communication deficits.') :- !.
+explanation(en, stereotyped_or_repetitive_behaviour, 'At least 2 of 4 restricted, repetitive patterns are required (Criterion B).') :- !.
+explanation(en, insistence_on_sameness, 'At least 2 of 4 restricted, repetitive patterns are required (Criterion B).') :- !.
+explanation(en, restricted_fixated_interests, 'At least 2 of 4 restricted, repetitive patterns are required (Criterion B).') :- !.
+explanation(en, sensory_reactivity_or_interest, 'At least 2 of 4 restricted, repetitive patterns are required (Criterion B).') :- !.
+explanation(en, autistic_features_better_explained_by_intellectual_disability, 'Autism spectrum disorder is diagnosed with intellectual disability only when social communication is below the general developmental level (Criterion E).') :- !.
+explanation(en, accompanying_intellectual_impairment, 'The intellectual impairment specifier distinguishes the ICD-11 subtypes of autism spectrum disorder.') :- !.
+explanation(en, accompanying_language_impairment, 'The language impairment specifier distinguishes the ICD-11 subtypes of autism spectrum disorder.') :- !.
+explanation(en, careless_mistakes, 'One of the 9 inattention symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A1).') :- !.
+explanation(en, difficulty_sustaining_attention, 'One of the 9 inattention symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A1).') :- !.
+explanation(en, does_not_seem_to_listen, 'One of the 9 inattention symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A1).') :- !.
+explanation(en, fails_to_follow_through_on_tasks, 'One of the 9 inattention symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A1).') :- !.
+explanation(en, difficulty_organizing_tasks, 'One of the 9 inattention symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A1).') :- !.
+explanation(en, avoids_tasks_requiring_sustained_effort, 'One of the 9 inattention symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A1).') :- !.
+explanation(en, loses_things_necessary_for_tasks, 'One of the 9 inattention symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A1).') :- !.
+explanation(en, easily_distracted, 'One of the 9 inattention symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A1).') :- !.
+explanation(en, forgetful_in_daily_activities, 'One of the 9 inattention symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A1).') :- !.
+explanation(en, fidgets_or_squirms, 'One of the 9 hyperactivity-impulsivity symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A2).') :- !.
+explanation(en, leaves_seat_when_remaining_seated_is_expected, 'One of the 9 hyperactivity-impulsivity symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A2).') :- !.
+explanation(en, runs_about_or_feels_restless, 'One of the 9 hyperactivity-impulsivity symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A2).') :- !.
+explanation(en, unable_to_engage_in_leisure_quietly, 'One of the 9 hyperactivity-impulsivity symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A2).') :- !.
+explanation(en, often_on_the_go, 'One of the 9 hyperactivity-impulsivity symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A2).') :- !.
+explanation(en, talks_excessively, 'One of the 9 hyperactivity-impulsivity symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A2).') :- !.
+explanation(en, blurts_out_answers, 'One of the 9 hyperactivity-impulsivity symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A2).') :- !.
+explanation(en, difficulty_waiting_turn, 'One of the 9 hyperactivity-impulsivity symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A2).') :- !.
+explanation(en, interrupts_or_intrudes_on_others, 'One of the 9 hyperactivity-impulsivity symptoms of ADHD: at least 6 are required, 5 from age 17 (Criterion A2).') :- !.
+explanation(en, several_symptoms_before_age_twelve, 'ADHD requires several symptoms before age 12 (Criterion B); an informant or school reports corroborate the recall.') :- !.
+explanation(en, symptoms_in_two_or_more_settings, 'ADHD requires symptoms in at least 2 settings (Criterion C).') :- !.
+explanation(en, adhd_symptoms_better_explained_by_other_disorder, 'ADHD is excluded when another disorder or a substance accounts for the symptoms (Criterion E).') :- !.
+explanation(en, full_adhd_criteria_previously_met, 'Partial remission applies when full criteria were met before and fewer are met in the last 6 months, with impairment.') :- !.
+explanation(en, inaccurate_or_slow_word_reading, 'One of the 6 symptoms of specific learning disorder (Criterion A); each one belongs to an academic domain.') :- !.
+explanation(en, difficulty_understanding_what_is_read, 'One of the 6 symptoms of specific learning disorder (Criterion A); each one belongs to an academic domain.') :- !.
+explanation(en, difficulties_with_spelling, 'One of the 6 symptoms of specific learning disorder (Criterion A); each one belongs to an academic domain.') :- !.
+explanation(en, difficulties_with_written_expression, 'One of the 6 symptoms of specific learning disorder (Criterion A); each one belongs to an academic domain.') :- !.
+explanation(en, difficulties_with_number_sense_or_calculation, 'One of the 6 symptoms of specific learning disorder (Criterion A); each one belongs to an academic domain.') :- !.
+explanation(en, difficulties_with_mathematical_reasoning, 'One of the 6 symptoms of specific learning disorder (Criterion A); each one belongs to an academic domain.') :- !.
+explanation(en, reading_skills_below_age, 'Criterion B requires the skills to be substantially and quantifiably below age, confirmed by standardized measures.') :- !.
+explanation(en, written_expression_skills_below_age, 'Criterion B requires the skills to be substantially and quantifiably below age, confirmed by standardized measures.') :- !.
+explanation(en, mathematics_skills_below_age, 'Criterion B requires the skills to be substantially and quantifiably below age, confirmed by standardized measures.') :- !.
+explanation(en, documented_history_of_impairing_learning_difficulties, 'From age 17 a documented history may replace the standardized assessment (Criterion B).') :- !.
+explanation(en, difficulties_persist_despite_interventions, 'Criterion A requires at least 6 months of difficulties despite targeted interventions.') :- !.
+explanation(en, learning_difficulties_began_in_school_years, 'Criterion C requires onset during the school years.') :- !.
+explanation(en, learning_difficulties_explained_by_intellectual_disability, 'Specific learning disorder occurs with normal intellectual functioning; with intellectual disability it requires difficulties in excess of it (Criterion D).') :- !.
+explanation(en, learning_difficulties_better_accounted_for_by_other_factors, 'Specific learning disorder is excluded when these factors account for the difficulties (Criterion D).') :- !.
+explanation(en, motor_skills_substantially_below_age, 'Criterion A of developmental coordination disorder.') :- !.
+explanation(en, clumsy_slow_or_inaccurate_motor_performance, 'Criterion A of developmental coordination disorder.') :- !.
+explanation(en, motor_deficits_interfere_with_daily_activities, 'Criterion B of developmental coordination disorder.') :- !.
+explanation(en, motor_deficits_explained_by_intellectual_disability_or_visual_impairment, 'Developmental coordination disorder is excluded in these cases (Criterion D).') :- !.
+explanation(en, motor_deficits_due_to_neurological_condition, 'Developmental coordination disorder is excluded in these cases (Criterion D).') :- !.
+explanation(en, multiple_motor_tics, 'Tourette''s disorder requires multiple motor tics and at least one vocal tic (Criterion A).') :- !.
+explanation(en, motor_tics, 'The kind of tics (motor, vocal or both) separates the tic disorders and their specifiers.') :- !.
+explanation(en, vocal_tics, 'The kind of tics (motor, vocal or both) separates the tic disorders and their specifiers.') :- !.
+explanation(en, tics_persisted_more_than_one_year, 'More than 1 year separates Tourette''s and persistent tic disorder from provisional tic disorder (Criterion B).') :- !.
+explanation(en, tic_onset_before_age_eighteen, 'Every tic disorder requires onset before age 18 (Criterion C).') :- !.
+explanation(en, criteria_ever_met_for_tourettes_disorder, 'Persistent and provisional tic disorder are not diagnosed after Tourette''s disorder (Criterion E).') :- !.
+explanation(en, criteria_ever_met_for_persistent_tic_disorder, 'Provisional tic disorder is not diagnosed after a persistent tic disorder (Criterion E).') :- !.
