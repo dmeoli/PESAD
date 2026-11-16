@@ -6,10 +6,10 @@
 %		Knowledge base - diagnostic criteria (DSM-5-TR). Sub-disorders
 %		(disorder_nc/4), disorder types/specifiers, symptomatic manifestations
 %		and features, and the question wrappers that elicit symptoms from the
-%		user. Covers the Anxiety, Obsessive-Compulsive and Related, and
-%		Trauma- and Stressor-Related chapters. Each lettered criterion is
-%		referred to in the comments by its letter; the wording is our own
-%		paraphrase (see doc/criteria_sheet_*.md).
+%		user. Covers the Neurodevelopmental, Anxiety, Obsessive-Compulsive
+%		and Related, and Trauma- and Stressor-Related chapters. Each lettered
+%		criterion is referred to in the comments by its letter; the wording is
+%		our own paraphrase (see doc/criteria_sheet_*.md).
 %
 %	author:
 %		Donato Meoli
@@ -28,6 +28,23 @@ unless_absent(Antecedent_CFs,_,CFs) :-
 	maplist(=(0.0),CFs).
 unless_absent(_,Goal,_) :-
 	call(Goal).
+
+%	Negated criteria during an evaluation from facts (see evaluate.pl): a
+%	criterion required false reverses the polarity of the data missing below
+%	it, so that the bounds of the evaluation stay bounds. Outside an
+%	evaluation these clauses fail at once and the rules below apply.
+disorder_nc(X,Patient,CF,false) :-
+	negation_hook(disorder_nc(X)),
+	!,
+	negated(disorder_nc(X),disorder_nc(X,Patient,CF,false)).
+symptomatic_manifestation(X,Patient,CF,false) :-
+	negation_hook(symptomatic_manifestation(X)),
+	!,
+	negated(symptomatic_manifestation(X),symptomatic_manifestation(X,Patient,CF,false)).
+symptomatic_feature(X,Patient,CF,false) :-
+	negation_hook(symptomatic_feature(X)),
+	!,
+	negated(symptomatic_feature(X),symptomatic_feature(X,Patient,CF,false)).
 
 
 %-----------------------SHARED MANIFESTATIONS / FEATURES------------------------
@@ -127,6 +144,17 @@ single_item_criterion(stress_reaction_meets_criteria_for_another_disorder).	% Aj
 single_item_criterion(symptoms_represent_normal_bereavement).		% AjD D
 single_item_criterion(symptoms_persist_beyond_six_months_after_stressor_ends).	% AjD E
 single_item_criterion(grief_better_explained_by_other_disorder).	% PGD F
+single_item_criterion(language_difficulties_attributable_to_sensory_or_medical_condition).	% LD D
+single_item_criterion(language_difficulties_better_explained_by_intellectual_disability).	% LD D
+single_item_criterion(pragmatic_deficits_better_explained_by_other_condition).	% SCD D
+single_item_criterion(autistic_features_better_explained_by_intellectual_disability).	% ASD E
+single_item_criterion(adhd_symptoms_better_explained_by_other_disorder).	% ADHD E
+single_item_criterion(learning_difficulties_explained_by_intellectual_disability).	% SLD D
+single_item_criterion(learning_difficulties_better_accounted_for_by_other_factors).	% SLD D
+single_item_criterion(motor_deficits_explained_by_intellectual_disability_or_visual_impairment).	% DCD D
+single_item_criterion(motor_deficits_due_to_neurological_condition).	% DCD D
+single_item_criterion(criteria_ever_met_for_tourettes_disorder).	% PTD E, provisional TD E
+single_item_criterion(criteria_ever_met_for_persistent_tic_disorder).	% provisional TD E
 %	Single-item criteria, required true.
 single_item_criterion(worry_more_days_than_not).			% GAD A
 single_item_criterion(anxiety_occurs_in_peer_settings).		% SocAD A, note for children
@@ -136,6 +164,17 @@ single_item_criterion(developmental_age_at_least_nine_months).	% RAD G, DSED E
 single_item_criterion(behaviour_not_limited_to_impulsivity).		% DSED B
 single_item_criterion(grief_symptoms_nearly_every_day_last_month).	% PGD B, C
 single_item_criterion(bereavement_reaction_exceeds_cultural_norms).	% PGD E
+single_item_criterion(adaptive_functioning_deficits).			% IDD B
+single_item_criterion(onset_in_early_developmental_period).		% IDD C, LD C, SCD C, ASD C, DCD C
+single_item_criterion(language_abilities_substantially_below_age).	% LD B
+single_item_criterion(several_symptoms_before_age_twelve).		% ADHD B
+single_item_criterion(symptoms_in_two_or_more_settings).		% ADHD C
+single_item_criterion(full_adhd_criteria_previously_met).		% ADHD, in partial remission
+single_item_criterion(difficulties_persist_despite_interventions).	% SLD A
+single_item_criterion(learning_difficulties_began_in_school_years).	% SLD C
+single_item_criterion(motor_deficits_interfere_with_daily_activities).	% DCD B
+single_item_criterion(tics_persisted_more_than_one_year).		% TD B (false for provisional TD)
+single_item_criterion(tic_onset_before_age_eighteen).			% TD C
 %	Yes/no specifiers, required true.
 single_item_criterion(fear_restricted_to_public_performance).	% SocAD, performance only
 single_item_criterion(history_of_tic_disorder).			% OCD, tic-related
@@ -144,6 +183,10 @@ single_item_criterion(excessive_acquisition_of_unneeded_items).	% HD, with exces
 single_item_criterion(disorder_present_more_than_twelve_months).	% RAD/DSED, persistent
 single_item_criterion(all_symptoms_at_relatively_high_levels).	% RAD/DSED, severe
 single_item_criterion(full_criteria_not_met_until_six_months_after_event).	% PTSD, with delayed expression
+single_item_criterion(accompanying_intellectual_impairment).	% ASD, with/without intellectual impairment
+single_item_criterion(accompanying_language_impairment).	% ASD, with/without language impairment
+single_item_criterion(motor_tics).				% PTD, with motor tics only
+single_item_criterion(vocal_tics).				% PTD, with vocal tics only
 
 
 %===============================ANXIETY DISORDERS===============================
@@ -676,6 +719,282 @@ symptomatic_manifestation(grief_associated_symptoms,_,CF,TV) :-
 	certainty(grief_associated_symptoms,3,[CF1],0.98,CF,TV).
 
 
+%=========================NEURODEVELOPMENTAL DISORDERS==========================
+
+%	older_adolescent_or_adult(Patient): age 17 or older, the age from which
+%	DSM-5-TR lowers the ADHD symptom count and lets a documented history
+%	replace the standardized assessment of a learning disorder. The exact age
+%	is known only when given to /evaluate; in the consultation the age band
+%	decides, and a 17-year-old in the adolescent band is held to the
+%	stricter child rule.
+older_adolescent_or_adult(Patient) :-
+	(   known_value(age_years,Age)
+	->  Age >= 17
+	;   Patient == adult ).
+
+%	symptom_count(Count,Items,Required,CF): the "Required of Items" criterion,
+%	or, when a symptom count from a structured instrument is available (see
+%	evaluate.pl), the membership of that count to "at least Required", as the
+%	fact Count. A count from a screening scale is provisional: the upper
+%	bound of an evaluation ignores it (see evaluate.pl).
+symptom_count(Count,_,Required,CF) :-
+	count_evidence_for(Count,N,Cap),
+	!,
+	Low is Required-1,
+	ramp_up(N,Low,Required,Mu),
+	CF is Cap*Mu,
+	assert_fact(symptom,fact(yes,Count,CF)).
+symptom_count(_,Items,Required,CF) :-
+	symptom(Items,Required,CF).
+
+%--------------------Intellectual Developmental Disorder------------------------
+%	A (deficits in intellectual functions confirmed by clinical assessment and
+%	by standardized testing), B (adaptive deficits), C (onset in the
+%	developmental period). No exclusion criterion.
+disorder_nc(intellectual_developmental_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(intellectual_function_deficits,Patient,CF1,true),
+	symptomatic_feature(adaptive_functioning_deficits,Patient,CF2,true),
+	symptomatic_feature(onset_in_early_developmental_period,Patient,CF3,true),
+	certainty(intellectual_developmental_disorder,2,[CF1,CF2,CF3],0.97,CF,TV).
+
+%	Criterion A: both the standardized test (IQ entered by the clinician) and
+%	the clinical assessment.
+symptomatic_manifestation(intellectual_function_deficits,_,CF,TV) :-
+	symptom([intellectual_deficits_on_standardized_testing,intellectual_deficits_on_clinical_assessment],2,CF1),
+	certainty(intellectual_function_deficits,3,[CF1],0.98,CF,TV).
+
+%-------------------------------Language Disorder-------------------------------
+%	A (>= 1 of 3 deficits), B (abilities substantially below age, with
+%	functional limitations), C (early onset), D (not attributable to a sensory,
+%	motor or medical condition, not better explained by IDD).
+disorder_nc(language_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(language_acquisition_deficits,Patient,CF1,true),
+	symptomatic_feature(language_abilities_substantially_below_age,Patient,CF2,true),
+	symptomatic_manifestation(significant_distress,Patient,CF3,true),
+	symptomatic_feature(onset_in_early_developmental_period,Patient,CF4,true),
+	unless_absent([CF1,CF2,CF3,CF4],
+		( symptomatic_feature(language_difficulties_attributable_to_sensory_or_medical_condition,Patient,CF5,false),
+		  symptomatic_feature(language_difficulties_better_explained_by_intellectual_disability,Patient,CF6,false) ),[CF5,CF6]),
+	certainty(language_disorder,2,[CF1,CF2,CF3,CF4,CF5,CF6],0.96,CF,TV).
+
+symptomatic_manifestation(language_acquisition_deficits,_,CF,TV) :-
+	symptom([reduced_vocabulary,limited_sentence_structure,impaired_discourse],1,CF1),
+	certainty(language_acquisition_deficits,3,[CF1],0.98,CF,TV).
+
+%-------------------Social (Pragmatic) Communication Disorder-------------------
+%	A (all 4 deficits), B (functional limitations), C (early onset), D (not
+%	better explained by autism spectrum disorder, i.e. no restricted and
+%	repetitive behaviour, nor by a medical condition, low structural language,
+%	IDD or another mental disorder).
+disorder_nc(social_pragmatic_communication_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(social_communication_deficits,Patient,CF1,true),
+	symptomatic_manifestation(significant_distress,Patient,CF2,true),
+	symptomatic_feature(onset_in_early_developmental_period,Patient,CF3,true),
+	unless_absent([CF1,CF2,CF3],
+		( symptomatic_manifestation(restricted_repetitive_behaviours,Patient,CF4,false),
+		  symptomatic_feature(pragmatic_deficits_better_explained_by_other_condition,Patient,CF5,false) ),[CF4,CF5]),
+	certainty(social_pragmatic_communication_disorder,2,[CF1,CF2,CF3,CF4,CF5],0.96,CF,TV).
+
+symptomatic_manifestation(social_communication_deficits,_,CF,TV) :-
+	symptom([deficits_in_social_use_of_communication,difficulty_adapting_communication_to_context,difficulty_following_conversation_rules,difficulty_understanding_nonliteral_language],4,CF1),
+	certainty(social_communication_deficits,3,[CF1],0.98,CF,TV).
+
+%---------------------------Autism Spectrum Disorder----------------------------
+%	A (all 3 social-communication deficits, currently or by history), B (>= 2
+%	of 4 restricted, repetitive patterns), C (early developmental period), D
+%	(impairment), E (not better explained by IDD or global developmental delay).
+disorder_nc(autism_spectrum_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(social_interaction_deficits,Patient,CF1,true),
+	symptomatic_manifestation(restricted_repetitive_behaviours,Patient,CF2,true),
+	symptomatic_feature(onset_in_early_developmental_period,Patient,CF3,true),
+	symptomatic_manifestation(significant_distress,Patient,CF4,true),
+	unless_absent([CF1,CF2,CF3,CF4],
+		symptomatic_feature(autistic_features_better_explained_by_intellectual_disability,Patient,CF5,false),[CF5]),
+	certainty(autism_spectrum_disorder,2,[CF1,CF2,CF3,CF4,CF5],0.97,CF,TV).
+
+%	Criterion A: all 3 (the TR clarifies that every one is required).
+symptomatic_manifestation(social_interaction_deficits,_,CF,TV) :-
+	symptom([social_emotional_reciprocity_deficits,nonverbal_communication_deficits,relationship_deficits],3,CF1),
+	certainty(social_interaction_deficits,3,[CF1],0.98,CF,TV).
+
+%	Criterion B: >= 2 of 4 (also the "not better explained by autism" part of
+%	social (pragmatic) communication disorder D, used there with truth value false).
+symptomatic_manifestation(restricted_repetitive_behaviours,_,CF,TV) :-
+	symptom([stereotyped_or_repetitive_behaviour,insistence_on_sameness,restricted_fixated_interests,sensory_reactivity_or_interest],2,CF1),
+	certainty(restricted_repetitive_behaviours,3,[CF1],0.98,CF,TV).
+
+%--------------------Attention-Deficit/Hyperactivity Disorder-------------------
+%	A (inattention and/or hyperactivity-impulsivity, >= 6 months), B (several
+%	symptoms before age 12), C (in >= 2 settings), D (interference with
+%	functioning), E (not only during a psychotic disorder, not better
+%	explained by another mental disorder or a substance).
+disorder_nc(attention_deficit_hyperactivity_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(inattention_or_hyperactivity,Patient,CF1,true),
+	symptomatic_feature(duration_at_least_six_months,Patient,CF2,true),
+	symptomatic_feature(several_symptoms_before_age_twelve,Patient,CF3,true),
+	symptomatic_feature(symptoms_in_two_or_more_settings,Patient,CF4,true),
+	symptomatic_manifestation(significant_distress,Patient,CF5,true),
+	unless_absent([CF1,CF2,CF3,CF4,CF5],
+		symptomatic_feature(adhd_symptoms_better_explained_by_other_disorder,Patient,CF6,false),[CF6]),
+	certainty(attention_deficit_hyperactivity_disorder,2,[CF1,CF2,CF3,CF4,CF5,CF6],0.97,CF,TV).
+
+%	Partial remission: full criteria met in the past, fewer than full (neither
+%	A1 nor A2) for the past 6 months, symptoms still impairing.
+disorder_nc(adhd_in_partial_remission,Patient,CF,TV) :-
+	symptomatic_feature(full_adhd_criteria_previously_met,Patient,CF1,true),
+	symptomatic_manifestation(inattention_symptoms,Patient,CF2,false),
+	symptomatic_manifestation(hyperactivity_impulsivity_symptoms,Patient,CF3,false),
+	symptomatic_manifestation(significant_distress,Patient,CF4,true),
+	certainty(adhd_in_partial_remission,2,[CF1,CF2,CF3,CF4],0.96,CF,TV).
+
+adhd_inattention_items([careless_mistakes,difficulty_sustaining_attention,does_not_seem_to_listen,fails_to_follow_through_on_tasks,difficulty_organizing_tasks,avoids_tasks_requiring_sustained_effort,loses_things_necessary_for_tasks,easily_distracted,forgetful_in_daily_activities]).
+adhd_hyperactivity_items([fidgets_or_squirms,leaves_seat_when_remaining_seated_is_expected,runs_about_or_feels_restless,unable_to_engage_in_leisure_quietly,often_on_the_go,talks_excessively,blurts_out_answers,difficulty_waiting_turn,interrupts_or_intrudes_on_others]).
+
+%	Criterion A1: >= 6 of 9 inattention symptoms (>= 5 from age 17).
+symptomatic_manifestation(inattention_symptoms,Patient,CF,TV) :-
+	adhd_inattention_items(Items),
+	adhd_symptom_threshold(Patient,Required),
+	symptom_count(inattention_symptom_count,Items,Required,CF1),
+	certainty(inattention_symptoms,3,[CF1],1.0,CF,TV).
+
+%	Criterion A2: >= 6 of 9 hyperactivity-impulsivity symptoms (>= 5 from age 17).
+symptomatic_manifestation(hyperactivity_impulsivity_symptoms,Patient,CF,TV) :-
+	adhd_hyperactivity_items(Items),
+	adhd_symptom_threshold(Patient,Required),
+	symptom_count(hyperactivity_impulsivity_symptom_count,Items,Required,CF1),
+	certainty(hyperactivity_impulsivity_symptoms,3,[CF1],1.0,CF,TV).
+
+%	Criterion A: A1 and/or A2 (the disjunction is the larger certainty).
+symptomatic_manifestation(inattention_or_hyperactivity,Patient,CF,TV) :-
+	adhd_inattention_items(I_Items),
+	adhd_hyperactivity_items(H_Items),
+	adhd_symptom_threshold(Patient,Required),
+	symptom_count(inattention_symptom_count,I_Items,Required,CF1),
+	symptom_count(hyperactivity_impulsivity_symptom_count,H_Items,Required,CF2),
+	CF3 is max(CF1,CF2),
+	certainty(inattention_or_hyperactivity,3,[CF3],1.0,CF,TV).
+
+adhd_symptom_threshold(Patient,5) :-
+	older_adolescent_or_adult(Patient),
+	!.
+adhd_symptom_threshold(_,6).
+
+%---------------------------Specific Learning Disorder--------------------------
+%	A (difficulties persisting >= 6 months despite targeted interventions), B
+%	(interference; the "below age" part is in each academic domain), C (onset
+%	in the school years), D (not better accounted for by intellectual
+%	disability or by sensory, neurological, psychosocial, linguistic or
+%	instructional factors).
+disorder_nc(specific_learning_disorder,Patient,CF,TV) :-
+	symptomatic_feature(duration_at_least_six_months,Patient,CF1,true),
+	symptomatic_feature(difficulties_persist_despite_interventions,Patient,CF2,true),
+	symptomatic_manifestation(significant_distress,Patient,CF3,true),
+	symptomatic_feature(learning_difficulties_began_in_school_years,Patient,CF4,true),
+	unless_absent([CF1,CF2,CF3,CF4],
+		( symptomatic_feature(learning_difficulties_explained_by_intellectual_disability,Patient,CF5,false),
+		  symptomatic_feature(learning_difficulties_better_accounted_for_by_other_factors,Patient,CF6,false) ),[CF5,CF6]),
+	certainty(specific_learning_disorder,2,[CF1,CF2,CF3,CF4,CF5,CF6],0.96,CF,TV).
+
+%	academic_domain(Domain,Symptoms,Below_Age_Item): the symptoms of criterion
+%	A that belong to each coded domain, and its "below age" item of B.
+academic_domain(reading_impairment,[inaccurate_or_slow_word_reading,difficulty_understanding_what_is_read],reading_skills_below_age).
+academic_domain(written_expression_impairment,[difficulties_with_spelling,difficulties_with_written_expression],written_expression_skills_below_age).
+academic_domain(mathematics_impairment,[difficulties_with_number_sense_or_calculation,difficulties_with_mathematical_reasoning],mathematics_skills_below_age).
+
+%	One academic domain: >= 1 of its symptoms (A) and skills substantially and
+%	quantifiably below age (B); from age 17 a documented history of impairing
+%	learning difficulties may replace the standardized assessment.
+symptomatic_manifestation(Domain,Patient,CF,TV) :-
+	academic_domain(Domain,_,_),
+	academic_domain_certainty(Domain,Patient,CF1),
+	certainty(Domain,3,[CF1],0.98,CF,TV).
+
+academic_domain_certainty(Domain,Patient,CF) :-
+	academic_domain(Domain,Symptoms,Below_Age),
+	symptom(Symptoms,1,CF1),
+	symptom([Below_Age],1,CF2),
+	(   older_adolescent_or_adult(Patient)
+	->  symptom([documented_history_of_impairing_learning_difficulties],1,CF3),
+	    CF4 is max(CF2,CF3)
+	;   CF4 = CF2 ),
+	antecedent_certainty([CF1,CF4],CF).
+
+%	Any academic domain (the severity specifiers apply to the disorder).
+symptomatic_manifestation(any_academic_domain_impairment,Patient,CF,TV) :-
+	findall(C,( academic_domain(D,_,_), academic_domain_certainty(D,Patient,C) ),Cs),
+	max_list(Cs,CF1),
+	certainty(any_academic_domain_impairment,3,[CF1],0.98,CF,TV).
+
+%-----------------------Developmental Coordination Disorder---------------------
+%	A (motor skills substantially below age, clumsiness, slowness or
+%	inaccuracy), B (interference with daily, school, leisure activities), C
+%	(early onset), D (not better explained by IDD or visual impairment, not
+%	attributable to a neurological condition affecting movement).
+disorder_nc(developmental_coordination_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(motor_coordination_deficits,Patient,CF1,true),
+	symptomatic_feature(motor_deficits_interfere_with_daily_activities,Patient,CF2,true),
+	symptomatic_feature(onset_in_early_developmental_period,Patient,CF3,true),
+	unless_absent([CF1,CF2,CF3],
+		( symptomatic_feature(motor_deficits_explained_by_intellectual_disability_or_visual_impairment,Patient,CF4,false),
+		  symptomatic_feature(motor_deficits_due_to_neurological_condition,Patient,CF5,false) ),[CF4,CF5]),
+	certainty(developmental_coordination_disorder,2,[CF1,CF2,CF3,CF4,CF5],0.96,CF,TV).
+
+symptomatic_manifestation(motor_coordination_deficits,_,CF,TV) :-
+	symptom([motor_skills_substantially_below_age,clumsy_slow_or_inaccurate_motor_performance],2,CF1),
+	certainty(motor_coordination_deficits,3,[CF1],0.98,CF,TV).
+
+%----------------------------------Tic Disorders--------------------------------
+%	Tourette's disorder: A (multiple motor and >= 1 vocal tic, not
+%	necessarily together), B (more than 1 year since the first tic), C (onset
+%	before 18); D (substance/medical) is applied in disorders.pl.
+disorder_nc(tourettes_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(multiple_motor_and_vocal_tics,Patient,CF1,true),
+	symptomatic_feature(tics_persisted_more_than_one_year,Patient,CF2,true),
+	symptomatic_feature(tic_onset_before_age_eighteen,Patient,CF3,true),
+	certainty(tourettes_disorder,2,[CF1,CF2,CF3],0.97,CF,TV).
+
+symptomatic_manifestation(multiple_motor_and_vocal_tics,_,CF,TV) :-
+	symptom([multiple_motor_tics,vocal_tics],2,CF1),
+	certainty(multiple_motor_and_vocal_tics,3,[CF1],0.99,CF,TV).
+
+%	Persistent (chronic) motor or vocal tic disorder: A (motor or vocal tics,
+%	not both: the type is the specifier, see disorders.pl), B (more than 1
+%	year), C (before 18), E (never met the criteria for Tourette's disorder).
+disorder_nc(persistent_tic_disorder,Patient,CF,TV) :-
+	symptomatic_feature(tics_persisted_more_than_one_year,Patient,CF1,true),
+	symptomatic_feature(tic_onset_before_age_eighteen,Patient,CF2,true),
+	unless_absent([CF1,CF2],
+		symptomatic_feature(criteria_ever_met_for_tourettes_disorder,Patient,CF3,false),[CF3]),
+	certainty(persistent_tic_disorder,2,[CF1,CF2,CF3],0.97,CF,TV).
+
+%	Provisional tic disorder: A (motor and/or vocal tics), B (less than 1 year
+%	since the first tic), C (before 18), E (never met the criteria for Tourette's
+%	or persistent tic disorder).
+disorder_nc(provisional_tic_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(motor_or_vocal_tics,Patient,CF1,true),
+	symptomatic_feature(tics_persisted_more_than_one_year,Patient,CF2,false),
+	symptomatic_feature(tic_onset_before_age_eighteen,Patient,CF3,true),
+	unless_absent([CF1,CF2,CF3],
+		( symptomatic_feature(criteria_ever_met_for_tourettes_disorder,Patient,CF4,false),
+		  symptomatic_feature(criteria_ever_met_for_persistent_tic_disorder,Patient,CF5,false) ),[CF4,CF5]),
+	certainty(provisional_tic_disorder,2,[CF1,CF2,CF3,CF4,CF5],0.96,CF,TV).
+
+symptomatic_manifestation(motor_or_vocal_tics,_,CF,TV) :-
+	symptom([motor_tics,vocal_tics],1,CF1),
+	certainty(motor_or_vocal_tics,3,[CF1],0.99,CF,TV).
+
+%	Neurodevelopmental specifiers asked as a single choice.
+adhd_severity(Level) :-
+	selective_ask(adhd_severity,Level,[severity_mild,severity_moderate,severity_severe]).
+learning_disorder_severity(Level) :-
+	selective_ask(learning_disorder_severity,Level,[severity_mild,severity_moderate,severity_severe]).
+idd_severity(Level) :-
+	selective_ask(idd_severity,Level,[severity_mild,severity_moderate,severity_severe,severity_profound]).
+asd_support(social_communication,Level) :-
+	selective_ask(asd_social_communication_support,Level,[requiring_support,requiring_substantial_support,requiring_very_substantial_support]).
+asd_support(restricted_behaviour,Level) :-
+	selective_ask(asd_restricted_behaviour_support,Level,[requiring_support,requiring_substantial_support,requiring_very_substantial_support]).
+
 %--------------------------DURATION / ONSET FEATURES----------------------------
 symptomatic_feature(duration_at_least_one_month,_,CF,TV) :-
 	symptoms_duration([one_to_three_months,three_to_six_months,six_months_or_more],CF1),
@@ -727,6 +1046,7 @@ adjustment_subtype(Subtype) :-
 
 panic_attacks_frequency(L,CF) :-
 	current_uncertainty_method(fuzzy_membership),
+	graded_available(panic_attacks_count),
 	!,
 	graded_value(panic_attacks_count,Count),
 	frequency_membership(L,Count,CF).
@@ -735,6 +1055,7 @@ panic_attacks_frequency(L,CF) :-
 
 symptoms_duration(L,CF) :-
 	current_uncertainty_method(fuzzy_membership),
+	graded_available(duration_months),
 	!,
 	graded_value(duration_months,Months),
 	duration_membership(L,Months,CF).

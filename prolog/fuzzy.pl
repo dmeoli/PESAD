@@ -74,6 +74,15 @@ insight_membership(absent_or_delusional,Degree,Mu):- ramp_down(Degree,0.2,0.4,Mu
 graded_options(duration_months,[0,0.5,1,2,3,4,5,6,9,12,24]).
 graded_options(panic_attacks_count,[0,1,2,3,4,5,6,10]).
 
+%	graded_available(Variable): the graded value of Variable can be used: in a
+%	consultation it is asked, in an evaluation from facts (see evaluate.pl) it
+%	must have been given, otherwise the discrete question takes its place.
+graded_available(_) :-
+	\+ evaluation_bound(_),
+	!.
+graded_available(Variable) :-
+	known_value(Variable,_).
+
 %	graded_value(Variable, Value): returns the crisp value for Variable, asking
 %	the user for a number the first time and caching it in known_value/2.
 graded_value(Variable,Value) :-

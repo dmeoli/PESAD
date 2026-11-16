@@ -68,6 +68,14 @@ ask_question(Attribute,[],Required_Items_Number,Certainty,Facts_List) :-
 ask_question(Attribute,[Item|Remaining_Items],Required_Items_Number,Certainty,Facts_List) :-
 	known_question_condition(Attribute,Item,Remaining_Items,Required_Items_Number,Certainty,Facts_List).
 
+%	In an evaluation from facts (see evaluate.pl) an item without an answer is
+%	not asked: it is recorded as missing and takes the bound of the run
+known_question_condition(Attribute,Item,Remaining_Items,Required_Items_Number,Certainty,Facts_List) :-
+	missing_in_evaluation(Attribute,Item),
+	!,
+	missing_degree(Degree),
+	add_element(fact(missing,Item,Degree),Facts_List,Updated_Facts_List),
+	ask_question(Attribute,Remaining_Items,Required_Items_Number,Certainty,Updated_Facts_List).
 %	If there is already a positive answer for the n-th item, takes the certainty value and moves on to examine the next item
 known_question_condition(Attribute,Item,Remaining_Items,Required_Items_Number,Certainty,Facts_List) :-
 	known(yes,Attribute,Item,Answer_Certainty),
@@ -213,6 +221,11 @@ get_certainty_criterion(_,_,Certainty,_,_,Candidate_Facts_List) :-
 %		If the answer is one of those allowed by the question, then the certainty equals the one typed by the user,
 %		otherwise it is given by the ratio between the complement of the certainty of the user's answer and the remaining options.
 %		E.g. Question 1; Answers: a, b, c; Allowed Answers: a; User Answer: c with Certainty 0.7; Certainty = (1-0.7)/2
+multiple_ask(Attribute,_,_,Certainty) :-
+	missing_in_evaluation(Attribute,Attribute),
+	!,
+	missing_degree(Certainty),
+	assert_fact(Attribute,fact(missing,Attribute,Certainty)).
 multiple_ask(Attribute,Options_List,Allowed_Options_List,Certainty) :-
 	known(yes,Attribute,Answer,Answer_Certainty),
 	!,
@@ -315,6 +328,11 @@ compute_certainty_multiple_ask(Attribute,Certainty,_,Answer_Certainty,Options_Li
 %	selective_ask(Attribute,Allowed_Option,Options_List):
 %		allows asking questions in which the answer must be chosen selectively from a list of possible values.
 %		Note that if the chosen option is not the correct one for the question under examination, a failure occurs.
+selective_ask(Attribute,_,_) :-
+	missing_in_evaluation(Attribute,Attribute),
+	!,
+	missing_degree(Degree),
+	Degree > 0.5.
 selective_ask(Attribute,Allowed_Option,_) :-
 	known(yes,Attribute,Allowed_Option,_),
 	!.

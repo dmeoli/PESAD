@@ -14,12 +14,14 @@ ordinary main/0 and stops at each question; a question is returned here as a
 answer expected and a structured description of the question (what the web
 API shows).
 
-Two ways of driving a consultation:
+Three ways of using it:
   - turn by turn with `open`, `answer` and `cancel`, passing the raw answers
     as typed (the bot);
   - stateless, with `consult(lang, answers)`, which starts a fresh session
     for a language, replays the answers after validating each one against
-    the options of its screen, and returns the screen reached (the web API).
+    the options of its screen, and returns the screen reached (the web API);
+  - without questions, with `evaluate(request)`, on facts and test results
+    given at once (POST /evaluate of the web API).
 
 Author: Donato Meoli
 """
@@ -159,6 +161,20 @@ class Engine:
         """Deliver a raw answer and return the next screen."""
         return _screen(await self._query(
             f"bot_answer({pl_str(session_id)}, {pl_str(raw)}, Kind, Text, Topic)"))
+
+    async def evaluate(self, request):
+        """Evaluation from facts (see prolog/evaluate.pl): `request` is the
+        dict of POST /evaluate; returns the response dict, or a dict with
+        "error" and "index" for an invalid request. Runs in a Prolog thread
+        of its own, so it shares no state with the consultations."""
+        result = await self._query(
+            f"pesad_evaluate({pl_str(json.dumps(request))}, Out)")
+        return json.loads(str(result[0]["Out"]))
+
+    async def findings(self):
+        """The findings, items, choices and numbers /evaluate accepts."""
+        result = await self._query("findings_catalogue(Out)")
+        return json.loads(str(result[0]["Out"]))
 
     async def cancel(self, session_id):
         await self._query(f"bot_cancel({pl_str(session_id)})")
