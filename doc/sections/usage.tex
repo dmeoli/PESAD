@@ -68,8 +68,10 @@ for the answer.
 
 \subsection{Investigation}
 
-The command \code{investigation} poses the question on the age band and then
-tries to prove the goals of table~\ref{tab:disorders}, posing the questions
+The command \code{investigation} poses the question on the age band and the one
+on the area to explore (a chapter of the manual, several chapters, or all of
+them), and then tries to prove the goals of table~\ref{tab:disorders} in the
+chosen chapters, posing the questions
 that each one needs and that have not been answered yet. Its result is the list
 of the goals with a certainty greater than $0$, sorted by decreasing certainty.
 Two choices characterize it. First, the exploration does not stop at the first
@@ -82,7 +84,9 @@ goal and find the premise responsible for the difference. In the code,
 \begin{lstlisting}
 solve(investigation) :-
     delete_trees,
-    investigate_goals(Goals_List),
+    patient(_),
+    select_chapters(Chapters),
+    investigate_goals(Chapters, Goals_List),
     descending_order_goals(Goals_List, Sorted_Goals_List),
     display_investigation(Sorted_Goals_List),
     investigation_how(Sorted_Goals_List).
@@ -90,8 +94,8 @@ solve(investigation) :-
 where \code{delete\_trees/0} removes the proof trees of the previous runs, but
 not the facts stated by the user, which remain valid across runs of the same
 consultation (the two are kept apart so that a run interrupted by an error does
-not leave partial trees in memory). Then \code{investigate\_goals/1}
-collects the goals that can be proved, with their certainty, and
+not leave partial trees in memory). Then \code{investigate\_goals/2}
+collects the goals of the chosen chapters that can be proved, with their certainty, and
 \code{descending\_order\_goals/2} and \code{display\_investigation/1} sort and
 print them. Finally, \code{investigation\_how/1} offers the proof tree of one
 goal at a time, chosen by its number in the list, until the user declines. An
@@ -106,6 +110,14 @@ What is the patient's age group?
 	3: 13-17 years
 	4: >= 18 years
  > 4.
+
+Which area do you want to explore
+	1: Neurodevelopmental disorders
+	2: Anxiety disorders
+	3: Obsessive-compulsive and related disorders
+	4: Trauma- and stressor-related disorders
+	5: All areas
+ > 2.
 
 [ ... ]
 
@@ -132,7 +144,10 @@ Do you want to know how they were deduced? (yes, no) > no.
 \end{lstlisting}
 A complete investigation poses several hundred questions, since the knowledge
 base has 238 yes/no items. This is the price of ranking all the goals (cf.
-section~\ref{sec:limitations}).
+section~\ref{sec:limitations}); restricted to one chapter, a consultation with
+no symptom takes 110 answers for the neurodevelopmental chapter, 132 for the
+anxiety one, 56 for the obsessive-compulsive one and 114 for the trauma one,
+against 368 for all of them (the shared exclusions are posed in each chapter).
 
 \subsection{Control}
 

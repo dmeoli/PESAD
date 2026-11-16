@@ -32,6 +32,11 @@ Only the questions, diagnoses and
 explanations the user reads are shown in the selected language, while the
 commands are always in English: `investigation`, `control`, `facts`, `help`,
 `clean`, `quit`.
+After the age band, `investigation` asks which area to explore (one DSM-5-TR
+chapter, several as a list such as `[2,4].`, or all of them) and poses only the
+questions of its disorders: about 110 answers for the neurodevelopmental chapter,
+130 for the anxiety one, 56 for the obsessive-compulsive one and 114 for the
+trauma one, against about 370 for all the areas.
 
 ## Testing
 
@@ -81,7 +86,9 @@ $ curl -X POST https://pesad-372868569544.europe-west1.run.app/step \
 ```
 
 The answers are the `value`s of the options; an answer that is not an option of
-its question gives a 400. The result (`"kind": "result"`) lists the disorders
+its question gives a 400. The question after the age band (`"id": "area"`)
+chooses the chapter to investigate, or `all`; the optional `chapters` (e.g.
+`["anxiety", "trauma"]`) answers it in advance, and the question is not shown. The result (`"kind": "result"`) lists the disorders
 supported by the answers with their certainty degree and proof tree. Nothing is
 stored and the answers are never logged. Run it locally with `make api` and test
 it with `make test-api`; `make deploy-api` builds it with Cloud Build and

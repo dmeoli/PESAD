@@ -56,6 +56,12 @@ async def main():
         assert screen.kind == "menu_why", screen.kind               # age band
         screen, raws = await answer_turn(engine, "ci2", "4")         # adult
         history.append(raws)
+        assert screen.kind == "menu_why" and screen.topic["id"] == "area", screen.kind
+        body, keyboard = render(screen.kind, screen.text, "en", screen.topic)
+        numbered = [b.callback_data for row in keyboard.inline_keyboard for b in row]
+        assert numbered[:5] == ["1", "2", "3", "4", "5"], numbered
+        screen, raws = await answer_turn(engine, "ci2", "5")         # all areas
+        history.append(raws)
         assert screen.kind == "criterion", screen.kind
         body, keyboard = render(screen.kind, screen.text, "it", screen.topic)
         labels = [b.text for b in keyboard.inline_keyboard[0]]
@@ -76,7 +82,7 @@ async def main():
 
         # graded values have buttons from graded_options
         screen = await engine.open("ci3")
-        for raw in ("1", "3", "investigation", "4"):
+        for raw in ("1", "3", "investigation", "4", "2,3"):  # typed areas
             screen, _ = await answer_turn(engine, "ci3", raw)
         while screen.kind == "criterion":
             screen, _ = await answer_turn(engine, "ci3", "t:0")

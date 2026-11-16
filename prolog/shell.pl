@@ -163,16 +163,81 @@ run(_) :-
 	write(T_Command_Error).
 	
 %	solve(investigation):
-%		starts the expert system in investigation mode, returning and printing the list of solved goals
+%		starts the expert system in investigation mode, on the chapters chosen after the age band,
+%		returning and printing the list of solved goals
 %		sorted in descending order by certainty value.
 %		At the end of the investigation, it offers the option to display the proof tree for any goal of interest.
 solve(investigation) :-
 	delete_trees,
-	investigate_goals(Goals_List),
+	patient(_),
+	select_chapters(Chapters),
+	investigate_goals(Chapters,Goals_List),
 	descending_order_goals(Goals_List,Sorted_Goals_List),
 	display_investigation(Sorted_Goals_List),
 	ui_topic(diagnosis(Sorted_Goals_List)),
 	investigation_how(Sorted_Goals_List).
+
+%	select_chapters(Chapters):
+%		asks which areas (DSM-5-TR chapters) to investigate, once per session, and returns
+%		their list, or all. Several areas can be given at once, as a list or separated by commas.
+select_chapters(Chapters) :-
+	findall(A,known(yes,area,A,_),Areas),
+	Areas \== [],
+	!,
+	area_chapters(Areas,Chapters).
+select_chapters(Chapters) :-
+	area_options(Options),
+	white_lines(1),
+	decode(area,T_Area),
+	write(T_Area),
+	white_lines(1),
+	show_options(Options),
+	ui_topic(choice(area,Options)),
+	white_lines(1),
+	decode(option_request,T_Option_Request),
+	write(T_Option_Request),
+	repeat,
+	write(' > '),
+	ui_read(menu_why,Choice),
+	area_answer(Choice,Options,Areas),
+	!,
+	forall(member(A,Areas), assertz(known(yes,area,A,1.0))),
+	area_chapters(Areas,Chapters).
+
+area_options([neurodevelopmental,anxiety,obsessive_compulsive,trauma,all]).
+
+%	area_answer(Choice,Options,Areas): the areas of the answer Choice (option numbers or names).
+area_answer(Why,_,_) :-
+	memberchk(Why,[why,perche,p]),
+	!,
+	explain(area,Explanation),
+	write(Explanation),
+	white_lines(1),
+	fail.
+area_answer(Choice,Options,Areas) :-
+	(   is_list(Choice) -> Parts = Choice
+	;   atom(Choice) -> atomic_list_concat(Parts,',',Choice)
+	;   Parts = [Choice] ),
+	Parts \== [],
+	maplist(area_part(Options),Parts,Areas0),
+	!,
+	sort(Areas0,Areas).
+area_answer(_,_,_) :-
+	decode(answer_error,T_Answer_Error),
+	write(T_Answer_Error),
+	fail.
+
+area_part(Options,Part,Area) :-
+	(   atom(Part) -> normalize_space(atom(Name),Part) ; Name = Part ),
+	(   atom(Name), atom_number(Name,N) -> true ; N = Name ),
+	(   integer(N) -> nth1(N,Options,Area) ; memberchk(N,Options), Area = N ).
+
+%	area_chapters(Areas,Chapters): all when every chapter is chosen.
+area_chapters(Areas,all) :-
+	area_options(Options),
+	( memberchk(all,Areas) ; forall(( member(C,Options), C \== all ), memberchk(C,Areas)) ),
+	!.
+area_chapters(Areas,Areas).
 
 %	display_investigation(Goals_List):
 %		prints the result of the investigation

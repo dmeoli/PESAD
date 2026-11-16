@@ -41,6 +41,12 @@ label(it, option_request, 'Digitare il codice corrispondente all''opzione scelta
 label(it, goal_request, 'Quale dei seguenti disturbi si vuole controllare') :- !.
 label(it, diagnosis_result, 'Il paziente soffre di ') :- !.
 label(it, patient, 'Qual è la fascia d''età del paziente') :- !.
+label(it, area, 'Quale area vuoi esplorare') :- !.
+label(it, neurodevelopmental, 'Disturbi del neurosviluppo') :- !.
+label(it, anxiety, 'Disturbi d''ansia') :- !.
+label(it, obsessive_compulsive, 'Disturbo ossessivo-compulsivo e disturbi correlati') :- !.
+label(it, trauma, 'Disturbi correlati a eventi traumatici e stressanti') :- !.
+label(it, all, 'Tutte le aree') :- !.
 label(it, how_request_control, 'Vuoi sapere come e'' stato dedotto') :- !.
 label(it, how_request_investigation, 'Vuoi sapere come sono stati dedotti') :- !.
 label(it, true_label, ' e'' vero con CF ') :- !.
@@ -394,6 +400,7 @@ explanation(it, palpitations, 'La presenza di palpitazioni può essere indicativ
 explanation(it, panic_attacks_frequency, 'Il numero di attacchi di panico aiuta a stabilire se gli attacchi siano ricorrenti, come richiesto per il disturbo di panico.') :- !.
 explanation(it, paresthesias, 'Le parestesie (intorpidimento o formicolio) sono tra i sintomi fisici di un attacco di panico.') :- !.
 explanation(it, patient, 'La fascia d''età del paziente viene utilizzata per applicare i criteri, le durate specifici per l''età e il sottotipo prescolare del PTSD.') :- !.
+explanation(it, area, 'Si indagano solo i disturbi dell''area scelta (un capitolo del DSM-5-TR), quindi si chiedono solo i loro criteri; tutte le aree indaga ogni disturbo della base di conoscenza. Si possono scrivere più aree insieme, per esempio 2,3.') :- !.
 explanation(it, persistent_negative_beliefs, 'Le convinzioni negative persistenti ed esagerate su se stessi, sugli altri o sul mondo appartengono al cluster delle alterazioni negative di pensieri ed emozioni del PTSD.') :- !.
 explanation(it, persistent_negative_emotional_state, 'Uno stato emotivo negativo persistente appartiene al cluster delle alterazioni negative di pensieri ed emozioni del PTSD.') :- !.
 explanation(it, phobic_reaction_type, 'Il modo in cui il paziente reagisce alle situazioni temute (evitamento o sopportazione con disagio) è richiesto per i disturbi fobici e agorafobici.') :- !.
