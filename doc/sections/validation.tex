@@ -1,75 +1,212 @@
 \chapter{Validation}
 \label{chap:validation}
 
-The system is validated with a small regression suite of clinical vignettes,
-one per disorder family, collected in the file \texttt{clinical\_tests.pl} and
-run with \texttt{swipl clinical\_tests.pl}.
+The knowledge base is validated against the DSM-5-TR criteria by a suite of
+clinical vignettes (the file \code{prolog/clinical\_tests.pl}, run with
+\code{swipl prolog/clinical\_tests.pl}), which the continuous integration of the
+repository executes at each push. This chapter describes how a case is run and
+which kinds of cases the suite contains, then gives the results by uncertainty
+method and by case type. Finally, a mutation test measures how many errors
+injected into the knowledge base the suite detects.
 
 \section{Method}
 
-Each clinical case encodes the answers a clinician would give as a set of
-\texttt{known/4} facts. To run the full \emph{investigation} without interactive
-input, the harness automatically discovers every symptom the engine may ask ---by
-inspecting the clauses of the manifestation, feature and type predicates--- and
-sets each of them to \emph{absent} as a baseline; it then overlays the positive
-findings of the case, runs the investigation, ranks the disorders by certainty
-and checks that the top-ranked diagnosis is the expected one. The
-``no-diagnosis'' vignette is considered passed when the highest certainty stays
-below $30\%$. Every case is executed under all three uncertainty methods:
-\texttt{cf} (minimum t-norm, the default), \texttt{fuzzy} (product t-norm) and
-\texttt{fuzzy\_membership} (graded membership functions over duration, frequency
-and insight).
+A case is a vignette, i.e., the age band of a patient and the answers a
+clinician would give, written by me from the criteria of the manual (no case
+material of the DSM-5-TR or of a casebook was used), together with a list of
+expectations. To run the whole investigation without interaction, the runner first answers
+\emph{no} with certainty $1$ to the 238 yes/no items that the engine may pose,
+which are discovered by inspecting the clauses of the knowledge base. To the
+multiple-choice questions it gives a neutral option that supports no diagnosis
+(e.g., a duration of less than 3 days). It then overlays the answers of the
+vignette, runs the investigation and checks the expectations on the ranked
+goals. A goal is \emph{present} when its certainty is at least $0.5$, the same
+threshold used by the evaluation from test results (cf. (\ref{eq:status})). An
+expectation states that a goal is present, that it is absent, that it is
+present and ranks first, that it ranks first (with any certainty greater than
+$0$), or that no goal is present. Each case runs under the six uncertainty methods. For the method
+\code{fuzzy\_membership}, the discrete durations and frequencies of the vignette
+are converted into numbers (e.g., ``3 to 6 months'' into 4 months), unless the
+vignette gives a number. Before the cases, the suite checks that each goal has
+its four cases (see below) and its two codes, and that goals, items, questions
+and options have a text in both languages.
 
-\section{Cases and results}
+Table~\ref{tab:case-types} lists the types of the cases. Each of the
+92 goals has four cases. In the \emph{typical} case the goal must be present
+and rank first. The \emph{subthreshold} case is the typical one with one
+symptom, count or duration short of the criterion, and the \emph{exclusion} case
+is the typical one with an exclusion criterion that holds (e.g., ``better
+explained by another mental disorder'', or a substance etiology); in both the
+goal must be absent. The \emph{differential} case is the vignette of a
+neighboring disorder, which must rank first while the goal is absent. Other cases test comorbidities (two disorders present together, e.g., panic
+disorder and agoraphobia, or ADHD and autism) and specifiers (e.g.,
+posttraumatic stress disorder with both specifiers, or with neither). Others
+test age rules, e.g., the duration of separation anxiety disorder below and
+above 18 years, the single associated symptom of generalized anxiety disorder in
+children, the preschool subtype of posttraumatic stress disorder, and the ADHD
+threshold at 16 and 17 years. Further cases test cross-chapter differentials
+(e.g., autism against social communication disorder, posttraumatic stress
+disorder against ADHD) and graded answers (the uncertainty cases, discussed
+below). Finally, 13 cases are requests to the evaluation from test results, with the
+expected status of goals and criteria, the expected missing data and the
+expected errors on invalid requests.
 
-Table~\ref{tab:validation} reports, for each vignette, the certainty assigned to
-the expected diagnosis under the three methods (``---'' means the method did not
-rank the expected diagnosis first).
-
-\begin{table}[h]
+\begin{table}[ht]
 \centering
-\caption{Clinical test suite: certainty of the expected diagnosis per method.}
-\label{tab:validation}
+\caption{The cases of the validation suite, by type; every case runs under each
+of the six uncertainty methods.}
+\label{tab:case-types}
 \small
-\begin{tabular}{@{}llccc@{}}
+\begin{tabular}{@{}lrp{9.4cm}@{}}
 \toprule
-\textbf{Vignette} & \textbf{Expected diagnosis} & \textbf{cf} & \textbf{fuzzy} & \textbf{fuzzy-mem.} \\
+\textbf{Type} & \textbf{Cases} & \textbf{Expectation} \\
 \midrule
-Recurrent unexpected panic attacks & Panic Disorder & 72\% & 57\% & 72\% \\
-Assault survivor & Posttraumatic Stress Disorder & 66\% & 28\% & 66\% \\
-Contamination obsessions \& rituals & OCD, with poor insight & 73\% & 56\% & 73\% \\
-Out-of-proportion spider fear & Specific Phobia, Animal Type & 75\% & 58\% & 75\% \\
-Fear of transport / open spaces & Agoraphobia & 75\% & 57\% & 75\% \\
-Low mood after job loss & Adjustment Disorder & 70\% & 60\% & 70\% \\
-Anxiety during stimulant use & Substance-Induced Anxiety Disorder & 70\% & 37\% & 70\% \\
-Spider phobia of $\sim$5 months & Specific Phobia, Animal Type & --- & --- & 64\% \\
-Mild non-specific work stress & no strong diagnosis ($<30\%$) & 10\% & 4\% & 10\% \\
+Typical & 92 & the goal is present and ranks first \\
+Subthreshold & 93 & one symptom, count or duration short: the goal is absent \\
+Exclusion & 92 & an exclusion criterion holds: the goal is absent \\
+Differential & 98 & a neighboring disorder ranks first and the goal is absent \\
+Comorbidity & 10 & two (or more) goals are present together \\
+Specifier & 7 & the right specifier goals are present, and only those \\
+Age rule & 16 & the age band changes the outcome as the manual prescribes \\
+Uncertainty & 4 & graded answers (cf. table~\ref{tab:uncertainty-cases}) \\
+Evaluation & 13 & requests to the evaluation from test results \\
 \midrule
-\textbf{Cases passed} & & \textbf{8/9} & \textbf{8/9} & \textbf{9/9} \\
+Total & 425 & \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\section{Findings}
+\section{Results}
+\label{sec:val-results}
 
-\begin{itemize}
-  \item On the seven prototypical cases all three methods rank the correct
-  disorder first, and all three correctly refrain from a strong diagnosis on the
-  non-specific case.
-  \item \emph{Specifiers are surfaced in the result}: the obsessive-compulsive
-  case is returned as ``Obsessive-Compulsive Disorder, With Poor Insight''. The
-  insight specifier (good or fair / poor / absent or delusional), which applies
-  to obsessive-compulsive, body dysmorphic and hoarding disorders, is encoded as
-  a selective specifier that labels the diagnosis without changing its presence.
-  \item The \texttt{fuzzy} (product) method assigns lower and less stable
-  certainties ---most visibly for the polythetic post-traumatic stress disorder
-  ($28\%$) and substance-induced anxiety disorder ($37\%$)--- confirming why the
-  minimum t-norm is kept as the default.
-  \item The borderline vignette is the discriminating case: a marked animal
-  phobia present for only about five months. The discrete methods (\texttt{cf}
-  and \texttt{fuzzy}) miss the hard ``at least six months'' cut-off and fail to
-  reach the diagnosis, whereas \texttt{fuzzy\_membership} grades the five-month
-  duration at $0.67$ of the fuzzy set and still ranks the phobia first ($64\%$).
-  This illustrates the practical benefit of membership functions at diagnostic
-  thresholds, at the cost of requiring a crisp numeric input from the clinician.
-\end{itemize}
+All the 425 cases pass under each of the six methods, and the consistency checks
+report no error (2550 runs in all). Since passing is a binary outcome, table~\ref{tab:results-method} also
+gives, for each method and case type, the certainty of the goal under test,
+which shows how far the cases are from the threshold of $0.5$. For the typical
+cases it gives the mean and the smallest certainty of the goal; for the other
+three types, the largest certainty that the goal (which must be absent) reaches.
+
+\begin{table}[ht]
+\centering
+\caption{Results by uncertainty method: cases passed out of 425, and certainty
+of the goal under test in the 92 cases of each of the four types per goal
+(mean and minimum for the typical cases, maximum for the others).}
+\label{tab:results-method}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+& & \multicolumn{1}{c}{\textbf{Typical}} & \textbf{Subthreshold} & \textbf{Exclusion} & \textbf{Differential} \\
+\textbf{Method} & \textbf{Passed} & mean (min) & max & max & max \\
+\midrule
+\code{cf} & 425 & 0.893 (0.785) & 0.000 & 0.123 & 0.018 \\
+\code{fuzzy} & 425 & 0.866 (0.739) & 0.000 & 0.142 & 0.018 \\
+\code{fuzzy\_membership} & 425 & 0.893 (0.785) & 0.320 & 0.123 & 0.320 \\
+\code{lukasiewicz} & 425 & 0.864 (0.734) & 0.000 & 0.111 & 0.000 \\
+\code{hamacher} & 425 & 0.867 (0.743) & 0.000 & 0.146 & 0.018 \\
+\code{einstein} & 425 & 0.864 (0.735) & 0.000 & 0.139 & 0.017 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The margins are wide under all the methods: the typical goals stay above
+$0.73$, and the goals that must be absent stay below $0.15$. The exception is
+\code{fuzzy\_membership}, in which a duration a little short of the criterion
+(e.g., 4 months against ``at least 6 months'') gives a membership of $0.33$
+instead of $0$; the goal then reaches $0.32$, still below the threshold. Differences among the t-norms are small in these cases. In fact, the answers of
+the vignettes are given with certainty $1$, and the only certainties below $1$
+are those of the rules, which are combined through at most three levels. The
+minimum gives the largest certainties, as (\ref{eq:order}) predicts, but the
+other t-norms are within $0.03$ of it on average. It is worth noting that some exclusion cases do not drive the goal to $0$. When
+the exclusion is the conclusion of a rule (e.g., the substance etiology, which
+is a parent disorder required false), its certainty is $1 - \cf_{\text{rule}}
+\cdot \cf_{\text{ant}}$ by (\ref{eq:consequent}). This is positive if the rule
+has certainty below $1$, and a residual certainty of at most $0.15$ remains.
+
+By contrast, the t-norms differ markedly when the answers themselves are uncertain.
+Table~\ref{tab:uncertainty-cases} gives the certainty of the expected goal in the
+four uncertainty cases. These are panic disorder and posttraumatic stress
+disorder with answers of certainty between $0.6$ and $0.9$, a spider phobia that
+has lasted 5 months, and a vignette of mild, non-specific work stress (for
+which the largest certainty among all the goals is given).
+
+\begin{table}[ht]
+\centering
+\caption{Certainty of the expected goal in the uncertainty cases, by method;
+the certainty of the case \code{no\_diagnosis} is the largest among all the
+goals.}
+\label{tab:uncertainty-cases}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Case} & \code{cf} & \code{fuzzy} & \code{fuzzy\_m.} & \code{lukas.} & \code{hamacher} & \code{einstein} \\
+\midrule
+\code{uncertain\_panic} & 0.723 & 0.574 & 0.723 & 0.522 & 0.607 & 0.542 \\
+\code{uncertain\_ptsd} & 0.659 & 0.278 & 0.659 & 0.000 & 0.398 & 0.185 \\
+\code{borderline\_phobia} & 0.000 & 0.000 & 0.640 & 0.000 & 0.000 & 0.000 \\
+\code{no\_diagnosis} & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Panic disorder is present under every method, although with the
+\L{}ukasiewicz and Einstein t-norms only by a small margin. Posttraumatic stress disorder, whose rule combines many uncertain clusters,
+keeps a certainty of $0.659$ under the minimum. It falls below the threshold
+with the product ($0.278$), the Hamacher product ($0.398$) and the Einstein
+product ($0.185$), where it still ranks first (and the expectation of the case is
+set accordingly), and it is $0$ with the \L{}ukasiewicz t-norm, as
+table~\ref{tab:tnorms} anticipates for a conjunction of many premises of
+certainty $0.8$. This is, in fact, the main argument for keeping the minimum as the
+default. For a diagnosis that the manual defines as a conjunction of criteria,
+the minimum makes a disorder as certain as its weakest criterion; with the other
+t-norms the certainty decreases with the number of criteria, i.e., with a
+feature of the encoding (how many premises a rule has) that has no clinical
+meaning. The borderline phobia is found only by \code{fuzzy\_membership}, which
+grades a five-month duration $0.67$ against the ``typically 6 months or more''
+of the criterion, while the discrete methods apply the cut-off. Whether this is
+desirable depends on how strictly the word ``typically'' is read; furthermore,
+it comes at the price of requesting numbers instead of options.
+
+\section{Mutation Test}
+
+A suite in which every case passes may still be unable to detect errors in the
+knowledge base, if the cases do not exercise the criteria that are wrong. To
+measure this, I generated \emph{mutants} of the knowledge base, each differing
+from it by a single error. The errors are of three kinds: (i) the threshold $M$
+of an ``at least $M$ of $N$'' criterion raised by $1$; (ii) the same threshold,
+when $M \ge 2$, lowered by $1$; (iii) a premise required false (an exclusion, or
+a symptom required absent) required true instead. Each mutant was run through
+the suite under the method \code{cf}, and it is \emph{killed} when at least one
+case fails. This test is not part of the continuous integration, since it takes
+some minutes. Table~\ref{tab:mutation} gives the results.
+
+\begin{table}[ht]
+\centering
+\caption{Mutation test: mutants generated and killed by the suite, by kind of
+injected error (method \code{cf}).}
+\label{tab:mutation}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Injected error} & \textbf{Mutants} & \textbf{Killed} & \textbf{Survived} \\
+\midrule
+Threshold $M$ raised by 1 & 66 & 58 & 8 \\
+Threshold $M$ lowered by 1 & 25 & 16 & 9 \\
+Premise required false made true & 54 & 54 & 0 \\
+\midrule
+Total & 145 & 128 (88\%) & 17 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All the inverted exclusions are detected, since each makes the typical case of
+the goal fail. The surviving mutants are thresholds that no case places at the
+boundary. A raised threshold survives when the typical vignette has more items
+than required: e.g., the panic disorder vignette has 5 of the 13 panic attack
+symptoms, and raising the threshold from 4 to 5 changes nothing. A lowered
+threshold survives when the subthreshold case of the goal shortens a different
+criterion; e.g., the subthreshold case of agoraphobia removes situations, and
+lowering the threshold of the criterion on the fear being almost always provoked
+and out of proportion goes unnoticed. Of course, the suite could kill these
+mutants with one more case per polythetic criterion, placed at the threshold.
+As it stands, it tests one criterion per goal at the boundary, and the others
+only through the typical case.

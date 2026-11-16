@@ -1,5 +1,6 @@
 %==============================================================================
-%  PESAD - Prolog Expert System for Anxiety, Obsessive-Compulsive and Trauma-Related Disorders
+%  PESAD - Prolog Expert System for Anxiety, Obsessive-Compulsive and
+%  Trauma-Related Disorders (DSM-5-TR)
 %  Technical report (English edition)
 %==============================================================================
 \documentclass[11pt,a4paper,oneside]{report}
@@ -68,6 +69,7 @@
 
 \newcommand{\cf}{\textit{CF}}
 \newcommand{\code}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
 
 %==============================================================================
 \begin{document}
@@ -85,7 +87,7 @@
   \vspace{0.4cm}
   {\Large Prolog Expert System for Anxiety, Obsessive-Compulsive\\ and Trauma-Related Disorders\par}
   \vspace{0.8cm}
-  {\large A rule-based expert system for the diagnosis of mental\\ disorders under uncertainty (DSM-5-TR)\par}
+  {\large A rule-based expert system for the DSM-5-TR neurodevelopmental,\\ anxiety, obsessive-compulsive and trauma-related disorders\par}
   \vfill
   {\large\bfseries Donato Meoli\par}
   \vspace{0.5cm}
@@ -96,23 +98,27 @@
 \pagenumbering{roman}
 \begin{abstract}
 \noindent
-PESAD (\emph{Prolog Expert System for Anxiety, Obsessive-Compulsive and
-Trauma-Related Disorders}) is a rule-based expert system, written in SWI-Prolog,
-that supports the diagnosis of the disorders of the DSM-5-TR Anxiety,
-Obsessive-Compulsive and Related, and Trauma- and Stressor-Related chapters. The
-system reasons under uncertainty by
-means of \emph{certainty factors}, propagating a degree of belief from the
-elementary symptoms reported by the clinician up to the candidate diagnoses. It
-offers two reasoning modes ---an \emph{investigation} mode that ranks all
-plausible disorders and a \emph{control} mode that verifies a single
-hypothesis--- and it is able to justify its conclusions, both by explaining
-\emph{why} a question is asked and by displaying the proof tree that shows
-\emph{how} a conclusion was reached. This report describes the theoretical
-background of expert systems, the analysis of the clinical domain, the
-acquisition and conceptualization of the knowledge, and the implementation of
-the system: its modular architecture, the knowledge-acquisition protocols, the
-certainty-factor calculus, the explanation module and the bilingual user
-interface.
+PESAD is a rule-based expert system, written in SWI-Prolog, that supports the
+diagnosis of the disorders of four chapters of the DSM-5-TR: the
+neurodevelopmental, the anxiety, the obsessive-compulsive and related, and the
+trauma- and stressor-related disorders. Its knowledge base encodes the criteria
+of the manual as rules over four inference levels, from the codable diagnoses,
+which include their specifiers and carry their ICD-10-CM and ICD-11 codes, down
+to the answers of the clinician; the exclusion criteria are premises required
+to be false. The system reasons under uncertainty with certainty factors, i.e.,
+with the minimum t-norm, or with one of five alternative methods based on the
+product, \L{}ukasiewicz, Hamacher and Einstein t-norms and on graded membership
+functions; it investigates all the goals or checks a single one, and it
+explains why a question is posed and how a conclusion was reached. The same
+engine serves a terminal shell, a Telegram bot and a stateless web API, which
+also evaluates the knowledge base from test results, returning lower and upper
+certainty bounds and the data still missing. A validation suite of clinical
+vignettes gives every goal a typical, a subthreshold, an exclusion and a
+differential case, plus comorbidity, specifier, age-rule and uncertainty
+cases, and runs them under all the methods; a mutation test measures how many
+errors injected into the knowledge base the suite detects. Yet, the vignettes
+are written from the same reading of the criteria as the rules, and the
+agreement of the system with clinicians on real cases remains to be assessed.
 \end{abstract}
 
 \tableofcontents
@@ -125,7 +131,9 @@ interface.
 \input{sections/conceptualization}
 \input{sections/implementation}
 \input{sections/usage}
+\input{sections/interfaces}
 \input{sections/validation}
+\input{sections/conclusions}
 
 \input{sections/bibliography}
 
