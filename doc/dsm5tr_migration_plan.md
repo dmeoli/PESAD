@@ -4,6 +4,15 @@ This document is the **design bridge** between the extracted DSM-5-TR criteria
 (`criteria_sheet_anxiety.md`, `criteria_sheet_ocd.md`, `criteria_sheet_trauma.md`)
 and the Prolog knowledge base. **Review this before any code is written.**
 
+> Status (2026-11-16): implemented, and audited criterion by criterion against
+> the DSM-5-TR text; the criteria sheets record the result and the KB clause of
+> every criterion. Two entries of the tables below were wrong and are corrected:
+> anxiety disorder due to another medical condition has no specifier in
+> DSM-5-TR, and the adjustment-disorder subtypes, being separately coded, are
+> separate goals. All specifiers are now modelled (one goal each), except the
+> panic attack specifier, which DSM-5-TR says cannot be coded. Every goal is
+> covered by the validation suite `prolog/clinical_tests.pl`.
+
 Reference edition: **DSM-5-TR (2022)**. Scope: full coverage of the three related
 chapters. The DSM-IV-TR knowledge base is **replaced** (kept only in git history).
 System renamed (subtitle): *Prolog Expert System for Anxiety, Obsessive-Compulsive
@@ -28,7 +37,7 @@ where DSM keeps separate codes, e.g. specific-phobia stimulus types).
 | Agoraphobia | — |
 | Generalized Anxiety Disorder | — |
 | Substance/Medication-Induced Anxiety Disorder | with onset during intoxication / withdrawal / after medication use |
-| Anxiety Disorder Due to Another Medical Condition | with panic attacks / with generalized anxiety |
+| Anxiety Disorder Due to Another Medical Condition | none (DSM-5-TR has no specifier) |
 
 ### 1.2 Obsessive-Compulsive and Related Disorders
 | Goal | Specifiers / variants |
@@ -38,7 +47,7 @@ where DSM keeps separate codes, e.g. specific-phobia stimulus types).
 | Hoarding Disorder | with excessive acquisition; insight (3 levels) |
 | Trichotillomania (Hair-Pulling Disorder) | — |
 | Excoriation (Skin-Picking) Disorder | — |
-| Substance/Medication-Induced OCRD | (template) |
+| Substance/Medication-Induced OCRD | with onset during intoxication / withdrawal / after medication use |
 | OCRD Due to Another Medical Condition | with OC symptoms / appearance preoccupations / hoarding / hair-pulling / skin-picking |
 
 ### 1.3 Trauma- and Stressor-Related Disorders

@@ -32,13 +32,19 @@ commands are always in English: `investigation`, `control`, `facts`, `help`,
 
 ## Testing
 
-A small regression suite of clinical vignettes (one per disorder family) runs
-the whole inference under both uncertainty methods and checks the top-ranked
-diagnosis:
+The validation suite runs original clinical vignettes, written from the
+DSM-5-TR criteria, through the whole inference under the three uncertainty
+methods. For every diagnostic goal it checks a typical case, a subthreshold
+case, an exclusion case and a differential case, plus comorbidity, specifier
+and age-rule cases, and prints a goal by case-type table:
 
 ```
 $ swipl prolog/clinical_tests.pl
 ```
+
+The criteria sheets in [`doc/`](doc/) give, for every disorder, the paraphrased
+criteria, the ICD-10-CM and ICD-11 codes and the clause that implements each
+criterion.
 
 ## Telegram bot
 

@@ -220,7 +220,7 @@ label(it, phobic_reaction_type, 'Come reagisce il paziente alle situazioni temut
 label(it, physical_symptoms_on_separation, 'Ha ripetute lamentele di sintomi fisici quando la separazione si verifica o viene anticipata') :- !.
 label(it, physiological_reactions_to_cues, 'Ha marcate reazioni fisiologiche a stimoli che ricordano l''evento traumatico') :- !.
 label(it, posttraumatic_stress_disorder, 'Disturbo da Stress Post-Traumatico') :- !.
-label(it, preoccupation_with_perceived_appearance_defects, 'È preoccupato per uno o più difetti o imperfezioni percepiti nell''aspetto fisico') :- !.
+label(it, preoccupation_with_perceived_appearance_defects, 'È preoccupato per uno o più difetti o imperfezioni percepiti nell''aspetto fisico, non osservabili o lievi agli occhi degli altri') :- !.
 label(it, preoccupation_with_the_deceased, 'È preoccupato da pensieri o ricordi della persona deceduta') :- !.
 label(it, preschool, '<= 6 anni') :- !.
 label(it, prolonged_grief_disorder, 'Disturbo da Lutto Prolungato') :- !.
@@ -451,3 +451,144 @@ explanation(it, symptoms_developed_during_or_after_substance_use, 'Un legame tem
 explanation(it, substance_capable_of_producing_symptoms, 'La sostanza o il farmaco deve essere farmacologicamente in grado di causare i sintomi (Criterio B2)') :- !.
 explanation(it, disturbance_is_direct_consequence_of_medical_condition, 'Un legame fisiopatologico diretto con una condizione medica supporta un disturbo dovuto a un''altra condizione medica (Criterio B)') :- !.
 explanation(it, not_exclusively_during_delirium, 'Sintomi che si manifestano esclusivamente durante un delirium escluderebbero questa diagnosi (Criterio D)') :- !.
+
+% ---- DSM-5-TR realignment: exclusions, single-item criteria and specifiers ----
+label(it, acts_aimed_at_reducing_distress, 'I comportamenti o gli atti mentali ripetitivi mirano a ridurre il disagio o a prevenire un evento temuto, ma sono irrealistici o chiaramente eccessivi') :- !.
+label(it, attempts_to_ignore_or_neutralize_thoughts, 'Cerca di ignorare o sopprimere questi pensieri, impulsi o immagini, o di neutralizzarli con un altro pensiero o azione') :- !.
+label(it, obsessions, 'Ossessioni') :- !.
+label(it, compulsions, 'Compulsioni') :- !.
+label(it, time_consuming_or_distressing, 'Dispendio di Tempo (es. > 1 Ora al Giorno) o Rilevanza Clinica') :- !.
+label(it, agoraphobic_avoidance, 'Evitamento Agorafobico') :- !.
+label(it, requires_companion, 'Le affronta solo in presenza di un accompagnatore') :- !.
+label(it, child_patient, 'Il Paziente è un Bambino') :- !.
+label(it, preschool_traumatic_exposure, 'Esposizione a un Evento Traumatico (Bambini fino a 6 Anni)') :- !.
+label(it, preschool_arousal_alterations, 'Alterazioni dell''Arousal e della Reattività (Bambini fino a 6 Anni)') :- !.
+label(it, dissociative_symptoms, 'Sintomi Dissociativi (Depersonalizzazione o Derealizzazione)') :- !.
+label(it, adjustment_clinical_significance, 'Disagio Marcato o Compromissione Significativa') :- !.
+label(it, adjustment_acute_course, 'Sintomi di Durata Inferiore a 6 Mesi') :- !.
+label(it, adjustment_persistent_course, 'Sintomi di Durata di 6 Mesi o Più') :- !.
+label(it, separation_fear_better_explained_by_other_disorder, 'La paura della separazione è spiegata meglio da un altro disturbo mentale (es. resistenza al cambiamento nell''autismo, deliri psicotici, agorafobia, preoccupazioni per la salute altrui nell''ansia generalizzata, ansia di malattia)') :- !.
+label(it, failure_to_speak_due_to_language_knowledge, 'L''incapacità di parlare è dovuta a una scarsa conoscenza, o familiarità, della lingua parlata in quella situazione') :- !.
+label(it, mutism_better_explained_by_other_disorder, 'L''incapacità di parlare è spiegata meglio da un disturbo della comunicazione, o si manifesta solo durante un disturbo dello spettro dell''autismo o un disturbo psicotico') :- !.
+label(it, phobia_better_explained_by_other_disorder, 'La paura è spiegata meglio da un altro disturbo mentale (es. agorafobia, ossessioni, ricordi traumatici, separazione, situazioni sociali)') :- !.
+label(it, social_fear_better_explained_by_other_disorder, 'La paura sociale è spiegata meglio da un altro disturbo mentale (es. disturbo di panico, disturbo da dismorfismo corporeo, disturbo dello spettro dell''autismo)') :- !.
+label(it, fear_accounted_for_by_medical_condition, 'La paura o l''evitamento sono legati a una condizione medica e non sono eccessivi rispetto a essa') :- !.
+label(it, panic_better_explained_by_other_disorder, 'Gli attacchi di panico si verificano solo in risposta a situazioni sociali temute, oggetti fobici, ossessioni, ricordi traumatici o separazione') :- !.
+label(it, agoraphobia_better_explained_by_other_disorder, 'La paura è limitata a una fobia situazionale o a situazioni sociali, o è spiegata da ossessioni, preoccupazioni per l''aspetto, ricordi traumatici o paura della separazione') :- !.
+label(it, worry_better_explained_by_other_disorder, 'La preoccupazione è spiegata meglio da un altro disturbo mentale (es. paura degli attacchi di panico, del giudizio negativo, della contaminazione, della separazione, ricordi traumatici, peso, malattia, deliri)') :- !.
+label(it, worry_more_days_than_not, 'La preoccupazione si è presentata nella maggior parte dei giorni') :- !.
+label(it, independent_disorder_evidence, 'Vi sono prove di un disturbo indipendente (i sintomi precedevano l''uso della sostanza o del farmaco, o sono durati circa 1 mese dopo la sospensione)') :- !.
+label(it, disturbance_better_explained_by_other_mental_disorder, 'Il disturbo è spiegato meglio da un altro disturbo mentale (es. un disturbo dell''adattamento in reazione alla malattia)') :- !.
+label(it, oc_symptoms_better_explained_by_other_disorder, 'Le ossessioni o compulsioni sono spiegate meglio da un altro disturbo mentale (es. preoccupazioni, aspetto, difficoltà a gettare, strappo dei capelli, stuzzicamento della pelle, rituali alimentari, ruminazioni di colpa, deliri)') :- !.
+label(it, appearance_concern_better_explained_by_eating_disorder, 'La preoccupazione per l''aspetto riguarda il grasso corporeo o il peso in un paziente che soddisfa i criteri di un disturbo alimentare') :- !.
+label(it, hoarding_better_explained_by_other_disorder, 'L''accumulo è spiegato meglio da un altro disturbo mentale (es. ossessioni, calo di energia nella depressione, deliri, deficit cognitivi, interessi ristretti nell''autismo)') :- !.
+label(it, hair_pulling_better_explained_by_other_disorder, 'Lo strappo dei capelli è spiegato meglio da un altro disturbo mentale (es. il tentativo di correggere un difetto percepito nel disturbo da dismorfismo corporeo)') :- !.
+label(it, skin_picking_better_explained_by_other_disorder, 'Lo stuzzicamento della pelle è spiegato meglio da un altro disturbo mentale (es. deliri, preoccupazioni per l''aspetto, stereotipie, intento autolesivo)') :- !.
+label(it, criteria_met_for_autism_spectrum_disorder, 'Il bambino soddisfa i criteri del disturbo dello spettro dell''autismo') :- !.
+label(it, care_presumed_responsible_for_disturbance, 'Si presume che le cure insufficienti siano responsabili del comportamento disturbato (è iniziato dopo la mancanza di cure adeguate)') :- !.
+label(it, disturbance_evident_before_age_five, 'Il disturbo era evidente prima dei 5 anni') :- !.
+label(it, developmental_age_at_least_nine_months, 'Il bambino ha un''età di sviluppo di almeno 9 mesi') :- !.
+label(it, behaviour_not_limited_to_impulsivity, 'Il comportamento è socialmente disinibito, oltre l''impulsività tipica dell''ADHD') :- !.
+label(it, better_explained_by_brief_psychotic_disorder, 'Il disturbo è spiegato meglio da un disturbo psicotico breve') :- !.
+label(it, distress_or_physiological_reactions_to_cues, 'Prova un disagio intenso o prolungato, o marcate reazioni fisiologiche, di fronte a stimoli che ricordano il trauma') :- !.
+label(it, distress_out_of_proportion_to_stressor, 'Prova un disagio marcato e sproporzionato rispetto alla gravità del fattore di stress') :- !.
+label(it, stress_reaction_meets_criteria_for_another_disorder, 'La reazione soddisfa i criteri di un altro disturbo mentale, o è solo l''aggravarsi di un disturbo preesistente') :- !.
+label(it, symptoms_represent_normal_bereavement, 'I sintomi rappresentano un normale lutto') :- !.
+label(it, symptoms_persist_beyond_six_months_after_stressor_ends, 'I sintomi sono durati più di 6 mesi dopo la fine del fattore di stress o delle sue conseguenze') :- !.
+label(it, grief_symptoms_nearly_every_day_last_month, 'I sintomi del lutto sono presenti nella maggior parte dei giorni, e quasi ogni giorno almeno nell''ultimo mese') :- !.
+label(it, bereavement_reaction_exceeds_cultural_norms, 'La durata e la gravità del lutto superano chiaramente le norme sociali, culturali o religiose del paziente') :- !.
+label(it, grief_better_explained_by_other_disorder, 'Il lutto è spiegato meglio da un altro disturbo mentale (es. disturbo depressivo maggiore, PTSD)') :- !.
+label(it, anxiety_occurs_in_peer_settings, 'L''ansia sociale si manifesta con i coetanei, non solo con gli adulti') :- !.
+label(it, fear_restricted_to_public_performance, 'La paura è limitata al parlare o all''esibirsi in pubblico') :- !.
+label(it, history_of_tic_disorder, 'Il paziente ha un disturbo da tic attuale o pregresso') :- !.
+label(it, preoccupied_with_insufficient_muscularity, 'Il paziente è preoccupato dall''idea che la propria corporatura sia troppo piccola o poco muscolosa') :- !.
+label(it, excessive_acquisition_of_unneeded_items, 'Il paziente acquisisce in modo eccessivo oggetti non necessari o per cui non c''è spazio') :- !.
+label(it, disorder_present_more_than_twelve_months, 'Il disturbo è presente da più di 12 mesi') :- !.
+label(it, all_symptoms_at_relatively_high_levels, 'Il bambino presenta tutti i sintomi, ciascuno a un livello relativamente elevato') :- !.
+label(it, full_criteria_not_met_until_six_months_after_event, 'I criteri completi sono stati soddisfatti solo 6 mesi o più dopo l''evento') :- !.
+label(it, persistent_depersonalization, 'Ha depersonalizzazione persistente o ricorrente (si sente distaccato dalla propria mente o dal proprio corpo, come un osservatore esterno)') :- !.
+label(it, persistent_derealization, 'Ha derealizzazione persistente o ricorrente (l''ambiente appare irreale, onirico, distante o distorto)') :- !.
+label(it, substance_onset, 'Quando sono iniziati i sintomi') :- !.
+label(it, onset_during_intoxication, 'Durante l''intossicazione da sostanza') :- !.
+label(it, onset_during_withdrawal, 'Durante, o poco dopo, l''astinenza dalla sostanza') :- !.
+label(it, onset_after_medication_use, 'All''inizio, a un cambiamento o alla sospensione di un farmaco') :- !.
+label(it, ocrd_presentation, 'Quali sintomi predominano nel quadro clinico') :- !.
+label(it, with_ocd_like_symptoms, 'Sintomi simili al disturbo ossessivo-compulsivo') :- !.
+label(it, with_appearance_preoccupations, 'Preoccupazione per difetti percepiti nell''aspetto') :- !.
+label(it, with_hoarding_symptoms, 'Accumulo') :- !.
+label(it, with_hair_pulling_symptoms, 'Strappo dei capelli') :- !.
+label(it, with_skin_picking_symptoms, 'Stuzzicamento della pelle') :- !.
+label(it, social_anxiety_disorder_performance_only, 'Disturbo d''Ansia Sociale, Legato Solo alla Performance') :- !.
+label(it, substance_induced_anxiety_disorder_with_onset_during_intoxication, 'Disturbo d''Ansia Indotto da Sostanze/Farmaci, Con Esordio Durante l''Intossicazione') :- !.
+label(it, substance_induced_anxiety_disorder_with_onset_during_withdrawal, 'Disturbo d''Ansia Indotto da Sostanze/Farmaci, Con Esordio Durante l''Astinenza') :- !.
+label(it, substance_induced_anxiety_disorder_with_onset_after_medication_use, 'Disturbo d''Ansia Indotto da Sostanze/Farmaci, Con Esordio Dopo l''Uso del Farmaco') :- !.
+label(it, obsessive_compulsive_disorder_tic_related, 'Disturbo Ossessivo-Compulsivo, Correlato a Tic') :- !.
+label(it, body_dysmorphic_disorder_with_muscle_dysmorphia, 'Disturbo da Dismorfismo Corporeo, Con Dismorfia Muscolare') :- !.
+label(it, hoarding_disorder_with_excessive_acquisition, 'Disturbo da Accumulo, Con Acquisizione Eccessiva') :- !.
+label(it, substance_induced_ocrd_with_onset_during_intoxication, 'Disturbo Ossessivo-Compulsivo e Disturbi Correlati Indotto da Sostanze/Farmaci, Con Esordio Durante l''Intossicazione') :- !.
+label(it, substance_induced_ocrd_with_onset_during_withdrawal, 'Disturbo Ossessivo-Compulsivo e Disturbi Correlati Indotto da Sostanze/Farmaci, Con Esordio Durante l''Astinenza') :- !.
+label(it, substance_induced_ocrd_with_onset_after_medication_use, 'Disturbo Ossessivo-Compulsivo e Disturbi Correlati Indotto da Sostanze/Farmaci, Con Esordio Dopo l''Uso del Farmaco') :- !.
+label(it, ocrd_due_to_another_medical_condition_with_ocd_like_symptoms, 'Disturbo Ossessivo-Compulsivo e Disturbi Correlati Dovuto a un''Altra Condizione Medica, Con Sintomi Simili al Disturbo Ossessivo-Compulsivo') :- !.
+label(it, ocrd_due_to_another_medical_condition_with_appearance_preoccupations, 'Disturbo Ossessivo-Compulsivo e Disturbi Correlati Dovuto a un''Altra Condizione Medica, Con Preoccupazioni per l''Aspetto') :- !.
+label(it, ocrd_due_to_another_medical_condition_with_hoarding_symptoms, 'Disturbo Ossessivo-Compulsivo e Disturbi Correlati Dovuto a un''Altra Condizione Medica, Con Sintomi di Accumulo') :- !.
+label(it, ocrd_due_to_another_medical_condition_with_hair_pulling_symptoms, 'Disturbo Ossessivo-Compulsivo e Disturbi Correlati Dovuto a un''Altra Condizione Medica, Con Sintomi di Strappo dei Capelli') :- !.
+label(it, ocrd_due_to_another_medical_condition_with_skin_picking_symptoms, 'Disturbo Ossessivo-Compulsivo e Disturbi Correlati Dovuto a un''Altra Condizione Medica, Con Sintomi di Stuzzicamento della Pelle') :- !.
+label(it, reactive_attachment_disorder_persistent, 'Disturbo Reattivo dell''Attaccamento, Persistente') :- !.
+label(it, reactive_attachment_disorder_severe, 'Disturbo Reattivo dell''Attaccamento, Grave') :- !.
+label(it, disinhibited_social_engagement_disorder_persistent, 'Disturbo da Impegno Sociale Disinibito, Persistente') :- !.
+label(it, disinhibited_social_engagement_disorder_severe, 'Disturbo da Impegno Sociale Disinibito, Grave') :- !.
+label(it, posttraumatic_stress_disorder_with_dissociative_symptoms, 'Disturbo da Stress Post-Traumatico, Con Sintomi Dissociativi') :- !.
+label(it, posttraumatic_stress_disorder_with_delayed_expression, 'Disturbo da Stress Post-Traumatico, Con Espressione Ritardata') :- !.
+label(it, adjustment_disorder_with_depressed_mood, 'Disturbo dell''Adattamento, Con Umore Depresso') :- !.
+label(it, adjustment_disorder_with_anxiety, 'Disturbo dell''Adattamento, Con Ansia') :- !.
+label(it, adjustment_disorder_with_mixed_anxiety_and_depressed_mood, 'Disturbo dell''Adattamento, Con Ansia e Umore Depresso Misti') :- !.
+label(it, adjustment_disorder_with_disturbance_of_conduct, 'Disturbo dell''Adattamento, Con Alterazione della Condotta') :- !.
+label(it, adjustment_disorder_with_mixed_disturbance_of_emotions_and_conduct, 'Disturbo dell''Adattamento, Con Alterazione Mista dell''Emotività e della Condotta') :- !.
+label(it, adjustment_disorder_unspecified, 'Disturbo dell''Adattamento, Non Specificato') :- !.
+label(it, adjustment_disorder_acute, 'Disturbo dell''Adattamento, Acuto') :- !.
+label(it, adjustment_disorder_persistent, 'Disturbo dell''Adattamento, Persistente (Cronico)') :- !.
+explanation(it, separation_fear_better_explained_by_other_disorder, 'Il disturbo d''ansia di separazione non si diagnostica se un altro disturbo mentale spiega la paura (Criterio D).') :- !.
+explanation(it, failure_to_speak_due_to_language_knowledge, 'Non parlare una lingua nuova o poco familiare non è mutismo selettivo (Criterio D).') :- !.
+explanation(it, mutism_better_explained_by_other_disorder, 'Il mutismo selettivo è escluso da un disturbo della comunicazione, dello spettro dell''autismo o psicotico (Criterio E).') :- !.
+explanation(it, phobia_better_explained_by_other_disorder, 'La fobia specifica è esclusa se la paura appartiene a un altro disturbo, come l''agorafobia o il PTSD (Criterio G).') :- !.
+explanation(it, social_fear_better_explained_by_other_disorder, 'Il disturbo d''ansia sociale è escluso se un altro disturbo mentale spiega la paura (Criterio I).') :- !.
+explanation(it, fear_accounted_for_by_medical_condition, 'In presenza di una condizione medica la paura deve esserne indipendente o chiaramente eccessiva (ansia sociale J, agorafobia H).') :- !.
+explanation(it, panic_better_explained_by_other_disorder, 'Il disturbo di panico è escluso se gli attacchi si verificano solo in risposta all''oggetto di un altro disturbo (Criterio D).') :- !.
+explanation(it, agoraphobia_better_explained_by_other_disorder, 'L''agorafobia è esclusa se un altro disturbo mentale spiega la paura e l''evitamento (Criterio I).') :- !.
+explanation(it, worry_better_explained_by_other_disorder, 'Il disturbo d''ansia generalizzata è escluso se la preoccupazione appartiene a un altro disturbo (Criterio F).') :- !.
+explanation(it, worry_more_days_than_not, 'Nel disturbo d''ansia generalizzata la preoccupazione è presente nella maggior parte dei giorni per almeno 6 mesi (Criterio A).') :- !.
+explanation(it, independent_disorder_evidence, 'Sintomi che precedono l''uso della sostanza o le sopravvivono di circa un mese indicano un disturbo indipendente (Criterio C).') :- !.
+explanation(it, disturbance_better_explained_by_other_mental_disorder, 'Un disturbo dovuto a un''altra condizione medica è escluso se un altro disturbo mentale spiega i sintomi (Criterio C).') :- !.
+explanation(it, oc_symptoms_better_explained_by_other_disorder, 'Il disturbo ossessivo-compulsivo è escluso se i sintomi appartengono a un altro disturbo mentale (Criterio D).') :- !.
+explanation(it, appearance_concern_better_explained_by_eating_disorder, 'Il disturbo da dismorfismo corporeo è escluso se la preoccupazione riguarda grasso o peso in un disturbo alimentare (Criterio D).') :- !.
+explanation(it, hoarding_better_explained_by_other_disorder, 'Il disturbo da accumulo è escluso se un altro disturbo mentale spiega l''accumulo (Criterio F).') :- !.
+explanation(it, hair_pulling_better_explained_by_other_disorder, 'La tricotillomania è esclusa se un altro disturbo mentale spiega lo strappo dei capelli (Criterio E).') :- !.
+explanation(it, skin_picking_better_explained_by_other_disorder, 'Il disturbo da escoriazione è escluso se un altro disturbo mentale spiega lo stuzzicamento della pelle (Criterio E).') :- !.
+explanation(it, criteria_met_for_autism_spectrum_disorder, 'Il disturbo reattivo dell''attaccamento non si diagnostica se sono soddisfatti i criteri del disturbo dello spettro dell''autismo (Criterio E).') :- !.
+explanation(it, care_presumed_responsible_for_disturbance, 'I disturbi dell''attaccamento richiedono che le cure insufficienti siano ritenute responsabili del comportamento (Criterio D).') :- !.
+explanation(it, disturbance_evident_before_age_five, 'Il disturbo reattivo dell''attaccamento deve essere evidente prima dei 5 anni (Criterio F).') :- !.
+explanation(it, developmental_age_at_least_nine_months, 'I disturbi dell''attaccamento richiedono un''età di sviluppo di almeno 9 mesi.') :- !.
+explanation(it, behaviour_not_limited_to_impulsivity, 'Nel disturbo da impegno sociale disinibito il comportamento è socialmente disinibito, non solo impulsivo (Criterio B).') :- !.
+explanation(it, better_explained_by_brief_psychotic_disorder, 'Il disturbo da stress acuto è escluso se un disturbo psicotico breve spiega il quadro (Criterio E).') :- !.
+explanation(it, distress_or_physiological_reactions_to_cues, 'Il disagio o le reazioni fisiologiche agli stimoli traumatici contano come un solo sintomo intrusivo del disturbo da stress acuto.') :- !.
+explanation(it, distress_out_of_proportion_to_stressor, 'Un disagio sproporzionato rispetto al fattore di stress rende clinicamente significativa una reazione di adattamento (Criterio B).') :- !.
+explanation(it, stress_reaction_meets_criteria_for_another_disorder, 'Il disturbo dell''adattamento non si diagnostica se è presente un altro disturbo mentale (Criterio C).') :- !.
+explanation(it, symptoms_represent_normal_bereavement, 'Il normale lutto non è un disturbo dell''adattamento (Criterio D).') :- !.
+explanation(it, symptoms_persist_beyond_six_months_after_stressor_ends, 'I sintomi dell''adattamento non durano più di 6 mesi dopo la fine del fattore di stress (Criterio E).') :- !.
+explanation(it, grief_symptoms_nearly_every_day_last_month, 'Il disturbo da lutto prolungato richiede i sintomi quasi ogni giorno almeno nell''ultimo mese (Criteri B e C).') :- !.
+explanation(it, bereavement_reaction_exceeds_cultural_norms, 'Il lutto deve superare chiaramente le norme attese nella cultura e nel contesto del paziente (Criterio E).') :- !.
+explanation(it, grief_better_explained_by_other_disorder, 'Il disturbo da lutto prolungato è escluso se la depressione o il PTSD spiegano meglio i sintomi (Criterio F).') :- !.
+explanation(it, anxiety_occurs_in_peer_settings, 'Nei bambini l''ansia sociale deve manifestarsi con i coetanei, non solo con gli adulti.') :- !.
+explanation(it, fear_restricted_to_public_performance, 'Una paura limitata al parlare o esibirsi in pubblico si registra con lo specificatore "legato solo alla performance".') :- !.
+explanation(it, history_of_tic_disorder, 'Un disturbo da tic attuale o pregresso si registra con lo specificatore "correlato a tic" del disturbo ossessivo-compulsivo.') :- !.
+explanation(it, preoccupied_with_insufficient_muscularity, 'La preoccupazione per una corporatura troppo piccola o poco muscolosa è lo specificatore "con dismorfia muscolare".') :- !.
+explanation(it, excessive_acquisition_of_unneeded_items, 'L''acquisizione eccessiva di oggetti non necessari è lo specificatore "con acquisizione eccessiva" del disturbo da accumulo.') :- !.
+explanation(it, disorder_present_more_than_twelve_months, 'Un disturbo presente da più di 12 mesi si specifica come persistente.') :- !.
+explanation(it, all_symptoms_at_relatively_high_levels, 'Tutti i sintomi a livelli relativamente elevati definiscono lo specificatore di gravità.') :- !.
+explanation(it, full_criteria_not_met_until_six_months_after_event, 'Criteri completi soddisfatti solo 6 mesi o più dopo l''evento definiscono il PTSD con espressione ritardata.') :- !.
+explanation(it, persistent_depersonalization, 'La depersonalizzazione persistente definisce il sottotipo dissociativo del PTSD.') :- !.
+explanation(it, persistent_derealization, 'La derealizzazione persistente definisce il sottotipo dissociativo del PTSD.') :- !.
+explanation(it, attempts_to_ignore_or_neutralize_thoughts, 'Il tentativo di sopprimere o neutralizzare i pensieri intrusivi completa la definizione di ossessione.') :- !.
+explanation(it, acts_aimed_at_reducing_distress, 'Atti che mirano a ridurre il disagio, in modo irrealistico o eccessivo, completano la definizione di compulsione.') :- !.
+explanation(it, substance_onset, 'L''esordio rispetto a intossicazione, astinenza o uso del farmaco è lo specificatore dei disturbi indotti.') :- !.
+explanation(it, ocrd_presentation, 'I sintomi predominanti si registrano come specificatore del disturbo dovuto a un''altra condizione medica.') :- !.

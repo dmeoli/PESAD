@@ -30,6 +30,8 @@ CHOICES = {
     "phobic_reaction_type": "endurance_without_problems",
     "adjustment_subtype": "unspecified_adjustment",
     "insight_level": "insight_good_or_fair",
+    "substance_onset": "onset_during_intoxication",
+    "ocrd_presentation": "with_ocd_like_symptoms",
 }
 
 # A 22-year-old with a marked fear of spiders, avoided for over a year.

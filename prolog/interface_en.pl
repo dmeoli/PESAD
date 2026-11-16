@@ -220,7 +220,7 @@ label(en, phobic_reaction_type, 'How does the patient react to the feared situat
 label(en, physical_symptoms_on_separation, 'Has repeated complaints of physical symptoms when separation occurs or is anticipated') :- !.
 label(en, physiological_reactions_to_cues, 'Has marked physiological reactions to cues that resemble the traumatic event') :- !.
 label(en, posttraumatic_stress_disorder, 'Posttraumatic Stress Disorder') :- !.
-label(en, preoccupation_with_perceived_appearance_defects, 'Is preoccupied with one or more perceived defects or flaws in physical appearance') :- !.
+label(en, preoccupation_with_perceived_appearance_defects, 'Is preoccupied with one or more perceived defects or flaws in physical appearance that are not observable or appear slight to others') :- !.
 label(en, preoccupation_with_the_deceased, 'Is preoccupied with thoughts or memories of the deceased person') :- !.
 label(en, preschool, '<= 6 years') :- !.
 label(en, prolonged_grief_disorder, 'Prolonged Grief Disorder') :- !.
@@ -451,3 +451,144 @@ explanation(en, symptoms_developed_during_or_after_substance_use, 'A temporal li
 explanation(en, substance_capable_of_producing_symptoms, 'The substance or medication must be pharmacologically capable of causing the symptoms (Criterion B2)') :- !.
 explanation(en, disturbance_is_direct_consequence_of_medical_condition, 'A direct pathophysiological link to a medical condition supports a disorder due to another medical condition (Criterion B)') :- !.
 explanation(en, not_exclusively_during_delirium, 'Symptoms occurring exclusively during a delirium would exclude this diagnosis (Criterion D)') :- !.
+
+% ---- DSM-5-TR realignment: exclusions, single-item criteria and specifiers ----
+label(en, acts_aimed_at_reducing_distress, 'The repetitive behaviours or mental acts aim to reduce distress or prevent a dreaded event, but are unrealistic or clearly excessive') :- !.
+label(en, attempts_to_ignore_or_neutralize_thoughts, 'Tries to ignore or suppress these thoughts, urges, or images, or to neutralize them with another thought or action') :- !.
+label(en, obsessions, 'Obsessions') :- !.
+label(en, compulsions, 'Compulsions') :- !.
+label(en, time_consuming_or_distressing, 'Time-Consuming (e.g., > 1 Hour per Day) or Clinically Significant') :- !.
+label(en, agoraphobic_avoidance, 'Agoraphobic Avoidance') :- !.
+label(en, requires_companion, 'Faces them only in the presence of a companion') :- !.
+label(en, child_patient, 'Patient Is a Child') :- !.
+label(en, preschool_traumatic_exposure, 'Exposure to a Traumatic Event (Children 6 Years and Younger)') :- !.
+label(en, preschool_arousal_alterations, 'Alterations in Arousal and Reactivity (Children 6 Years and Younger)') :- !.
+label(en, dissociative_symptoms, 'Dissociative Symptoms (Depersonalization or Derealization)') :- !.
+label(en, adjustment_clinical_significance, 'Marked Distress or Significant Impairment') :- !.
+label(en, adjustment_acute_course, 'Symptoms Lasting Less Than 6 Months') :- !.
+label(en, adjustment_persistent_course, 'Symptoms Lasting 6 Months or Longer') :- !.
+label(en, separation_fear_better_explained_by_other_disorder, 'Is the separation fear better explained by another mental disorder (e.g., resistance to change in autism, psychotic delusions, agoraphobia, worries about others'' health in generalized anxiety, illness anxiety)') :- !.
+label(en, failure_to_speak_due_to_language_knowledge, 'Is the failure to speak due to a lack of knowledge of, or comfort with, the language spoken in that situation') :- !.
+label(en, mutism_better_explained_by_other_disorder, 'Is the failure to speak better explained by a communication disorder, or does it occur only during autism spectrum disorder or a psychotic disorder') :- !.
+label(en, phobia_better_explained_by_other_disorder, 'Is the fear better explained by another mental disorder (e.g., agoraphobia, obsessions, trauma reminders, separation, social situations)') :- !.
+label(en, social_fear_better_explained_by_other_disorder, 'Is the social fear better explained by another mental disorder (e.g., panic disorder, body dysmorphic disorder, autism spectrum disorder)') :- !.
+label(en, fear_accounted_for_by_medical_condition, 'Is the fear or avoidance related to a medical condition and not excessive for it') :- !.
+label(en, panic_better_explained_by_other_disorder, 'Do the panic attacks occur only in response to feared social situations, phobic objects, obsessions, trauma reminders, or separation') :- !.
+label(en, agoraphobia_better_explained_by_other_disorder, 'Is the fear confined to one situational phobia, to social situations, or explained by obsessions, appearance concerns, trauma reminders, or fear of separation') :- !.
+label(en, worry_better_explained_by_other_disorder, 'Is the worry better explained by another mental disorder (e.g., fear of panic attacks, negative evaluation, contamination, separation, trauma reminders, weight, illness, delusions)') :- !.
+label(en, worry_more_days_than_not, 'Has the worry occurred more days than not') :- !.
+label(en, independent_disorder_evidence, 'Is there evidence of an independent disorder (the symptoms preceded the substance or medication use, or persisted about 1 month after stopping it)') :- !.
+label(en, disturbance_better_explained_by_other_mental_disorder, 'Is the disturbance better explained by another mental disorder (e.g., an adjustment disorder in reaction to the illness)') :- !.
+label(en, oc_symptoms_better_explained_by_other_disorder, 'Are the obsessions or compulsions better explained by another mental disorder (e.g., worries, appearance, discarding, hair pulling, skin picking, eating rituals, guilty ruminations, delusions)') :- !.
+label(en, appearance_concern_better_explained_by_eating_disorder, 'Is the appearance concern about body fat or weight in a patient who meets the criteria for an eating disorder') :- !.
+label(en, hoarding_better_explained_by_other_disorder, 'Is the hoarding better explained by another mental disorder (e.g., obsessions, low energy in depression, delusions, cognitive deficits, restricted interests in autism)') :- !.
+label(en, hair_pulling_better_explained_by_other_disorder, 'Is the hair pulling better explained by another mental disorder (e.g., an attempt to fix a perceived appearance flaw in body dysmorphic disorder)') :- !.
+label(en, skin_picking_better_explained_by_other_disorder, 'Is the skin picking better explained by another mental disorder (e.g., delusions, appearance concerns, stereotypies, intent to self-harm)') :- !.
+label(en, criteria_met_for_autism_spectrum_disorder, 'Does the child meet the criteria for autism spectrum disorder') :- !.
+label(en, care_presumed_responsible_for_disturbance, 'Is the insufficient care presumed responsible for the disturbed behaviour (it began after the lack of adequate care)') :- !.
+label(en, disturbance_evident_before_age_five, 'Was the disturbance evident before age 5 years') :- !.
+label(en, developmental_age_at_least_nine_months, 'Does the child have a developmental age of at least 9 months') :- !.
+label(en, behaviour_not_limited_to_impulsivity, 'Is the behaviour socially disinhibited, beyond the impulsivity seen in ADHD') :- !.
+label(en, better_explained_by_brief_psychotic_disorder, 'Is the disturbance better explained by a brief psychotic disorder') :- !.
+label(en, distress_or_physiological_reactions_to_cues, 'Experiences intense or prolonged distress, or marked physiological reactions, at cues that resemble the trauma') :- !.
+label(en, distress_out_of_proportion_to_stressor, 'Experiences marked distress that is out of proportion to the severity of the stressor') :- !.
+label(en, stress_reaction_meets_criteria_for_another_disorder, 'Does the reaction meet the criteria for another mental disorder, or is it only an exacerbation of a preexisting one') :- !.
+label(en, symptoms_represent_normal_bereavement, 'Do the symptoms represent normal bereavement') :- !.
+label(en, symptoms_persist_beyond_six_months_after_stressor_ends, 'Have the symptoms persisted more than 6 months after the stressor or its consequences ended') :- !.
+label(en, grief_symptoms_nearly_every_day_last_month, 'Have the grief symptoms been present most days, and nearly every day for at least the last month') :- !.
+label(en, bereavement_reaction_exceeds_cultural_norms, 'Do the duration and severity of the grief clearly exceed the social, cultural, or religious norms of the patient') :- !.
+label(en, grief_better_explained_by_other_disorder, 'Is the grief better explained by another mental disorder (e.g., major depressive disorder, PTSD)') :- !.
+label(en, anxiety_occurs_in_peer_settings, 'Does the social anxiety occur with peers, not only with adults') :- !.
+label(en, fear_restricted_to_public_performance, 'Is the fear restricted to speaking or performing in public') :- !.
+label(en, history_of_tic_disorder, 'Does the patient have a current or past tic disorder') :- !.
+label(en, preoccupied_with_insufficient_muscularity, 'Is the patient preoccupied with the idea that their body build is too small or not muscular enough') :- !.
+label(en, excessive_acquisition_of_unneeded_items, 'Does the patient excessively acquire items that are not needed or for which there is no space') :- !.
+label(en, disorder_present_more_than_twelve_months, 'Has the disorder been present for more than 12 months') :- !.
+label(en, all_symptoms_at_relatively_high_levels, 'Does the child show all the symptoms, each at a relatively high level') :- !.
+label(en, full_criteria_not_met_until_six_months_after_event, 'Were the full criteria met only 6 months or more after the event') :- !.
+label(en, persistent_depersonalization, 'Has persistent or recurrent depersonalization (feeling detached from, as an outside observer of, their own mind or body)') :- !.
+label(en, persistent_derealization, 'Has persistent or recurrent derealization (the surroundings feel unreal, dreamlike, distant, or distorted)') :- !.
+label(en, substance_onset, 'When did the symptoms begin') :- !.
+label(en, onset_during_intoxication, 'During intoxication with the substance') :- !.
+label(en, onset_during_withdrawal, 'During, or shortly after, withdrawal from the substance') :- !.
+label(en, onset_after_medication_use, 'At the start, a change, or the withdrawal of a medication') :- !.
+label(en, ocrd_presentation, 'Which symptoms predominate in the clinical presentation') :- !.
+label(en, with_ocd_like_symptoms, 'Obsessive-compulsive disorder-like symptoms') :- !.
+label(en, with_appearance_preoccupations, 'Preoccupation with perceived appearance flaws') :- !.
+label(en, with_hoarding_symptoms, 'Hoarding') :- !.
+label(en, with_hair_pulling_symptoms, 'Hair pulling') :- !.
+label(en, with_skin_picking_symptoms, 'Skin picking') :- !.
+label(en, social_anxiety_disorder_performance_only, 'Social Anxiety Disorder, Performance Only') :- !.
+label(en, substance_induced_anxiety_disorder_with_onset_during_intoxication, 'Substance/Medication-Induced Anxiety Disorder, With Onset During Intoxication') :- !.
+label(en, substance_induced_anxiety_disorder_with_onset_during_withdrawal, 'Substance/Medication-Induced Anxiety Disorder, With Onset During Withdrawal') :- !.
+label(en, substance_induced_anxiety_disorder_with_onset_after_medication_use, 'Substance/Medication-Induced Anxiety Disorder, With Onset After Medication Use') :- !.
+label(en, obsessive_compulsive_disorder_tic_related, 'Obsessive-Compulsive Disorder, Tic-Related') :- !.
+label(en, body_dysmorphic_disorder_with_muscle_dysmorphia, 'Body Dysmorphic Disorder, With Muscle Dysmorphia') :- !.
+label(en, hoarding_disorder_with_excessive_acquisition, 'Hoarding Disorder, With Excessive Acquisition') :- !.
+label(en, substance_induced_ocrd_with_onset_during_intoxication, 'Substance/Medication-Induced Obsessive-Compulsive and Related Disorder, With Onset During Intoxication') :- !.
+label(en, substance_induced_ocrd_with_onset_during_withdrawal, 'Substance/Medication-Induced Obsessive-Compulsive and Related Disorder, With Onset During Withdrawal') :- !.
+label(en, substance_induced_ocrd_with_onset_after_medication_use, 'Substance/Medication-Induced Obsessive-Compulsive and Related Disorder, With Onset After Medication Use') :- !.
+label(en, ocrd_due_to_another_medical_condition_with_ocd_like_symptoms, 'Obsessive-Compulsive and Related Disorder Due to Another Medical Condition, With Obsessive-Compulsive Disorder-Like Symptoms') :- !.
+label(en, ocrd_due_to_another_medical_condition_with_appearance_preoccupations, 'Obsessive-Compulsive and Related Disorder Due to Another Medical Condition, With Appearance Preoccupations') :- !.
+label(en, ocrd_due_to_another_medical_condition_with_hoarding_symptoms, 'Obsessive-Compulsive and Related Disorder Due to Another Medical Condition, With Hoarding Symptoms') :- !.
+label(en, ocrd_due_to_another_medical_condition_with_hair_pulling_symptoms, 'Obsessive-Compulsive and Related Disorder Due to Another Medical Condition, With Hair-Pulling Symptoms') :- !.
+label(en, ocrd_due_to_another_medical_condition_with_skin_picking_symptoms, 'Obsessive-Compulsive and Related Disorder Due to Another Medical Condition, With Skin-Picking Symptoms') :- !.
+label(en, reactive_attachment_disorder_persistent, 'Reactive Attachment Disorder, Persistent') :- !.
+label(en, reactive_attachment_disorder_severe, 'Reactive Attachment Disorder, Severe') :- !.
+label(en, disinhibited_social_engagement_disorder_persistent, 'Disinhibited Social Engagement Disorder, Persistent') :- !.
+label(en, disinhibited_social_engagement_disorder_severe, 'Disinhibited Social Engagement Disorder, Severe') :- !.
+label(en, posttraumatic_stress_disorder_with_dissociative_symptoms, 'Posttraumatic Stress Disorder, With Dissociative Symptoms') :- !.
+label(en, posttraumatic_stress_disorder_with_delayed_expression, 'Posttraumatic Stress Disorder, With Delayed Expression') :- !.
+label(en, adjustment_disorder_with_depressed_mood, 'Adjustment Disorder, With Depressed Mood') :- !.
+label(en, adjustment_disorder_with_anxiety, 'Adjustment Disorder, With Anxiety') :- !.
+label(en, adjustment_disorder_with_mixed_anxiety_and_depressed_mood, 'Adjustment Disorder, With Mixed Anxiety and Depressed Mood') :- !.
+label(en, adjustment_disorder_with_disturbance_of_conduct, 'Adjustment Disorder, With Disturbance of Conduct') :- !.
+label(en, adjustment_disorder_with_mixed_disturbance_of_emotions_and_conduct, 'Adjustment Disorder, With Mixed Disturbance of Emotions and Conduct') :- !.
+label(en, adjustment_disorder_unspecified, 'Adjustment Disorder, Unspecified') :- !.
+label(en, adjustment_disorder_acute, 'Adjustment Disorder, Acute') :- !.
+label(en, adjustment_disorder_persistent, 'Adjustment Disorder, Persistent (Chronic)') :- !.
+explanation(en, separation_fear_better_explained_by_other_disorder, 'Separation anxiety disorder is not diagnosed when another mental disorder accounts for the fear (Criterion D).') :- !.
+explanation(en, failure_to_speak_due_to_language_knowledge, 'Not speaking a new or unfamiliar language does not count as selective mutism (Criterion D).') :- !.
+explanation(en, mutism_better_explained_by_other_disorder, 'Selective mutism is excluded by a communication disorder, autism spectrum disorder or a psychotic disorder (Criterion E).') :- !.
+explanation(en, phobia_better_explained_by_other_disorder, 'Specific phobia is excluded when the fear belongs to another disorder, such as agoraphobia or PTSD (Criterion G).') :- !.
+explanation(en, social_fear_better_explained_by_other_disorder, 'Social anxiety disorder is excluded when another mental disorder accounts for the fear (Criterion I).') :- !.
+explanation(en, fear_accounted_for_by_medical_condition, 'With a medical condition present, the fear must be unrelated to it or clearly excessive (social anxiety J, agoraphobia H).') :- !.
+explanation(en, panic_better_explained_by_other_disorder, 'Panic disorder is excluded when the attacks occur only in response to the focus of another disorder (Criterion D).') :- !.
+explanation(en, agoraphobia_better_explained_by_other_disorder, 'Agoraphobia is excluded when another mental disorder accounts for the fear and avoidance (Criterion I).') :- !.
+explanation(en, worry_better_explained_by_other_disorder, 'Generalized anxiety disorder is excluded when the worry belongs to another disorder (Criterion F).') :- !.
+explanation(en, worry_more_days_than_not, 'In generalized anxiety disorder the worry occurs more days than not for at least 6 months (Criterion A).') :- !.
+explanation(en, independent_disorder_evidence, 'Symptoms that precede the substance use or outlast it by about a month suggest an independent disorder (Criterion C).') :- !.
+explanation(en, disturbance_better_explained_by_other_mental_disorder, 'A disorder due to another medical condition is excluded when another mental disorder accounts for the symptoms (Criterion C).') :- !.
+explanation(en, oc_symptoms_better_explained_by_other_disorder, 'OCD is excluded when the symptoms belong to another mental disorder (Criterion D).') :- !.
+explanation(en, appearance_concern_better_explained_by_eating_disorder, 'Body dysmorphic disorder is excluded when the concern is body fat or weight in an eating disorder (Criterion D).') :- !.
+explanation(en, hoarding_better_explained_by_other_disorder, 'Hoarding disorder is excluded when another mental disorder accounts for the hoarding (Criterion F).') :- !.
+explanation(en, hair_pulling_better_explained_by_other_disorder, 'Trichotillomania is excluded when another mental disorder accounts for the hair pulling (Criterion E).') :- !.
+explanation(en, skin_picking_better_explained_by_other_disorder, 'Excoriation disorder is excluded when another mental disorder accounts for the skin picking (Criterion E).') :- !.
+explanation(en, criteria_met_for_autism_spectrum_disorder, 'Reactive attachment disorder is not diagnosed when the criteria for autism spectrum disorder are met (Criterion E).') :- !.
+explanation(en, care_presumed_responsible_for_disturbance, 'The attachment disorders require that the insufficient care be presumed responsible for the behaviour (Criterion D).') :- !.
+explanation(en, disturbance_evident_before_age_five, 'Reactive attachment disorder must be evident before age 5 years (Criterion F).') :- !.
+explanation(en, developmental_age_at_least_nine_months, 'The attachment disorders require a developmental age of at least 9 months.') :- !.
+explanation(en, behaviour_not_limited_to_impulsivity, 'In disinhibited social engagement disorder the behaviour is socially disinhibited, not only impulsive (Criterion B).') :- !.
+explanation(en, better_explained_by_brief_psychotic_disorder, 'Acute stress disorder is excluded when a brief psychotic disorder explains the picture (Criterion E).') :- !.
+explanation(en, distress_or_physiological_reactions_to_cues, 'Distress or physiological reactions at trauma cues count as one intrusion symptom of acute stress disorder.') :- !.
+explanation(en, distress_out_of_proportion_to_stressor, 'Distress out of proportion to the stressor makes an adjustment reaction clinically significant (Criterion B).') :- !.
+explanation(en, stress_reaction_meets_criteria_for_another_disorder, 'Adjustment disorder is not diagnosed when another mental disorder is present (Criterion C).') :- !.
+explanation(en, symptoms_represent_normal_bereavement, 'Normal bereavement is not an adjustment disorder (Criterion D).') :- !.
+explanation(en, symptoms_persist_beyond_six_months_after_stressor_ends, 'Adjustment symptoms do not last more than 6 months after the stressor ends (Criterion E).') :- !.
+explanation(en, grief_symptoms_nearly_every_day_last_month, 'Prolonged grief disorder requires the symptoms nearly every day for at least the last month (Criteria B and C).') :- !.
+explanation(en, bereavement_reaction_exceeds_cultural_norms, 'The grief must clearly exceed the expected norms of the patient''s culture and context (Criterion E).') :- !.
+explanation(en, grief_better_explained_by_other_disorder, 'Prolonged grief disorder is excluded when depression or PTSD better explains the symptoms (Criterion F).') :- !.
+explanation(en, anxiety_occurs_in_peer_settings, 'In children the social anxiety must occur with peers, not only with adults.') :- !.
+explanation(en, fear_restricted_to_public_performance, 'A fear restricted to public speaking or performing is recorded with the "performance only" specifier.') :- !.
+explanation(en, history_of_tic_disorder, 'A current or past tic disorder is recorded with the "tic-related" specifier of OCD.') :- !.
+explanation(en, preoccupied_with_insufficient_muscularity, 'Preoccupation with a body build too small or not muscular is the "muscle dysmorphia" specifier.') :- !.
+explanation(en, excessive_acquisition_of_unneeded_items, 'Excessive acquisition of unneeded items is the "excessive acquisition" specifier of hoarding disorder.') :- !.
+explanation(en, disorder_present_more_than_twelve_months, 'A disorder present for more than 12 months is specified as persistent.') :- !.
+explanation(en, all_symptoms_at_relatively_high_levels, 'All symptoms at relatively high levels define the severe specifier.') :- !.
+explanation(en, full_criteria_not_met_until_six_months_after_event, 'Full criteria met only 6 months or more after the event define PTSD with delayed expression.') :- !.
+explanation(en, persistent_depersonalization, 'Persistent depersonalization defines the dissociative subtype of PTSD.') :- !.
+explanation(en, persistent_derealization, 'Persistent derealization defines the dissociative subtype of PTSD.') :- !.
+explanation(en, attempts_to_ignore_or_neutralize_thoughts, 'Trying to suppress or neutralize the intrusive thoughts completes the definition of an obsession.') :- !.
+explanation(en, acts_aimed_at_reducing_distress, 'Acts aimed at reducing distress, unrealistically or excessively, complete the definition of a compulsion.') :- !.
+explanation(en, substance_onset, 'The onset relative to intoxication, withdrawal or medication use is the specifier of the induced disorders.') :- !.
+explanation(en, ocrd_presentation, 'The predominant symptoms are recorded as the specifier of the disorder due to another medical condition.') :- !.

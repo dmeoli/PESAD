@@ -48,6 +48,9 @@ duration_membership([six_months_or_more],Months,Mu) :- !,
 %	"at least 1 month" (soft 0.25 -> 1).
 duration_membership([one_to_three_months,three_to_six_months,six_months_or_more],Months,Mu) :- !,
 	ramp_up(Months,0.25,1,Mu).
+%	"less than 6 months" (the complement of "at least 6 months").
+duration_membership([less_than_three_days,three_days_to_one_month,one_to_three_months,three_to_six_months],Months,Mu) :- !,
+	ramp_down(Months,3,6,Mu).
 %	"between 3 days and 1 month" (band, 3 days ~ 0.1 month).
 duration_membership([three_days_to_one_month],Months,Mu) :- !,
 	trapezoid(Months,0.05,0.1,1,1.5,Mu).
