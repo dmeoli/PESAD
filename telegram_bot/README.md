@@ -82,15 +82,22 @@ precedence over `.env`.) Then open the bot in Telegram and send **/start**.
 | `/start`  | Show the disclaimer and begin a new consultation  |
 | `/new`    | Restart the consultation                          |
 | `/cancel` | Abort the current consultation                    |
+| `/help`   | Show how to answer                                |
 
-Answers are given by tapping inline buttons (yes/no/why, numbered menus,
-certainty presets, the command menu). For graded values (`number` turns) just
-type a number and send it.
+Answers are given by tapping inline buttons. As on the site, a symptom is one
+question, "how true is it?", with five steps (not at all, a little, partly,
+mostly, completely) that stand for no with certainty 1 and yes with certainty
+0.25, 0.5, 0.75 and 1: the bot answers the engine's certainty question behind
+the scenes, and with 1.0 after a multiple choice. Graded values (`number`
+turns) have buttons with typical values, and any other number can be typed.
+The uncertainty methods are listed with a short name and a line of
+explanation each.
 
 A **◀️ back / indietro** button is shown on every prompt (except the first
 language choice). Since the engine has no native undo, "back" is implemented by
 *deterministic replay*: the session is restarted and every recorded answer
-except the last is re-fed, landing the engine back on the previous question.
+except the last is re-fed, landing the engine back on the previous question;
+the two answers of a step are recorded together and undone together.
 `why` requests are not recorded (they only print an explanation and leave the
 working memory unchanged), so backing over them behaves naturally.
 

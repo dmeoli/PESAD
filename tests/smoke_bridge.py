@@ -13,7 +13,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "telegram_bot"))
 
-from pesad_bot import Engine, render  # noqa: E402
+from pesad_bot import STEPS, Engine, answer_turn, render  # noqa: E402
 
 
 async def main():
@@ -44,6 +44,51 @@ async def main():
         assert (again.kind, again.text) == (kind, text), "replay diverged"
 
         await engine.cancel("ci")
+
+        # An investigation: a criterion is one "how true is it?" question; its
+        # step also answers the certainty question, which is never shown.
+        history = []
+        screen = await engine.open("ci2")
+        for raw in ("1", "1", "investigation"):
+            screen, raws = await answer_turn(engine, "ci2", raw)
+            history.append(raws)
+        body, keyboard = render(screen.kind, screen.text, "en", screen.topic)
+        assert screen.kind == "menu_why", screen.kind               # age band
+        screen, raws = await answer_turn(engine, "ci2", "4")         # adult
+        history.append(raws)
+        assert screen.kind == "criterion", screen.kind
+        body, keyboard = render(screen.kind, screen.text, "it", screen.topic)
+        labels = [b.text for b in keyboard.inline_keyboard[0]]
+        assert labels == [label["it"] for label, _, _ in STEPS], labels
+        assert body.endswith("Quanto è vero?") and "(si, no)" not in body, body
+        first = screen.text
+        screen, raws = await answer_turn(engine, "ci2", "t:3")       # mostly
+        assert raws == ["yes", "0.75"], raws
+        assert screen.kind == "criterion" and screen.text != first, screen.kind
+        history.append(raws)
+        screen, raws = await answer_turn(engine, "ci2", "why")
+        assert raws == ["why"] and screen.kind == "criterion"
+        # back removes the pair: the replay lands on the first criterion again
+        history.pop()
+        again = await engine.replay("ci2", [r for group in history for r in group])
+        assert again.kind == "criterion" and again.text.strip().endswith(first.strip()[-40:]), again.text
+        await engine.cancel("ci2")
+
+        # graded values have buttons from graded_options
+        screen = await engine.open("ci3")
+        for raw in ("1", "3", "investigation", "4"):
+            screen, _ = await answer_turn(engine, "ci3", raw)
+        while screen.kind == "criterion":
+            screen, _ = await answer_turn(engine, "ci3", "t:0")
+        assert screen.kind in ("number", "menu_why"), screen.kind
+        if screen.kind == "number":
+            body, keyboard = render(screen.kind, screen.text, "en", screen.topic)
+            values = [b.callback_data for row in keyboard.inline_keyboard for b in row]
+            assert "n:12" in values, values
+        await engine.cancel("ci3")
+
+        body, keyboard = render("method", "", "en")
+        assert len(keyboard.inline_keyboard) == 7 and "recommended" in body
     finally:
         await engine.stop()
     print("smoke_bridge: OK")
