@@ -133,6 +133,8 @@ prolog/         Prolog sources (inference engine, knowledge base, bot bridge)
 pesad_engine/   Engine layer shared by the bot and the web API (Python, swiplserver)
 telegram_bot/   Telegram front-end (Python, python-telegram-bot)
 web_api/        Web API (Python, FastAPI) and its Cloud Run image
+tests/          Bridge smoke test and web API consultations
+tools/          Mutation test of the knowledge base
 doc/            Documentation
 Dockerfile, docker-compose.yml   Containerised deployment
 ```
@@ -145,6 +147,7 @@ The Prolog system under `prolog/` is organized by responsibility:
 | `shell.pl` | User shell: REPL loop, language selection, command dispatch, result presentation, `decode`/`explain` localization |
 | `ask.pl` | Knowledge acquisition: the criterion / multiple / selective question protocols |
 | `uncertainty.pl` | Certainty calculus (t-norm chosen by the uncertainty method), certainty-based ordering, inference-level indexes |
+| `fuzzy.pl` | Membership functions over graded durations, frequencies and insight, for the `fuzzy_membership` method |
 | `explanation.pl` | Proof-tree printing (how a conclusion was reached) |
 | `memory.pl` | Working-memory management (facts and proof trees) |
 | `utils.pl` | General-purpose helpers |
