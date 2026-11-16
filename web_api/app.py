@@ -8,10 +8,13 @@ A stateless HTTP front-end over the engine layer (../pesad_engine), for the
 expert-system section of the author's site. Every request carries the whole
 consultation so far:
 
-    POST /step  {"lang": "en" | "it", "backend": "cf", "answers": ["<value>", ...]}
+    POST /step  {"lang": "en" | "it", "backend": "cf", "answers": ["<value>", ...],
+                 "chapters": [...]}
 
 and the server starts a fresh Prolog session, replays the answers and returns
 the screen reached: the next question, or the result of the investigation.
+The question after the age band asks the area (chapter) to investigate;
+"chapters", when given, answers it in advance.
 
     POST /evaluate  {"lang", "backend", "age" | "age_band", "facts": [...],
                      "goals" | "chapters"}
@@ -40,10 +43,14 @@ from pydantic import (BaseModel, ConfigDict, Field, StrictBool, StrictFloat,
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pesad_engine import METHODS, Engine, InvalidAnswer  # noqa: E402
 
-MAX_ANSWERS = 1000       # a complete investigation takes about 370 answers
+MAX_ANSWERS = 1000       # an investigation of all the areas takes about 370 answers
 MAX_FACTS = 500
 MAX_BODY_BYTES = 64 * 1024
 ORIGINS = ["https://dmeoli.github.io", "http://localhost:8780"]
+
+
+Id = Annotated[str, StringConstraints(max_length=128, pattern=r"^[a-z0-9_]+$")]
+CHAPTERS = Literal["neurodevelopmental", "anxiety", "obsessive_compulsive", "trauma"]
 
 
 class Step(BaseModel):
@@ -51,10 +58,7 @@ class Step(BaseModel):
     backend: Literal[tuple(METHODS)] = "cf"
     answers: list[Annotated[str, StringConstraints(max_length=64)]] = Field(
         default_factory=list, max_length=MAX_ANSWERS)
-
-
-Id = Annotated[str, StringConstraints(max_length=128, pattern=r"^[a-z0-9_]+$")]
-CHAPTERS = Literal["neurodevelopmental", "anxiety", "obsessive_compulsive", "trauma"]
+    chapters: list[CHAPTERS] | None = Field(default=None, min_length=1, max_length=4)
 
 
 class Fact(BaseModel):
@@ -127,7 +131,8 @@ async def health():
 
 @app.post("/step")
 async def step(body: Step, request: Request):
-    screen = await request.app.state.engine.consult(body.lang, body.answers, body.backend)
+    screen = await request.app.state.engine.consult(
+        body.lang, body.answers, body.backend, body.chapters)
     reply = web_screen(screen, len(body.answers))
     if reply["kind"] == "question" and reply["step"] == 0:
         reply["disclaimer"] = request.app.state.disclaimer[body.lang]

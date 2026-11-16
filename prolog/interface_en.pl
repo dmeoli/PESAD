@@ -41,6 +41,12 @@ label(en, option_request, 'Enter the code corresponding to the chosen option') :
 label(en, goal_request, 'Which of the following disorders do you want to check') :- !.
 label(en, diagnosis_result, 'The patient suffers from ') :- !.
 label(en, patient, 'What is the patient''s age range') :- !.
+label(en, area, 'Which area do you want to explore') :- !.
+label(en, neurodevelopmental, 'Neurodevelopmental disorders') :- !.
+label(en, anxiety, 'Anxiety disorders') :- !.
+label(en, obsessive_compulsive, 'Obsessive-compulsive and related disorders') :- !.
+label(en, trauma, 'Trauma- and stressor-related disorders') :- !.
+label(en, all, 'All areas') :- !.
 label(en, how_request_control, 'Do you want to know how it was deduced') :- !.
 label(en, how_request_investigation, 'Do you want to know how they were deduced') :- !.
 label(en, true_label, ' is true with CF ') :- !.
@@ -394,6 +400,7 @@ explanation(en, palpitations, 'The presence of palpitations may be indicative of
 explanation(en, panic_attacks_frequency, 'The number of panic attacks helps establish whether the attacks are recurrent, as required for panic disorder.') :- !.
 explanation(en, paresthesias, 'Paresthesias (numbness or tingling) are among the physical symptoms of a panic attack.') :- !.
 explanation(en, patient, 'The patient''s age group is used to apply age-specific criteria, durations, and the preschool PTSD subtype.') :- !.
+explanation(en, area, 'Only the disorders of the chosen area (a DSM-5-TR chapter) are investigated, so only their criteria are asked; all areas investigates every disorder in the knowledge base. Several areas can be typed at once, e.g. 2,3.') :- !.
 explanation(en, persistent_negative_beliefs, 'Persistent exaggerated negative beliefs about oneself, others, or the world belong to the negative cognitions and mood cluster of PTSD.') :- !.
 explanation(en, persistent_negative_emotional_state, 'A persistent negative emotional state belongs to the negative cognitions and mood cluster of PTSD.') :- !.
 explanation(en, phobic_reaction_type, 'How the patient reacts to feared situations (avoidance or endurance with distress) is required for the phobic and agoraphobic disorders.') :- !.

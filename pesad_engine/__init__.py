@@ -192,19 +192,27 @@ class Engine:
         return await self.replay(
             session_id, [LANGUAGES[lang], METHODS[method], "investigation"])
 
-    async def consult(self, lang, answers, method="cf"):
+    async def consult(self, lang, answers, method="cf", chapters=None):
         """Stateless consultation: start a fresh session in `lang`, apply the
         option values `answers` in order and return the screen reached.
-        Raises InvalidAnswer for the first answer that is not an option of
-        its screen. The session is always discarded."""
+        With `chapters` (a list of chapter names) the area question is
+        answered with them and takes no answer of `answers`. Raises
+        InvalidAnswer for the first answer that is not an option of its
+        screen. The session is always discarded."""
         session_id = "web-" + uuid.uuid4().hex
         try:
             screen = await self.begin(session_id, lang, method)
-            for index, value in enumerate(answers):
+            answers = iter(enumerate(answers))
+            while True:
+                if chapters and screen.type == "choice" and screen.topic["id"] == "area":
+                    screen = await self.answer(session_id, ",".join(chapters))
+                    continue
+                index, value = next(answers, (None, None))
+                if index is None:
+                    return screen
                 raw = screen.encode(value)
                 if raw is None:
                     raise InvalidAnswer(index, value)
                 screen = await self.answer(session_id, raw)
-            return screen
         finally:
             await self.cancel(session_id)

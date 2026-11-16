@@ -5,7 +5,8 @@ Drives complete consultations through POST /step, the way the site does:
 every request carries all the answers given so far, and the next answer is
 chosen from the question returned. Each language is run on a vignette that
 leads to a disorder (a specific phobia, animal type) and on one that leads to
-none, plus the request checks (bad answers, limits, CORS). POST /evaluate is
+none, then on each chapter alone (the area question, or "chapters"), plus the
+request checks (bad answers, limits, CORS). POST /evaluate is
 run on test results (DIVA-5, ASRS, IQ and achievement scores) under every
 backend. Exits non-zero on any mismatch so it can gate CI.
 """
@@ -22,6 +23,7 @@ from app import MAX_ANSWERS, METHODS, app  # noqa: E402
 # Neutral answers to the multiple-choice questions (as in clinical_tests.pl).
 CHOICES = {
     "patient": "adult",
+    "area": "all",
     "attack_type": "cued_attack",
     "panic_attacks_frequency": "one_or_fewer",
     "symptoms_duration": "less_than_three_days",
@@ -68,18 +70,21 @@ def choose(question, case):
     return answer
 
 
-def consult(client, lang, case, backend="cf"):
+def consult(client, lang, case, backend="cf", chapters=None):
     """Run a whole consultation and return the result."""
     answers = []
     while True:
-        r = client.post("/step", json={"lang": lang, "answers": answers,
-                                       "backend": backend})
+        body = {"lang": lang, "answers": answers, "backend": backend}
+        if chapters:
+            body["chapters"] = chapters
+        r = client.post("/step", json=body)
         assert r.status_code == 200, (r.status_code, r.text)
         screen = r.json()
         assert screen["step"] == len(answers)
         if screen["kind"] == "result":
             return screen, answers
         assert screen["kind"] == "question" and screen["text"] and screen["options"]
+        assert not (chapters and screen["id"] == "area")
         assert not screen["multi"]
         assert ("disclaimer" in screen) == (len(answers) == 0)
         answers.append(choose(screen, case))
@@ -187,6 +192,23 @@ def main():
             assert result["items"][0]["id"] == "specific_phobia_animal_type", backend
             print(f"test_web_api: {backend} consultation OK")
 
+        # the area question restricts the investigation to some chapters
+        second = client.post("/step", json={"lang": "en", "answers": ["adult"]}).json()
+        assert second["id"] == "area" and not second["multi"]
+        assert [o["value"] for o in second["options"]] == [
+            "neurodevelopmental", "anxiety", "obsessive_compulsive", "trauma", "all"]
+        full = len(consult(client, "en", NOTHING)[1])
+        for chapter in ("neurodevelopmental", "anxiety", "obsessive_compulsive", "trauma"):
+            result, answers = consult(client, "en", PHOBIA, chapters=[chapter])
+            found = [i["id"] for i in result["items"]][:1]
+            assert found == (["specific_phobia_animal_type"] if chapter == "anxiety" else []), chapter
+            _, asked = consult(client, "en", {**NOTHING, "choices": {"area": chapter}})
+            assert len(asked) - 1 < full // 2, chapter
+            print(f"test_web_api: {chapter} consultation OK ({len(answers)} answers, "
+                  f"{len(asked)} with no symptom, {full} for all the areas)")
+        result, answers = consult(client, "en", PHOBIA, chapters=["anxiety", "trauma"])
+        assert result["items"][0]["id"] == "specific_phobia_animal_type"
+
         check_evaluate(client)
 
         first = client.post("/step", json={"lang": "it", "answers": []}).json()
@@ -197,6 +219,8 @@ def main():
                      {"lang": "en", "answers": ["adult", "why"]},
                      {"lang": "fr", "answers": []},
                      {"lang": "en", "answers": [], "backend": "bayes"},
+                     {"lang": "en", "answers": [], "chapters": ["neuro"]},
+                     {"lang": "en", "answers": [], "chapters": []},
                      {"lang": "en", "answers": "adult"},
                      {"lang": "en", "answers": ["no"] * (MAX_ANSWERS + 1)}):
             r = client.post("/step", json=body)

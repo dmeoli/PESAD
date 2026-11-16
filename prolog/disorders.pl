@@ -7,7 +7,7 @@
 %		Obsessive-Compulsive and Related, Trauma- and Stressor-Related and
 %		Neurodevelopmental chapters. Each disorder/3 rule is a diagnostic
 %		goal combining sub-disorders, types, specifiers and exclusions; also
-%		holds the entry points solve_goal/2, investigate_goals/1, the goals
+%		holds the entry points solve_goal/2, investigate_goals/1,2, the goals
 %		list, the ICD-10-CM / ICD-11 codes and the chapter of every goal and
 %		the differentials to rule out.
 %
@@ -23,8 +23,21 @@ solve_goal(Y,CF) :-
 
 % Investigative diagnosis on multiple disorders
 investigate_goals(L) :-
+	investigate_goals(all,L).
+
+%	investigate_goals(Chapters,L): the goals of the chapters Chapters (a list,
+%	or all); the criteria of the other goals are never asked.
+investigate_goals(all,L) :-
+	!,
 	patient(X),
 	findall(goal(Y,CF),disorder(Y,X,CF),L).
+investigate_goals(Chapters,L) :-
+	patient(X),
+	findall(Y,clause(disorder(Y,_,_),_),Ys),
+	list_to_set(Ys,Goals),
+	findall(goal(Y,CF),
+		( member(Y,Goals), goal_chapter(Y,C), memberchk(C,Chapters), disorder(Y,X,CF) ),
+		L).
 
 %	exclude_substance_and_medical(Patient,CF_Substance,CF_Medical):
 %		shared exclusion - the disturbance is not attributable to a substance

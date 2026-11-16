@@ -79,7 +79,8 @@ serve any request. Nothing is stored, and the answers are not logged.
 \code{POST /step} receives the language, the uncertainty method (\code{cf},
 \code{fuzzy}, \code{fuzzy\_membership}, \code{lukasiewicz}, \code{hamacher} or
 \code{einstein}) and the list of the answers given so far, as the values of the
-options of the questions. The server starts a fresh session, replays the
+options of the questions, and optionally the chapters to investigate, which
+answer in advance the question on the area. The server starts a fresh session, replays the
 answers and returns either the next question (with its identifier, text,
 explanation and options) or the result, i.e., the goals with a certainty
 greater than $0$, each with its proof tree. An answer that is not an option of
