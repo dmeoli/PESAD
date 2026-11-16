@@ -1,0 +1,4 @@
+# Web API of PESAD (FastAPI + swiplserver over SWI-Prolog library(mqi)).
+fastapi==0.163.1
+uvicorn==0.54.0
+swiplserver==1.0.2

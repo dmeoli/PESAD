@@ -25,16 +25,19 @@ jobs:
           python-version: "3.12"
 
       - name: Install Python dependencies
-        run: pip install -r telegram_bot/requirements.txt ruff
+        run: pip install -r telegram_bot/requirements.txt -r web_api/requirements.txt httpx ruff
 
       - name: Lint
-        run: ruff check --select E4,E7,E9,F telegram_bot/pesad_bot.py tests/smoke_bridge.py
+        run: ruff check --select E4,E7,E9,F pesad_engine telegram_bot/pesad_bot.py web_api/app.py tests
 
       - name: Compile
-        run: python -m py_compile telegram_bot/pesad_bot.py
+        run: python -m py_compile pesad_engine/__init__.py telegram_bot/pesad_bot.py web_api/app.py
 
       - name: Bridge smoke test (MQI)
         run: python tests/smoke_bridge.py
+
+      - name: Web API consultations
+        run: python tests/test_web_api.py
 
   docker:
     needs: test

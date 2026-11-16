@@ -47,11 +47,35 @@ engine over the SWI-Prolog Machine Query Interface. See
 [`telegram_bot/`](telegram_bot/README.md) for how it works, how to run it, and
 [`telegram_bot/DEPLOY.md`](telegram_bot/DEPLOY.md) for deployment.
 
+## Web API
+
+The same engine also serves a stateless web API (FastAPI) for the expert-system
+section of [dmeoli.github.io](https://dmeoli.github.io). Each request carries the
+language and all the answers given so far; the server starts a fresh Prolog
+session, replays them and returns the next question or the result:
+
+```
+$ curl -X POST https://pesad-372868569544.europe-west1.run.app/step \
+       -H 'Content-Type: application/json' -d '{"lang": "en", "answers": ["adult", "no"]}'
+{"kind": "question", "id": "distress_at_separation_from_attachment_figures.certainty",
+ "text": "Enter the certainty degree", "help": "(from 0.0 to 1.0)", "why": null,
+ "options": [{"value": "0.0", "label": "0.0"}, ...], "multi": false, "step": 2}
+```
+
+The answers are the `value`s of the options; an answer that is not an option of
+its question gives a 400. The result (`"kind": "result"`) lists the disorders
+supported by the answers with their certainty degree and proof tree. Nothing is
+stored and the answers are never logged. Run it locally with `make api` and test
+it with `make test-api`; `make deploy-api` builds it with Cloud Build and
+deploys it to Cloud Run.
+
 ## Project structure
 
 ```
 prolog/         Prolog sources (inference engine, knowledge base, bot bridge)
-telegram_bot/   Telegram front-end (Python, python-telegram-bot + swiplserver)
+pesad_engine/   Engine layer shared by the bot and the web API (Python, swiplserver)
+telegram_bot/   Telegram front-end (Python, python-telegram-bot)
+web_api/        Web API (Python, FastAPI) and its Cloud Run image
 doc/            Documentation
 Dockerfile, docker-compose.yml   Containerised deployment
 ```
@@ -71,8 +95,8 @@ The Prolog system under `prolog/` is organized by responsibility:
 | `criteria.pl` | Knowledge base: sub-disorders, types/specifiers, symptomatic manifestations/features, questions |
 | `interface_en.pl`, `interface_it.pl` | English / Italian localization (`label/3`, `explanation/3`) |
 | `clinical_tests.pl` | Regression test suite over clinical vignettes |
-| `bot_io.pl` | I/O abstraction (`ui_read/2`): terminal vs Telegram-bot mode |
-| `bot_boot.pl`, `bot_session.pl` | Bot bootstrap (per-chat thread-local state) and MQI session API |
+| `bot_io.pl` | I/O abstraction (`ui_read/2`): terminal vs bot mode, structured description of each question |
+| `bot_boot.pl`, `bot_session.pl` | Bot bootstrap (per-session thread-local state) and MQI session API |
 
 ## License
 

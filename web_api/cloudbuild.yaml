@@ -1,0 +1,8 @@
+# Cloud Build: builds the web API image and pushes it to Artifact Registry.
+# Used by `make deploy-api` (gcloud builds submit --config web_api/cloudbuild.yaml).
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "web_api/Dockerfile", "-t", "$_IMAGE", "."]
+images: ["$_IMAGE"]
+substitutions:
+  _IMAGE: europe-west1-docker.pkg.dev/bots-500321/pesad/pesad-api:latest
