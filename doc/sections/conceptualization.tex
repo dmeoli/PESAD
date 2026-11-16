@@ -1,45 +1,46 @@
 \section{Conceptualization}
+\label{sec:conceptualization}
 
-In this section we present an analysis of the process that led to expressing the
-knowledge in logical form. In particular, we discuss the objects that were
-identified and the relations and properties of those objects.
-
-The knowledge is organised over four inference levels, which structure the
-reasoning from the most abstract diagnosis down to the elementary observations:
-
+We now describe how the knowledge identified above was expressed in logical
+form, i.e., the objects of the domain and the relations among them. The
+knowledge is organized over four inference levels, which descend from the
+codable diagnoses to the elementary answers:
 \begin{enumerate}[label=(\Roman*)]
-    \item \emph{Disorders} ---the ``child'' anxiety disorders that the system is
-    able to diagnose, encoded by the relation \texttt{disorder/3};
-    \item \emph{Sub-disorders and types} ---the ``parent'' or
-    ``non-codifiable'' disorders and the specialisation types that, combined with
-    them, define a disorder, encoded by the relation \texttt{disorder\_nc/4};
-    \item \emph{Symptomatic manifestations and features} ---the complex symptoms
-    and the features attached to them, encoded by the relations
-    \texttt{symptomatic\_manifestation/4} and \texttt{symptomatic\_feature/4};
-    \item \emph{Elementary symptoms} ---the atomic facts reported by the user,
-    encoded by the relation \texttt{symptom/3}.
+    \item \emph{disorders}, i.e., the 92 diagnostic goals of
+    table~\ref{tab:disorders}, encoded by the relation \code{disorder/3};
+    \item \emph{sub-disorders and types}, i.e., the criterion sets of the
+    parent (non-codable) disorders, together with the shared exclusions on
+    substances and medical conditions, encoded by \code{disorder\_nc/4}, and the
+    stimulus types of specific phobia, encoded by
+    \code{specific\_phobia\_type/4};
+    \item \emph{symptomatic manifestations and features}, i.e., the lettered
+    criteria of the manual (a cluster of symptoms with its threshold, a
+    duration, an onset, an exclusion), encoded by
+    \code{symptomatic\_manifestation/4} and \code{symptomatic\_feature/4};
+    \item \emph{elementary facts}, i.e., the answers of the user about single
+    items and the choices among options, obtained through the question
+    protocols of section~\ref{sec:acquisition}.
 \end{enumerate}
+The knowledge base has 92 rules at level~I, 37 at level~II and 74 at
+level~III (55 manifestations and 19 features, one of which covers the 63
+criteria answered by a single question), and the leaves are 238 yes/no items
+and 16 questions with a list of options (multiple-choice questions and selective
+specifiers, the age band excluded).
 
 
 \subsection{Objects}
 
-The conceptualization phase brought several objects to light. These objects can be
-classified into categories.
+Table~\ref{tab:objects} lists the categories of objects, rather than the
+objects themselves, with a description and a few examples of each category.
 
-In Table~\ref{tab:objects}, rather than weighing down the discussion with a list
-of every single identified object, we prefer to report the categories to which the
-objects belong, focusing attention on the description of what they represent. For
-each category, a few examples of objects are also given.
-
-\begin{longtable}{p{0.22\linewidth} p{0.42\linewidth} p{0.28\linewidth}}
-\caption{Objects identified during the conceptualization
-phase.}\label{tab:objects}\\
+\begin{longtable}{@{}p{0.22\linewidth} p{0.42\linewidth} p{0.28\linewidth}@{}}
+\caption{The categories of objects of the knowledge base.}\label{tab:objects}\\
 \toprule
-\textbf{Object Category} & \textbf{Description} & \textbf{Examples} \\
+\textbf{Category} & \textbf{Description} & \textbf{Examples} \\
 \midrule
 \endfirsthead
 \toprule
-\textbf{Object Category} & \textbf{Description} & \textbf{Examples} \\
+\textbf{Category} & \textbf{Description} & \textbf{Examples} \\
 \midrule
 \endhead
 \midrule
@@ -47,109 +48,86 @@ phase.}\label{tab:objects}\\
 \endfoot
 \bottomrule
 \endlastfoot
-
-Disorder &
-The ``child'' anxiety disorders that the expert system is able to diagnose. &
-Panic Disorder Without Agoraphobia; Specific Phobia, Animal Type; Generalised
-Anxiety Disorder; \dots \\
+Diagnostic goal &
+A codable diagnosis, i.e., a disorder together with the specifier or subtype
+that identifies its code, or a specifier that the manual requires to be recorded. &
+Panic disorder; specific phobia, animal type; ADHD, predominantly inattentive
+presentation \\
 \addlinespace
-
-Non-Codifiable Disorder &
-Both the ``parent'' anxiety disorders to which the ``child'' disorders refer and
-the so-called ``non-codifiable'' disorders, that is, those disorders that, without
-a precise specialisation or placement, cannot be recorded. &
-Agoraphobia; Specific Phobia; Post-Traumatic Stress Disorder; Panic Disorder;
-Social Phobia; \dots \\
+Parent disorder &
+The criterion set of a disorder, shared by all its goals, and the two shared
+exclusions (a substance-induced alteration, an alteration due to another
+medical condition). &
+Specific phobia; autism spectrum disorder; associated substance-induced
+alteration \\
 \addlinespace
-
-Type of Non-Codifiable Disorder &
-The various specialisations that, combined with the non-codifiable disorders,
-allow a disorder to be defined. &
-Generalised Type; Circumscribed Type; Animal Type; Natural Environment Type;
-\dots \\
+Specifier or subtype &
+A value that, combined with a parent disorder, identifies a goal; it is posed as
+a choice among options or as a single yes/no question. &
+Insight (good or fair, poor, absent); presentation; level of support;
+performance only \\
 \addlinespace
-
-Symptomatic Manifestation &
-The various manifestations of symptoms that denote an anxiety disorder.
-Typically, a symptomatic manifestation is made up of several criteria (complex
-symptoms). Each criterion is composed of one or more symptoms, which need not all
-be mandatorily required for the diagnosis: it may be the case that a minimum
-number of symptoms out of a larger set is required. &
-Increased Arousal; Psychological Trauma; Social Phobic Anxiety; Agoraphobic
-Anxiety; Unexpected Panic Attack; Generalised Anxiety; \dots \\
+Symptomatic manifestation &
+A criterion made of several items, of which at least $M$ out of $N$ are
+required (a polythetic threshold). &
+Panic attack (4 of 13); intrusion symptoms (1 of 5); inattention (6 of 9, or 5
+of 9 from age 17) \\
 \addlinespace
-
-Symptomatic Feature &
-The features connected to the symptoms that allow one disorder to be determined or
-distinguished from another. &
-Duration of at least 6 months; Frequent panic attacks; Onset of symptoms within 1
-month of the traumatic event; \dots \\
+Symptomatic feature &
+A criterion that does not count symptoms: a duration, an onset, a time since a
+stressor or a bereavement, an etiology, or a single-question criterion. &
+Duration of at least 6 months; onset within 3 months of the stressor; onset in
+the early developmental period \\
 \addlinespace
-
-Elementary Symptom &
-The atomic symptoms that, once assembled, give rise to the symptomatic
-manifestations. &
-Depersonalisation; Terror; Avoidance; Nausea; \dots \\
+Exclusion &
+A single-question criterion required to be false, of the form ``not better
+explained by'' or ``not attributable to''. &
+Worry better explained by another disorder; language difficulties attributable
+to a sensory condition \\
 \addlinespace
-
+Elementary item &
+A yes/no question about one symptom or circumstance, answered with a
+certainty. &
+Palpitations; insistence on sameness; careless mistakes \\
+\addlinespace
 Patient &
-The categories of patient to whom the diagnosis is addressed. Placing the patient
-in one of the three age ranges makes it possible to distinguish both the number of
-symptomatic manifestations or features required by a given disorder and the number
-of symptoms expected from a single symptomatic manifestation. &
-Child (0--9 years); Adolescent (10--17 years); Adult (18+). \\
+The age band of the patient, which selects the age-dependent thresholds,
+durations and branches of the rules. &
+Preschool ($\le 6$ years); child (7--12); adolescent (13--17); adult
+($\ge 18$) \\
 \addlinespace
-
-Degree of Insight of the Obsessions &
-The degrees of insight into the reasonableness of the obsessions-compulsions. &
-High Insight; Low Insight; \dots \\
+Symptom duration &
+The options of the duration question, shared by all the disorders that state a
+duration. &
+Less than 3 days; 3 days to 1 month; 1 to 3 months; 3 to 6 months; 6 months or
+more \\
 \addlinespace
-
-Type of Anxiety &
-The types of anxiety. The distinction is based on the main reason that triggers
-the anxious process. &
-Anxiety due to embarrassment in public; Anxiety due to concern for one's own
-health; \dots \\
+Onset and time since an event &
+The options of the questions on the onset after a stressor and on the time
+since a bereavement. &
+Within 3 months of the stressor; 12 months or more since the death \\
 \addlinespace
-
-Type of Panic Attack &
-The two types into which a panic attack can be specialised. &
-Unexpected Panic Attack; Situationally Triggered Panic Attack. \\
+Panic attacks &
+The type and the frequency of the panic attacks. &
+Unexpected or cued; one or fewer, 2 to 5, more than 5 \\
 \addlinespace
-
-Type of Phobic Reaction &
-The types of reaction that an individual may have towards a feared situation or
-object. &
-Endurance with distress; Avoidance; \dots \\
-\addlinespace
-
-Symptom Duration &
-The various durations used to verify all the symptoms that require the presence of
-the symptoms for a precise length of time. &
-Less than 2 days; 2 days -- less than 1 month; 1 month -- less than 3 months;
-3 months -- less than 6 months; 6 months or more. \\
-\addlinespace
-
-Symptom Onset &
-The various periods within which the acute stress disorder and the post-traumatic
-stress disorder can arise. &
-Less than 1 month; 1 month -- less than 6 months; 6 months or more. \\
-\addlinespace
-
-Panic Attack Frequency &
-The various frequencies of panic attacks required in panic disorder. &
-1; 2--5; 6+. \\
+Finding &
+The result of a test, an interview or a record, accepted by the evaluation from
+test results and converted into evidence for one or more items. &
+DIVA-5 symptom counts; full-scale IQ; RAADS-R total; Movement ABC-2
+percentile \\
 \end{longtable}
 
 
 \subsection{Relations and Properties}
 
-Table~\ref{tab:relations} reports the relations and the properties of the objects.
-The first five relations correspond to the four inference levels described at the
-beginning of this section.
+Table~\ref{tab:relations} lists the relations of the knowledge base; the first
+five correspond to the inference levels described above, and the last argument
+of the relations of levels I to III is the truth value with which the relation
+is required, \code{true} for a criterion and \code{false} for an exclusion.
 
-\begin{longtable}{p{0.46\linewidth} p{0.46\linewidth}}
-\caption{Relations and properties of the objects.}\label{tab:relations}\\
+\begin{longtable}{@{}p{0.40\linewidth} p{0.54\linewidth}@{}}
+\caption{Relations of the knowledge base.}\label{tab:relations}\\
 \toprule
 \textbf{Relation} & \textbf{Description} \\
 \midrule
@@ -163,48 +141,55 @@ beginning of this section.
 \endfoot
 \bottomrule
 \endlastfoot
-
-\texttt{patient(Patient)} &
-Indicates the type of patient to whom the diagnosis is addressed. \\
+\code{patient(Band)} &
+The age band of the patient, posed once at the start of a consultation. \\
 \addlinespace
-
-\texttt{disorder/3} &
-States that the given object is a ``child'' disorder and is diagnosable for the
-specified patient (level~I). \\
+\code{disorder(Goal, Patient, CF)} &
+\code{Goal} is a diagnostic goal that holds for \code{Patient} with certainty
+\code{CF} (level~I). \\
 \addlinespace
-
-\texttt{disorder\_nc/4} &
-States that the given object is a ``parent'' or ``non-codifiable'' disorder,
-together with its specialisation type, and is diagnosable for the specified
-patient (level~II). \\
+\code{disorder\_nc(Parent, Patient, CF, TV)} &
+The criterion set of a parent disorder, or a shared exclusion, holds with truth
+value \code{TV} and certainty \code{CF} (level~II). \\
 \addlinespace
-
-\texttt{symptomatic\_manifestation/4} &
-States that the given object is a symptomatic manifestation and is diagnosable for
-the specified patient (level~III). \\
+\code{symptomatic\_manifestation/4}, \code{symptomatic\_feature/4} &
+A lettered criterion holds with the given truth value and certainty
+(level~III). \\
 \addlinespace
-
-\texttt{symptomatic\_feature/4} &
-States that the given object is a symptomatic feature and is diagnosable for the
-specified patient (level~III). \\
+\code{symptom(Items, M, CF)} &
+At least \code{M} of the yes/no \code{Items} hold, with certainty \code{CF}
+(level~IV, cf. (\ref{eq:criterion})). \\
 \addlinespace
-
-\texttt{symptom/3} &
-Encodes a criterion (complex symptom) at the elementary level (level~IV): the
-list argument indicates the various elementary symptoms that compose the
-criterion, while the numeric argument indicates the number of symptoms mandatorily
-required to diagnose the criterion. \\
+\code{symptom\_count(Count, Items, M, CF)} &
+As \code{symptom/3}, unless a symptom count from a structured instrument is
+available, in which case the count is used in place of the items. \\
 \addlinespace
-
-\texttt{aetiological\_evidence([Evidence\_List], Evidence\_Number)} &
-Indicates an aetiological evidence, where \texttt{Evidence\_List} lists the
-various ways of verifying the aetiological link between the disorder and the
-factor under examination (drug, withdrawal, intoxication), and
-\texttt{Evidence\_Number} indicates the number of evidences mandatorily required
-for the diagnosis. \\
+\code{single\_item\_criterion(Item)} &
+\code{Item} is a criterion answered by one yes/no question (an exclusion, a
+single-item criterion or a yes/no specifier). \\
 \addlinespace
-
-\texttt{phobic\_reaction\_type([Options])} &
-Indicates a type of phobic reaction, where \texttt{Options} lists the admissible
-reaction options. \\
+\code{etiological\_evidence(Items, M, CF)} &
+At least \code{M} of the \code{Items} support the etiological link between the
+disturbance and a substance or a medical condition. \\
+\addlinespace
+\code{symptoms\_duration/2}, \code{symptoms\_onset/2}, \code{bereavement\_time/2},
+\code{phobic\_reaction\_type/2} &
+The multiple-choice questions: the chosen option is one of the admitted ones
+(cf. (\ref{eq:multiple})). \\
+\addlinespace
+\code{insight\_specifier/1}, \code{adjustment\_subtype/1}, \code{adhd\_severity/1},
+\code{asd\_support/2}, \dots &
+The selective specifiers: the goal holds only if the chosen option is the one
+of the goal. \\
+\addlinespace
+\code{disorder\_codes(Goal, ICD10CM, ICD11)} &
+The two codes of a goal (metadata). \\
+\addlinespace
+\code{differentials(Family, Families)} &
+The disorders that the differential-diagnosis section of the manual lists
+as to be ruled out, among those in the knowledge base. \\
+\addlinespace
+\code{finding(Id, Type, Description)}, \code{finding\_evidence/3} &
+A test result accepted by the evaluation from test results, its admissible
+range, and the items it supports with their degree. \\
 \end{longtable}

@@ -1,0 +1,88 @@
+\chapter{Limitations and Conclusions}
+\label{chap:conclusions}
+
+\section{Limitations}
+\label{sec:limitations}
+
+The first limitation concerns what the validation shows. The cases of the suite
+are vignettes that I wrote from the same reading of the criteria from which I
+wrote the rules. Hence, a case that passes shows that the rules agree with that
+reading, and the mutation test shows that the suite would notice most errors in
+the rules. Neither shows that the reading is the right one, nor that the system
+would reach the diagnosis of a clinician on real patients; this would require a
+comparison on clinical records, which was not attempted. PESAD is therefore a
+tool for exploring, checking and teaching the criteria of the manual; its result is not a diagnosis, as the bot and the web API state at
+the start of every consultation.
+
+Several limitations come from the way a consultation is conducted. The most
+visible one is its length. A complete investigation poses several hundred
+questions, since the knowledge base has 238 yes/no items, which
+\code{unless\_absent/3} prunes only for the disorders whose core criteria have
+already failed. This is acceptable in the terminal for a clinician, but rather tedious
+in a chat, and it is the main reason why the \code{control} command and the
+evaluation from test results (which can be restricted to some chapters or goals)
+exist. A consultation by questions cannot yet be restricted to a chapter, and
+the order of the questions is that of the rules, not that of an interview; a
+screening question per disorder, posed before its criteria, would probably
+shorten a consultation considerably. Furthermore, the duration of the symptoms is a single
+answer, shared by all the disorders that state a duration (and, likewise, the
+onset after a stressor and the time since a bereavement are single answers).
+Hence, a patient with two disorders of different durations (say, panic attacks
+for 4 months and generalized worry for 2 years) cannot be described, and the
+answer given for one disorder is used for the other. Finally, the exact age is
+known only in the evaluation from test results, whereas a consultation uses four
+age bands. The thresholds that the manual places inside a band are thus applied
+to the whole band; e.g., a 17-year-old is held to the 6 symptoms of ADHD that
+apply below 17.
+
+Exclusion criteria are, to a large extent, judgment questions. A criterion
+such as ``the disturbance is not better explained by another mental disorder''
+is a yes/no question for the clinician, and the system does not answer it from
+its conclusions on the other goals. Hence, the hardest part of the differential
+diagnosis is left to the user. Also, the list of differentials returned by the web
+API is a reminder of what to rule out, rather than the result of having ruled it
+out. The exceptions are the exclusions that the manual states in terms of other
+criteria, which are encoded as such: e.g., social communication disorder is
+separated from autism by the absence of restricted, repetitive behaviors, and
+persistent tic disorder by never having met the criteria of Tourette's
+disorder.
+
+Being a variant of the certainty factors, the calculus shares their limits. The certainties of the rules ($0.95$ to $0.98$) were chosen by hand, and they
+bound the certainty of a diagnosis from above. Similarly, the threshold of $0.5$ that
+separates a present from an absent goal is a convention, not a calibrated value.
+A certainty is a degree of belief, not a probability, and ``72\%'' for panic
+disorder should not be read as a frequency. Each goal is the conclusion of a
+single rule, so that the combination of the evidence of several rules for the
+same conclusion, which MYCIN performed with a dedicated
+formula~\cite{shortliffe-buchanan}, is not needed. On the other hand, for the
+polythetic disorders the choice of the t-norm has an effect that is larger than
+one would wish (table~\ref{tab:uncertainty-cases}), and which only the minimum
+avoids. As for coverage, the \emph{other specified} and \emph{unspecified}
+categories, a few neurodevelopmental disorders (global developmental delay,
+speech sound disorder, childhood-onset fluency disorder, stereotypic movement
+disorder), the panic attack specifier and the specifiers of autism on
+associated conditions and catatonia are not modeled. The ICD-11 codes are
+recorded as metadata, without the ICD-11 criteria, which differ from those of
+the DSM-5-TR in several places.
+
+
+\section{Conclusions}
+
+I described PESAD, a rule-based expert system that encodes the DSM-5-TR
+criteria of 92 codable goals of the neurodevelopmental, anxiety,
+obsessive-compulsive and trauma-related chapters, with their exclusions,
+specifiers and ICD-10-CM and ICD-11 codes. It reasons under uncertainty with
+certainty factors, i.e., with the minimum t-norm, or with one of five
+alternative methods. The same engine serves a terminal shell, a Telegram bot
+and a stateless web API, which also evaluates the knowledge base from test
+results with lower and upper certainty bounds and the list of the missing data.
+A validation suite of 425 cases per method, covering each goal with a typical,
+a subthreshold, an exclusion and a differential case, passes under all six
+methods, and it detects 128 of 145 errors injected into the knowledge base. Comparing the methods supports the minimum as the default, since the other
+t-norms make the certainty of a diagnosis depend on the number of its criteria.
+Open questions are mostly practical: whether the consultation can be
+shortened by screening questions without losing comorbidities, and whether the
+exclusions can be answered (at least in part) from the conclusions of the
+system. Above all, it remains to be seen whether the conclusions of the system
+agree with those of clinicians on real cases, a question that a knowledge base
+built from a manual cannot settle.

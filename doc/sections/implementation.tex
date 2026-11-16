@@ -1,246 +1,320 @@
 \section{Implementation}
+\label{sec:implementation}
 
-This section describes how PESAD is realised: the tools adopted, the modular
-architecture of the system, the representation of the knowledge base, the
-mechanisms of the inference engine ---knowledge acquisition, uncertainty
-management and explanation--- and the bilingual user interface.
+This section describes how the knowledge base, the inference engine and the
+explanation module are realized: the tools, the modules of the system, the
+form of the rules, the question protocols, the six uncertainty methods and the
+proof trees.
 
-\subsection{Tools Used}
+\subsection{Tools}
 
-PESAD is implemented in \emph{SWI-Prolog}, a mature and free implementation of
-the Prolog logic-programming language. Prolog was chosen because the diagnostic
-knowledge is naturally expressed as \emph{rules} (definite clauses) and because
-its resolution mechanism provides backward chaining and backtracking out of the
-box. The features that Prolog does not provide natively ---reasoning under
-uncertainty and the explanation of the reasoning process--- are implemented
-explicitly on top of the language, as described below.
+PESAD is written in SWI-Prolog~\cite{swipl}. Apart from the standard library,
+it uses the libraries for JSON, needed by the evaluation from test results, and
+the Machine Query Interface (MQI)~\cite{swipl-mqi}, through which the Python
+layer of chapter~\ref{chap:interfaces} drives the engine. Both the
+Telegram bot and the web API are written in Python, with the packages
+\code{python-telegram-bot}, FastAPI and \code{swiplserver}. They are deployed as
+Docker images built by the continuous integration of the repository, which also
+runs the validation suite at each push.
 
 \subsection{System Architecture}
 
-The system is organised by \emph{responsibility} rather than as a single
-monolithic file. This separation mirrors the conceptual architecture of an
-expert system (knowledge base, inference engine, user interface) and makes each
-concern independently readable and maintainable. Table~\ref{tab:modules} lists
-the modules and the directives that load them are collected in
-\texttt{start.pl}.
+The system is organized by responsibility, following the conceptual
+architecture of an expert system (knowledge base, inference engine, user
+interface), with one file per concern (table~\ref{tab:modules}). From the terminal the system is started by \code{start.pl}, the bot and the
+web API by \code{bot\_boot.pl}, and both load the same knowledge base and the
+same engine.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
-\caption{Modular organisation of PESAD.}
+\caption{The Prolog modules of PESAD (directory \code{prolog/}).}
 \label{tab:modules}
 \small
-\begin{tabular}{@{}lp{9.2cm}@{}}
+\begin{tabular}{@{}p{3.6cm}p{10.6cm}@{}}
 \toprule
-\textbf{Module} & \textbf{Responsibility} \\
+\textbf{File} & \textbf{Responsibility} \\
 \midrule
-\texttt{start.pl} & Bootstrap: directives and loading of the modules. \\
-\texttt{shell.pl} & User shell: REPL loop, language selection, command dispatch, presentation of results, and the \texttt{decode/2}\,/\,\texttt{explain/2} localization dispatch. \\
-\texttt{ask.pl} & Knowledge acquisition: the \emph{criterion}, \emph{multiple} and \emph{selective} question protocols, with answer parsing and certainty elicitation. \\
-\texttt{uncertainty.pl} & Certainty-factor calculus, certainty-based ordering and inference-level index bookkeeping. \\
-\texttt{explanation.pl} & Printing of the proof tree (\emph{how} a conclusion was reached). \\
-\texttt{memory.pl} & Working-memory management (facts and proof trees). \\
-\texttt{utils.pl} & General-purpose helpers (output spacing, list operations). \\
-\texttt{disorders.pl} & Knowledge base: codable Axis~I disorders (diagnostic goals) and entry points. \\
-\texttt{criteria.pl} & Knowledge base: sub-disorders, types, symptomatic manifestations and features, and the questions. \\
-\texttt{interface\_en.pl}, \texttt{interface\_it.pl} & English / Italian localization (\texttt{label/3}, \texttt{explanation/3}, \texttt{command/3}). \\
+\code{start.pl} & Terminal bootstrap: directives and loading of the modules. \\
+\code{shell.pl} & Shell: read--evaluate--print loop, choice of the language and of the uncertainty method, commands, presentation of the results, localization dispatch (\code{decode/2}, \code{explain/2}). \\
+\code{ask.pl} & Knowledge acquisition: the criterion, multiple and selective question protocols, with the elicitation of the certainty. \\
+\code{uncertainty.pl} & Certainty calculus (the t-norm of the active method and the rule chaining), ordering by certainty, indexes of the proof trees. \\
+\code{fuzzy.pl} & Membership functions of the graded variables (duration, number of panic attacks). \\
+\code{explanation.pl} & Printing of the proof trees (the \emph{how}). \\
+\code{memory.pl} & Working memory: facts and proof trees. \\
+\code{disorders.pl} & Knowledge base: the 92 diagnostic goals, the shared exclusions, the entry points, the ICD-10-CM and ICD-11 codes, the chapters and the differentials. \\
+\code{criteria.pl} & Knowledge base: parent disorders, types and specifiers, manifestations and features, the questions. \\
+\code{findings.pl} & Knowledge base: the test results accepted by the evaluation from test results and the items they support. \\
+\code{evaluate.pl} & Evaluation from facts: loading of facts and findings, the two bounded runs, the result in JSON. \\
+\code{interface\_en.pl}, \code{interface\_it.pl} & English and Italian texts (\code{label/3}, \code{explanation/3}). \\
+\code{bot\_io.pl}, \code{bot\_boot.pl}, \code{bot\_session.pl} & Input and output in terminal or session mode, structured description of each question, sessions driven over the MQI. \\
+\code{clinical\_tests.pl} & Validation suite (chapter~\ref{chap:validation}). \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsubsection{Knowledge Base}
+\subsection{Knowledge Base}
+\label{sec:kb}
 
-The knowledge base is structured over \emph{four inference levels} that descend
-from the abstract diagnoses to the concrete observations:
-
-\begin{enumerate}[label=(\Roman*)]
-    \item \textbf{Disorders} ---the codable Axis~I diagnoses, i.e. the goals of
-    the system (\texttt{disorder/3});
-    \item \textbf{Sub-disorders and types} ---non-codable building-block
-    disorders and their specifiers (\texttt{disorder\_nc/4} and the
-    \texttt{*\_type/4} predicates);
-    \item \textbf{Symptomatic manifestations and features}
-    (\texttt{symptomatic\_manifestation/4}, \texttt{symptomatic\_feature/4});
-    \item \textbf{Elementary symptoms / facts} elicited from the user
-    (\texttt{symptom/3}).
-\end{enumerate}
-
-Each rule carries, besides the patient and the resulting certainty factor, the
-truth value it is asserted with. As an example, the rule for \emph{Panic
-Disorder} requires the presence of the panic-disorder criteria and the
-\emph{absence} of an associated substance-induced alteration and of an
-associated general medical condition (the shared exclusion):
+The rules of levels I to III have a common form. The premises are proved in
+order, each with the truth value it is required with; then the list of their
+certainties is passed to \code{certainty/6}, together with the identifier of the
+conclusion, the inference level, the certainty of the rule and the truth value
+of the conclusion. As an example, the criterion set of panic disorder (level~II)
+requires recurrent unexpected attacks (A), at least one month of concern or of
+maladaptive change of behavior (B), and that the disturbance be \emph{not}
+better explained by another mental disorder (D):
 
 \begin{lstlisting}
-disorder(panic_disorder, Patient, CF) :-
-    disorder_nc(panic_disorder, Patient, CF1, true),
-    exclude_substance_and_medical(Patient, CF2, CF3),
-    certainty(panic_disorder, 1, [CF1,CF2,CF3], 0.97, CF, true).
+disorder_nc(panic_disorder,Patient,CF,TV) :-
+    symptomatic_manifestation(recurrent_unexpected_panic_attacks,Patient,CF1,true),
+    symptomatic_manifestation(panic_consequences_concern,Patient,CF2,true),
+    symptomatic_feature(duration_at_least_one_month,Patient,CF3,true),
+    unless_absent([CF1,CF2,CF3],
+        symptomatic_feature(panic_better_explained_by_other_disorder,
+                            Patient,CF4,false),[CF4]),
+    certainty(panic_disorder,2,[CF1,CF2,CF3,CF4],0.97,CF,TV).
 \end{lstlisting}
 
-The last argument of \texttt{certainty/6} is the truth value, the constant
-\texttt{0.97} is the certainty of the rule itself, and the integer \texttt{1}
-identifies the inference level, which is used by the explanation module to build
-the proof tree.
+The goal of level~I adds criterion C, i.e., that the disturbance be not
+attributable to a substance or to another medical condition. This criterion is
+shared by many disorders, and it is written once, as the two parent disorders
+\code{associated\_substance\_induced\_alteration} and
+\code{associated\_general\_medical\_condition}, both required false:
 
-\subsubsection{Inference Engine}
+\begin{lstlisting}
+disorder(panic_disorder,Patient,CF) :-
+    primary(panic_disorder,Patient,CF1,CF2,CF3),
+    certainty(panic_disorder,1,[CF1,CF2,CF3],0.97,CF,true).
+\end{lstlisting}
 
-The inference engine is the part of the system that, given the facts stated by
-the user, derives the diagnoses. It comprises three concerns: the acquisition of
-information from the user, the management of uncertainty, and the explanation of
-the reasoning.
+The wrapper \code{unless\_absent/3} calls its goal only when none of the
+certainties already computed for the rule is $0$, and otherwise sets the
+remaining certainties to $0$. Hence, the exclusion and specifier questions of a
+disorder whose core criteria have already failed are not posed, which shortens a
+consultation considerably. Each rule has a certainty, a constant between $0.95$
+and $0.98$ at levels I and II, chosen by hand (and somewhat arbitrarily) to
+reflect the specificity of the criteria. It is $1$ for the criteria answered by
+a single question, whose uncertainty is that of the answer.
 
-\paragraph{Knowledge Acquisition.}
-Questions are posed to the user through three protocols, implemented in
-\texttt{ask.pl}.
+A specifier that identifies a goal may be a premise of the goal (e.g., ``with
+dissociative symptoms'', or the presentations of ADHD, which require A1 and A2
+with the appropriate truth values). Otherwise, it is a \emph{selective}
+question, whose answer admits one goal of the family:
 
-\emph{Criterion ask} verifies a criterion made of one or more items, each a
-yes/no question; a criterion of $N$ items may require that only $M$ of them
-(with $1 \le M \le N$) be satisfied. Its certainty is obtained by taking the $M$
-items with the highest certainty and then keeping the \emph{lowest} certainty
-among them:
-\begin{equation}
-\cf_{\text{criterion}} \;=\; \min \big( \text{top-}M \{\, \cf_1, \dots, \cf_N \,\} \big).
+\begin{lstlisting}
+disorder(attention_deficit_hyperactivity_disorder_mild,Patient,CF) :-
+    disorder_nc(attention_deficit_hyperactivity_disorder,Patient,CF1,true),
+    selected(CF1,adhd_severity(severity_mild)),
+    certainty(attention_deficit_hyperactivity_disorder_mild,1,[CF1],0.97,CF,true).
+\end{lstlisting}
+
+where \code{selected/2}, like \code{unless\_absent/3}, poses the question only
+if the disorder is not already ruled out. Age-dependent parts of the
+criteria are branches on the age band: e.g., separation anxiety disorder
+requires 4 weeks below 18 years and about 6 months in adults, generalized
+anxiety disorder requires 1 associated symptom in children and 3 in adults, and
+the preschool subtype of posttraumatic stress disorder has its own clusters.
+When the exact age is known (as in the evaluation from test results), it is
+used for the thresholds that the manual places at a given age, such as the 5
+symptoms of ADHD from age 17.
+
+\subsection{Inference Engine}
+
+The inference engine comprises the acquisition of the facts from the user, the
+management of uncertainty and the bookkeeping of the proof trees; Prolog provides the backward chaining and the backtracking.
+
+\subsubsection{Knowledge Acquisition}
+\label{sec:acquisition}
+
+The elementary facts are obtained through three question protocols,
+implemented in \code{ask.pl}. An answer is stored in the working memory as a
+fact \code{known(Answer, Attribute, Value, CF)}, and a question already answered
+is not posed again.
+
+The \emph{criterion ask} verifies a criterion of $N$ yes/no items of which at
+least $M$ are required ($1 \le M \le N$). Each item is answered \emph{yes} or
+\emph{no} with a certainty $c$, and a \emph{no} contributes $1-c$. Its certainty
+is the smallest among the $M$ largest certainties of the items,
+i.e., denoting by $c_{(1)} \ge c_{(2)} \ge \dots \ge c_{(N)}$ the certainties
+sorted in decreasing order,
+\begin{equation}\label{eq:criterion}
+\cf_{\text{criterion}} \;=\; c_{(M)} \,.
 \end{equation}
-For instance, with $N=3$ items of certainties $\{0.4, 0.7, 0.6\}$ and $M=2$, the
-two highest are $\{0.7, 0.6\}$ and the resulting certainty is $0.6$. If the user
-answers \emph{no} to an item with certainty $c$, the item contributes the
-complementary certainty $1-c$.
+For instance, with $N=3$ items of certainties $0.4$, $0.7$ and $0.6$ and $M=2$,
+the criterion has certainty $0.6$. Note that (\ref{eq:criterion}) is the minimum over the best $M$ items under all
+the uncertainty methods, since choosing \emph{which} $M$ items satisfy the
+criterion is a matter of selection.
 
-\emph{Multiple ask} lets the user choose one value from a list of options. If
-the chosen answer is among those admitted by the question, the certainty equals
-the one declared by the user; otherwise the residual certainty is distributed
-over the remaining options:
-\begin{equation}
+The \emph{multiple ask} poses a question with a list of options, of which a
+subset is admitted by the rule (e.g., the durations of at least 6 months). If
+the chosen answer $a$, given with certainty $c$, is admitted, the premise has
+certainty $c$. Otherwise, the residual certainty $1-c$ is distributed evenly over
+the other options:
+\begin{equation}\label{eq:multiple}
 \cf \;=\;
 \begin{cases}
-\cf_{\text{answer}} & \text{if the answer is admitted,}\\[4pt]
-\dfrac{1-\cf_{\text{answer}}}{\,|\text{options}|-1\,} & \text{otherwise.}
+c & \text{if $a$ is admitted,}\\[4pt]
+\dfrac{1-c}{\,|\text{options}|-1\,} & \text{otherwise.}
 \end{cases}
 \end{equation}
+The \emph{selective ask} is used for the age band and for the selective
+specifiers: the admitted option succeeds with certainty $1$, and any other
+option makes the goal fail (and therefore gives it certainty $0$). To a pending
+question the user may also answer \emph{why}, which prints the diagnostic reason
+of the question before posing it again.
 
-\emph{Selective ask} is used for single, mutually exclusive choices (e.g. the
-patient's age group): the admitted option succeeds with certainty $1.0$, while
-any other choice makes the goal fail.
+\subsubsection{Uncertainty Management}
+\label{sec:uncertainty}
 
-\paragraph{Uncertainty Management.}
-Reasoning under uncertainty is implemented with \emph{certainty factors}
-(\cf{}~$\in [0,1]$), managed in \texttt{uncertainty.pl}. The certainty of the
-\emph{antecedent} of a rule, whose premises must all hold (a conjunction), is
-the minimum of the premises' certainties:
-\begin{equation}
-\cf_{\text{ant}} \;=\; \min_i \cf_i .
+Certainties lie in $[0,1]$ and are managed in \code{uncertainty.pl}. The
+certainty of the antecedent of a rule with premises of certainties
+$c_1, \dots, c_n$ is obtained by folding a t-norm $T$ over them,
+\begin{equation}\label{eq:antecedent}
+\cf_{\text{ant}} \;=\; T\big( \dots T( T(1, c_1), c_2 ) \dots, c_n \big) ,
 \end{equation}
-The certainty of the \emph{consequent} combines the antecedent certainty with
-the certainty of the rule. For a goal asserted as true the two are multiplied;
-for a negated goal the complement of the product is taken:
-\begin{equation}
+which does not depend on the order of the premises since a t-norm is
+commutative and associative, and has $1$ as neutral element~\cite{klement}. As in MYCIN~\cite{shortliffe-buchanan}, the certainty of the conclusion combines
+that of the antecedent with the certainty $\cf_{\text{rule}}$ of the rule, and
+its complement is taken when the conclusion is required false:
+\begin{equation}\label{eq:consequent}
 \cf_{\text{cons}} \;=\;
 \begin{cases}
-\cf_{\text{rule}} \cdot \cf_{\text{ant}} & \text{(positive goal),}\\[4pt]
-1 - \cf_{\text{rule}} \cdot \cf_{\text{ant}} & \text{(negated goal).}
+\cf_{\text{rule}} \cdot \cf_{\text{ant}} & \text{if the conclusion is required true,}\\[4pt]
+1 - \cf_{\text{rule}} \cdot \cf_{\text{ant}} & \text{if it is required false.}
 \end{cases}
 \end{equation}
-These two predicates are at the heart of the calculus:
+If the clinician answers \emph{yes} with certainty $0.2$ to ``the panic attacks
+are better explained by another mental disorder'', the exclusion contributes
+$1 - 1 \cdot 0.2 = 0.8$ to the rule of panic disorder; an answer \emph{no} with
+certainty $1$ contributes $1$.
 
-\begin{lstlisting}
-antecedent_certainty(Antecedent_CF_List, Antecedent_CF) :-
-    min_list(Antecedent_CF_List, Antecedent_CF).
-
-consequent_certainty(Goal, 1, Antecedent_CF, Rule_CF, Consequent_CF, true) :-
-    Consequent_CF is Rule_CF * Antecedent_CF,
-    ...
-consequent_certainty(Goal, 1, Antecedent_CF, Rule_CF, Consequent_CF, false) :-
-    Consequent_CF is 1 - (Rule_CF * Antecedent_CF),
-    ...
-\end{lstlisting}
-
-While computing the consequent, each rule is asserted (as \texttt{rule\_I/4},
-\texttt{rule\_II/5} or \texttt{rule\_III/6}, according to its inference level)
-together with a hierarchical index. These assertions form the proof tree that
-the explanation module later traverses.
-
-\paragraph{Certainty factors versus fuzzy logic.}
-The conjunction of the premises is, in fact, a \emph{fuzzy} operation: PESAD
-evaluates it with a configurable t-norm, selected at start-up and stored in the
-dynamic fact \texttt{uncertainty\_method/1}. Two methods are provided:
+Uncertainty methods differ in the t-norm of (\ref{eq:antecedent}). Five
+t-norms are used~\cite{klement,hajek}, i.e., for $a, b \in [0,1]$, the minimum
+(or G\"odel) t-norm, the product, the \L{}ukasiewicz t-norm, the Hamacher
+product and the Einstein product:
+\begin{align}
+T_{M}(a,b) &= \min(a,b), \label{eq:tmin}\\
+T_{P}(a,b) &= a\,b, \label{eq:tprod}\\
+T_{L}(a,b) &= \max(0,\, a+b-1), \label{eq:tluk}\\
+T_{H_0}(a,b) &=
+\begin{cases}
+0 & \text{if } a=b=0,\\[2pt]
+\dfrac{a\,b}{a+b-a\,b} & \text{otherwise,}
+\end{cases} \label{eq:tham}\\
+T_{E}(a,b) &= \frac{a\,b}{2-(a+b-a\,b)} . \label{eq:tein}
+\end{align}
+The last two are the members of the Hamacher family
+$T^{H}_{\lambda}(a,b) = a\,b / (\lambda + (1-\lambda)(a+b-a\,b))$ for $\lambda=0$
+and $\lambda=2$~\cite{hamacher}, and the family gives the product for
+$\lambda=1$. They are ordered pointwise as
+\begin{equation}\label{eq:order}
+T_{L} \;\le\; T_{E} \;\le\; T_{P} \;\le\; T_{H_0} \;\le\; T_{M} ,
+\end{equation}
+the minimum being the largest t-norm and the only idempotent one~\cite{klement}.
+Hence, on the same answers, the minimum gives the largest certainties and the
+\L{}ukasiewicz t-norm the smallest. In detail, the six methods are as follows.
 \begin{itemize}
-  \item \texttt{cf} (the default) uses the \emph{minimum} (G\"odel t-norm),
-  i.e. the certainty of a criterion equals that of its \emph{weakest} satisfied
-  premise: $\cf_{\text{ant}} = \min_i \cf_i$;
-  \item \texttt{fuzzy} uses the \emph{product} t-norm, i.e. the algebraic
-  product of the premises: $\cf_{\text{ant}} = \prod_i \cf_i$.
+  \item \code{cf} (the default), with the minimum (\ref{eq:tmin}), which gives
+  the certainty factors of MYCIN: a criterion is as certain as its weakest
+  premise;
+  \item \code{fuzzy}, with the product (\ref{eq:tprod});
+  \item \code{fuzzy\_membership}, with the minimum, in which the duration and
+  the number of panic attacks are entered as numbers and converted by
+  membership functions (see below);
+  \item \code{lukasiewicz}, \code{hamacher} and \code{einstein}, with
+  (\ref{eq:tluk}), (\ref{eq:tham}) and (\ref{eq:tein}).
 \end{itemize}
-The remaining steps (rule chaining $\cf_{\text{rule}}\cdot\cf_{\text{ant}}$ and
-the negation $1-x$) are shared. The two methods are compared on a suite of
-clinical vignettes in Chapter~\ref{chap:validation}; both rank the correct
-diagnosis first, but the product t-norm systematically \emph{under-rates
-polythetic disorders}: a fully met post-traumatic stress disorder, which
-combines seven symptom clusters,
-collapses to $28\%$ because every premise multiplies the result, whereas the
-minimum keeps the confidence at a clinically plausible $66\%$ regardless of how
-many criteria a disorder has. For a diagnostic task in which a syndrome is ``as
-strong as its weakest satisfied criterion'', the minimum is the more faithful
-operator, and it is therefore kept as the default; the product t-norm remains
-available for comparison and experimentation.
+The rule chaining (\ref{eq:consequent}) and the complement are shared by all
+the methods. Differences among the t-norms grow with the number of premises
+of a rule, which is large for the polythetic disorders. Table~\ref{tab:tnorms}
+gives the certainty of the antecedent of a rule with $n$ premises of certainty
+$0.8$ each: with the minimum it does not depend on $n$, and with the product it
+decreases geometrically. With the \L{}ukasiewicz t-norm it is $0$ from $n=5$
+on, i.e., five premises that are each ``fairly sure'' do not support the
+conclusion at all (cf. the case \code{uncertain\_ptsd} in
+section~\ref{sec:val-results}).
 
-A richer fuzzy treatment is also provided as a third method
-(\texttt{fuzzy\_membership}, in \texttt{fuzzy.pl}): for the graded clinical
-variables ---symptom duration, panic-attack frequency and degree of insight---
-the clinician enters a \emph{crisp} value (e.g. the duration in months) instead
-of choosing a discrete option, and a trapezoidal membership grade becomes the
-certainty. This replaces the hard diagnostic cut-offs with smooth boundaries:
-for instance, against the ``at least six months'' criterion a five-month
-duration scores $0.67$ rather than abruptly failing, while the conjunction is
-still aggregated with the minimum. Table~\ref{tab:duration-membership}
-illustrates the membership of the ``at least six months'' fuzzy set.
-
-\begin{table}[h]
+\begin{table}[ht]
 \centering
-\caption{Membership grade of the ``duration at least 6 months'' fuzzy set.}
+\caption{Certainty of the antecedent of a rule with $n$ premises of certainty
+$0.8$ each, by t-norm.}
+\label{tab:tnorms}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+$n$ & $T_M$ (\code{cf}) & $T_{H_0}$ (\code{hamacher}) & $T_P$ (\code{fuzzy}) & $T_E$ (\code{einstein}) & $T_L$ (\code{lukasiewicz}) \\
+\midrule
+2 & 0.800 & 0.667 & 0.640 & 0.615 & 0.600 \\
+3 & 0.800 & 0.571 & 0.512 & 0.457 & 0.400 \\
+5 & 0.800 & 0.444 & 0.328 & 0.233 & 0.000 \\
+7 & 0.800 & 0.364 & 0.210 & 0.111 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+In the method \code{fuzzy\_membership}, the durations and the number of panic
+attacks are entered as numbers (months and attacks). The certainty of a premise
+is then the membership grade of the number to the fuzzy set that replaces the
+discrete options admitted by the rule~\cite{zadeh}. These sets are piecewise
+linear: ``at least 6 months'' has membership $\mu(m) = \min(1, \max(0,
+(m-3)/3))$, i.e., $0$ up to 3 months and $1$ from 6 months on, and ``less than 6
+months'' is its complement; ``at least 1 month'' rises from $0$ at one week to
+$1$ at one month, ``from 3 days to 1 month'' is a trapezoid, and ``two or more
+attacks'' rises from $0$ at one attack to $1$ at two. With the first set
+(table~\ref{tab:duration-membership}) a five-month duration satisfies the ``at
+least 6 months'' criterion with certainty $0.67$, instead of failing it. This is
+(arguably) what the manual means when it qualifies several of its six-month
+durations with ``typically''.
+
+\begin{table}[ht]
+\centering
+\caption{Membership grade of the fuzzy set ``duration of at least 6 months''.}
 \label{tab:duration-membership}
 \small
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
-\textbf{duration (months)} & 2 & 3 & 4 & 5 & 6 & 8 \\
+Duration (months) & 2 & 3 & 4 & 5 & 6 & 8 \\
 \midrule
-\textbf{membership} & 0\% & 0\% & 33\% & 67\% & 100\% & 100\% \\
+Membership & 0.00 & 0.00 & 0.33 & 0.67 & 1.00 & 1.00 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{Explanation Module.}
-A good expert system must justify its behaviour. PESAD does so in two ways,
-implemented in \texttt{ask.pl} (the \emph{why}) and \texttt{explanation.pl} (the
-\emph{how}).
+While the certainty of a conclusion is computed, the rule is recorded (as
+\code{rule\_I/4}, \code{rule\_II/5} or \code{rule\_III/6}, according to its
+level) with a hierarchical index, and the facts are recorded under the index of
+the rule that used them. These records form the proof trees traversed by the
+explanation module.
 
-\emph{Why} questions: while answering a yes/no or multiple-choice question, the
-user may reply \texttt{why} (\texttt{perche}) to receive an explanation of the
-diagnostic reason behind the question; the same question is then asked again.
+\subsubsection{Explanation Module}
 
-\emph{How} questions: after a diagnosis the user may ask how it was reached. The
-predicate \texttt{print\_tree/1} walks the asserted rules across the three
-inference levels and prints, indented by level, each (sub-)conclusion with its
-certainty, distinguishing what was \emph{deduced} (intermediate rules) from what
-was \emph{stated} by the user (leaf facts).
+The \emph{why} is implemented in \code{ask.pl}: the answer \emph{why} prints the
+text \code{explanation/3} associated with the item, which states the criterion
+of the manual that the item serves. The \emph{how} is implemented in
+\code{explanation.pl}. After a diagnosis the user may request the proof tree of
+a goal, and \code{print\_tree/1} prints, indented by level, the conclusions with
+their certainty and truth value, the rules (marked as \emph{deduced}) being
+distinguished from the facts (marked as \emph{stated}). The web API returns the
+same tree as text and as nested JSON nodes; in the evaluation from test results
+each node also carries its status and its certainty bounds (cf.
+section~\ref{sec:evaluate}).
 
-\subsubsection{User Interface}
+\subsection{User Interface}
 
-The user interacts with the system through a textual shell (\texttt{shell.pl})
-that implements a read--evaluate--print loop. At start-up the user selects the
-interface language; the dynamic fact \texttt{language/1} then drives every
-message through the localization dispatch:
-
+The terminal shell (\code{shell.pl}) is a read--evaluate--print loop, described
+in chapter~\ref{chap:usage}. At start-up the user chooses the language
+(English or Italian) and the uncertainty method. The language, stored in the
+dynamic fact \code{language/1}, drives the messages through
 \begin{lstlisting}
-decode(Key, Text) :- language(Language), label(Language, Key, Text), !.
-decode(Key, Key).
+decode(Key,Text) :- language(Language), label(Language,Key,Text), !.
+decode(Key,Key).
 \end{lstlisting}
-
-All user-visible text is therefore stored as language-neutral \emph{keys} that
-each locale file (\texttt{interface\_en.pl}, \texttt{interface\_it.pl}) maps to a
-\texttt{label/3} string and, where relevant, to an \texttt{explanation/3} string.
-The command vocabulary is localized in the same way through \texttt{command/3},
-so that the user may type either the English or the Italian command words while
-the engine works on a single set of internal command atoms
-(\texttt{investigation}, \texttt{control}, \texttt{facts}, \texttt{help},
-\texttt{clean}, \texttt{quit}). Adding a new language amounts to providing a new
-locale file, with no change to the engine or the knowledge base.
+so that the knowledge base and the engine work on language-neutral keys. Each
+locale file maps a key to a text (\code{label/3}) and, for the items, to an
+explanation (\code{explanation/3}). Commands, being control tokens, are typed in English. Adding a language amounts to adding a locale file, and
+the validation suite checks that goals, items, questions and options have a
+text in both languages. Input and output go through \code{ui\_read/2} and
+\code{ui\_topic/1} (\code{bot\_io.pl}), which read from the terminal or, in
+session mode, return to the Python layer the question with a structured
+description of it (its type, its options and its explanation). Hence, the same
+code serves the terminal, the bot and the web API.
