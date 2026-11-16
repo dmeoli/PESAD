@@ -7,7 +7,7 @@
 The first limitation concerns what the validation shows. The cases of the suite
 are vignettes that I wrote from the same reading of the criteria from which I
 wrote the rules. Hence, a case that passes shows that the rules agree with that
-reading, and the mutation test shows that the suite would notice most errors in
+reading, and the mutation test shows that the suite would notice the kinds of errors injected into
 the rules. Neither shows that the reading is the right one, nor that the system
 would reach the diagnosis of a clinician on real patients; this would require a
 comparison on clinical records, which was not attempted. PESAD is therefore a
@@ -76,9 +76,9 @@ certainty factors, i.e., with the minimum t-norm, or with one of five
 alternative methods. The same engine serves a terminal shell, a Telegram bot
 and a stateless web API, which also evaluates the knowledge base from test
 results with lower and upper certainty bounds and the list of the missing data.
-A validation suite of 425 cases per method, covering each goal with a typical,
+A validation suite of 459 cases per method, covering each goal with a typical,
 a subthreshold, an exclusion and a differential case, passes under all six
-methods, and it detects 128 of 145 errors injected into the knowledge base. Comparing the methods supports the minimum as the default, since the other
+methods, and it detects all of 145 errors injected into the knowledge base. Comparing the methods supports the minimum as the default, since the other
 t-norms make the certainty of a diagnosis depend on the number of its criteria.
 Open questions are mostly practical: whether the consultation can be
 shortened by screening questions without losing comorbidities, and whether the

@@ -19,7 +19,7 @@ VM ?=
 TOKEN ?=
 
 .DEFAULT_GOAL := help
-.PHONY: help run test test-api install bot api deploy deploy-api logs restart stop
+.PHONY: help run test mutate test-api install bot api deploy deploy-api logs restart stop
 
 help: ## Show this help
 	@awk 'BEGIN{FS=":.*## "} /^[a-zA-Z_-]+:.*## /{printf "  \033[36m%-9s\033[0m %s\n",$$1,$$2}' $(MAKEFILE_LIST)
@@ -29,6 +29,9 @@ run: ## Run the expert system in the terminal (SWI-Prolog)
 
 test: ## Run the clinical regression suite
 	swipl prolog/clinical_tests.pl
+
+mutate: ## Mutation test: inject errors in the knowledge base, check the suite kills them
+	python3 tools/mutate.py
 
 test-api: ## Run the bridge smoke test and the web API consultations
 	$(PY) tests/smoke_bridge.py

@@ -47,9 +47,14 @@ children, the preschool subtype of posttraumatic stress disorder, and the ADHD
 threshold at 16 and 17 years. Further cases test cross-chapter differentials
 (e.g., autism against social communication disorder, posttraumatic stress
 disorder against ADHD) and graded answers (the uncertainty cases, discussed
-below). Finally, 13 cases are requests to the evaluation from test results, with the
+below), and 13 cases are requests to the evaluation from test results, with the
 expected status of goals and criteria, the expected missing data and the
-expected errors on invalid requests.
+expected errors on invalid requests. Finally, the \emph{boundary} cases place 17
+polythetic criteria exactly at their threshold: for an ``at least $M$ of $N$''
+criterion, the vignette of the disorder is given exactly $M$ of the items, and
+the goal must be present, or $M-1$, and the goal must be absent. These are the
+criteria that the typical and subthreshold cases leave away from the threshold
+(cf. section~\ref{sec:mutation}).
 
 \begin{table}[ht]
 \centering
@@ -70,8 +75,9 @@ Specifier & 7 & the right specifier goals are present, and only those \\
 Age rule & 16 & the age band changes the outcome as the manual prescribes \\
 Uncertainty & 4 & graded answers (cf. table~\ref{tab:uncertainty-cases}) \\
 Evaluation & 13 & requests to the evaluation from test results \\
+Boundary & 34 & a polythetic criterion with exactly $M$ items (present) or $M-1$ (absent) \\
 \midrule
-Total & 425 & \\
+Total & 459 & \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -79,8 +85,8 @@ Total & 425 & \\
 \section{Results}
 \label{sec:val-results}
 
-All the 425 cases pass under each of the six methods, and the consistency checks
-report no error (2550 runs in all). Since passing is a binary outcome, table~\ref{tab:results-method} also
+All the 459 cases pass under each of the six methods, and the consistency checks
+report no error (2754 runs in all). Since passing is a binary outcome, table~\ref{tab:results-method} also
 gives, for each method and case type, the certainty of the goal under test,
 which shows how far the cases are from the threshold of $0.5$. For the typical
 cases it gives the mean and the smallest certainty of the goal; for the other
@@ -88,7 +94,7 @@ three types, the largest certainty that the goal (which must be absent) reaches.
 
 \begin{table}[ht]
 \centering
-\caption{Results by uncertainty method: cases passed out of 425, and certainty
+\caption{Results by uncertainty method: cases passed out of 459, and certainty
 of the goal under test in the 92 cases of each of the four types per goal
 (mean and minimum for the typical cases, maximum for the others).}
 \label{tab:results-method}
@@ -98,12 +104,12 @@ of the goal under test in the 92 cases of each of the four types per goal
 & & \multicolumn{1}{c}{\textbf{Typical}} & \textbf{Subthreshold} & \textbf{Exclusion} & \textbf{Differential} \\
 \textbf{Method} & \textbf{Passed} & mean (min) & max & max & max \\
 \midrule
-\code{cf} & 425 & 0.893 (0.785) & 0.000 & 0.123 & 0.018 \\
-\code{fuzzy} & 425 & 0.866 (0.739) & 0.000 & 0.142 & 0.018 \\
-\code{fuzzy\_membership} & 425 & 0.893 (0.785) & 0.320 & 0.123 & 0.320 \\
-\code{lukasiewicz} & 425 & 0.864 (0.734) & 0.000 & 0.111 & 0.000 \\
-\code{hamacher} & 425 & 0.867 (0.743) & 0.000 & 0.146 & 0.018 \\
-\code{einstein} & 425 & 0.864 (0.735) & 0.000 & 0.139 & 0.017 \\
+\code{cf} & 459 & 0.893 (0.785) & 0.000 & 0.123 & 0.018 \\
+\code{fuzzy} & 459 & 0.866 (0.739) & 0.000 & 0.142 & 0.018 \\
+\code{fuzzy\_membership} & 459 & 0.893 (0.785) & 0.320 & 0.123 & 0.320 \\
+\code{lukasiewicz} & 459 & 0.864 (0.734) & 0.000 & 0.111 & 0.000 \\
+\code{hamacher} & 459 & 0.867 (0.743) & 0.000 & 0.146 & 0.018 \\
+\code{einstein} & 459 & 0.864 (0.735) & 0.000 & 0.139 & 0.017 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -167,6 +173,7 @@ desirable depends on how strictly the word ``typically'' is read; furthermore,
 it comes at the price of requesting numbers instead of options.
 
 \section{Mutation Test}
+\label{sec:mutation}
 
 A suite in which every case passes may still be unable to detect errors in the
 knowledge base, if the cases do not exercise the criteria that are wrong. To
@@ -176,8 +183,11 @@ of an ``at least $M$ of $N$'' criterion raised by $1$; (ii) the same threshold,
 when $M \ge 2$, lowered by $1$; (iii) a premise required false (an exclusion, or
 a symptom required absent) required true instead. Each mutant was run through
 the suite under the method \code{cf}, and it is \emph{killed} when at least one
-case fails. This test is not part of the continuous integration, since it takes
-some minutes. Table~\ref{tab:mutation} gives the results.
+case fails. The test (\code{make mutate}, i.e., the script \code{tools/mutate.py})
+runs the suite once per mutant, and it is not part of the continuous
+integration, since it takes several minutes (about 7 with 3 parallel workers on
+a desktop machine that was also running other jobs).
+Table~\ref{tab:mutation} gives the results.
 
 \begin{table}[ht]
 \centering
@@ -189,24 +199,27 @@ injected error (method \code{cf}).}
 \toprule
 \textbf{Injected error} & \textbf{Mutants} & \textbf{Killed} & \textbf{Survived} \\
 \midrule
-Threshold $M$ raised by 1 & 66 & 58 & 8 \\
-Threshold $M$ lowered by 1 & 25 & 16 & 9 \\
+Threshold $M$ raised by 1 & 66 & 66 & 0 \\
+Threshold $M$ lowered by 1 & 25 & 25 & 0 \\
 Premise required false made true & 54 & 54 & 0 \\
 \midrule
-Total & 145 & 128 (88\%) & 17 \\
+Total & 145 & 145 & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-All the inverted exclusions are detected, since each makes the typical case of
-the goal fail. The surviving mutants are thresholds that no case places at the
-boundary. A raised threshold survives when the typical vignette has more items
-than required: e.g., the panic disorder vignette has 5 of the 13 panic attack
+All the mutants are killed. The inverted exclusions are detected by the typical
+cases, since each makes the typical case of the goal fail, and most changes of a
+threshold by the typical and subthreshold cases. The boundary cases are needed
+for the thresholds that these cases leave away from the boundary. Without them,
+17 mutants survived (8 raised and 9 lowered thresholds), for two reasons. A
+raised threshold survives when the typical vignette has more items than
+required: e.g., the panic disorder vignette has 5 of the 13 panic attack
 symptoms, and raising the threshold from 4 to 5 changes nothing. A lowered
 threshold survives when the subthreshold case of the goal shortens a different
 criterion; e.g., the subthreshold case of agoraphobia removes situations, and
 lowering the threshold of the criterion on the fear being almost always provoked
-and out of proportion goes unnoticed. Of course, the suite could kill these
-mutants with one more case per polythetic criterion, placed at the threshold.
-As it stands, it tests one criterion per goal at the boundary, and the others
-only through the typical case.
+and out of proportion goes unnoticed. Of course, the three kinds of mutation
+cover only the errors that are easiest to make in the encoding, and a suite that
+kills them all may still miss, e.g., a wrong item in a list, a wrong duration
+option or a premise forgotten altogether.
