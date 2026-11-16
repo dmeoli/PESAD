@@ -39,12 +39,18 @@ The validation suite runs original clinical vignettes, written from the
 DSM-5-TR criteria, through the whole inference under the six uncertainty
 methods. For every diagnostic goal it checks a typical case, a subthreshold
 case, an exclusion case and a differential case, plus comorbidity, specifier,
-age-rule and cross-chapter differential cases and evaluations from test
-results, and prints a goal by case-type table:
+age-rule, cross-chapter differential and boundary cases (each polythetic
+criterion not otherwise tested at its threshold, with exactly M and M-1 items)
+and evaluations from test results, and prints a goal by case-type table:
 
 ```
 $ swipl prolog/clinical_tests.pl
 ```
+
+`make mutate` (`tools/mutate.py`) checks that the suite detects errors injected
+into the knowledge base: every threshold of an "at least M of N" criterion
+raised and lowered by one, every premise required false required true. It runs
+the suite once per mutant and takes several minutes, so it is not part of CI.
 
 The criteria sheets in [`doc/`](doc/) give, for every disorder, the paraphrased
 criteria, the ICD-10-CM and ICD-11 codes and the clause that implements each

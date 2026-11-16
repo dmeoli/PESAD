@@ -14,7 +14,7 @@
 %		  subthreshold  one symptom, count or duration short, goal absent;
 %		  exclusion     an exclusion criterion holds, goal absent;
 %		  differential  a neighbouring disorder ranks first, goal absent;
-%		plus comorbidity, specifier, age-rule and uncertainty cases, and
+%		plus comorbidity, specifier, age-rule, boundary and uncertainty cases, and
 %		evaluations from facts (test results, see evaluate.pl). A goal is
 %		present when its certainty is at least 50%. Every case runs under the
 %		uncertainty methods (cf, fuzzy, fuzzy_membership, lukasiewicz,
@@ -823,6 +823,63 @@ extra(borderline_phobia,uncertainty,'spider phobia for 5 months: only the graded
 	[when([cf,fuzzy],absent(specific_phobia_animal_type)),when([fuzzy_membership],top(specific_phobia_animal_type))]).
 extra(no_diagnosis,uncertainty,'mild non-specific work stress only',[y(occupational_distress,0.5)],[none]).
 
+
+%------------------------------BOUNDARY CASES-----------------------------------
+%	boundary(Criterion, Goal, Vignette, Items, M): an "at least M of Items"
+%	criterion of Goal, tested at its threshold. Two cases each: the vignette
+%	with exactly the first M items (Goal present) and with the first M-1
+%	(Goal absent); the other items of the criterion are answered no. The
+%	first items are chosen so that no other criterion of Goal depends on them.
+boundary(panic_attack,panic_disorder,panic_adult,
+	[palpitations,sweating,trembling,dyspnea,choking,chest_pain,nausea,lightheadedness,chills_or_hot_flushes,paresthesias,derealization_or_depersonalization,fear_of_losing_control,fear_of_dying],4).
+boundary(panic_consequences_concern,panic_disorder,panic_adult,
+	[worry_about_new_panic_attacks,worry_about_panic_consequences,maladaptive_behaviour_change_due_to_panic],1).
+boundary(excessive_separation_fear,separation_anxiety_disorder,sad_child,
+	[distress_at_separation_from_attachment_figures,worry_about_losing_attachment_figures,worry_an_event_causes_separation,reluctance_to_go_out_due_to_separation,fear_of_being_alone,reluctance_to_sleep_away_from_attachment_figures,nightmares_about_separation,physical_symptoms_on_separation],3).
+boundary(specific_phobic_anxiety,specific_phobia_animal_type,sp_animal,
+	[marked_fear_of_specific_object_or_situation,fear_almost_always_provoked,fear_out_of_proportion_to_actual_danger],3).
+boundary(social_phobic_anxiety_child,social_anxiety_disorder,social_child,
+	[marked_fear_of_social_scrutiny,fear_of_negative_evaluation,fear_almost_always_provoked,fear_out_of_proportion_to_actual_danger],4).
+boundary(social_phobic_anxiety_adult,social_anxiety_disorder,social_adult,
+	[marked_fear_of_social_scrutiny,fear_of_negative_evaluation,fear_almost_always_provoked,fear_out_of_proportion_to_actual_danger],4).
+boundary(agoraphobic_situations,agoraphobia,agora_adult,
+	[fear_of_public_transport,fear_of_open_spaces,fear_of_enclosed_places,fear_of_queues_or_crowds,fear_of_being_outside_home_alone],2).
+boundary(agoraphobic_fear,agoraphobia,agora_adult,
+	[fear_almost_always_provoked,fear_out_of_proportion_to_actual_danger],2).
+boundary(repetitive_appearance_behaviours,body_dysmorphic_disorder_with_good_or_fair_insight,bdd_base,
+	[mirror_checking,excessive_grooming,skin_picking_for_appearance,reassurance_seeking,comparing_appearance_with_others],1).
+boundary(inhibited_attachment_behaviour,reactive_attachment_disorder,rad_base,
+	[rarely_seeks_comfort_when_distressed,rarely_responds_to_comfort_when_distressed],2).
+boundary(disinhibited_behaviour_with_strangers,disinhibited_social_engagement_disorder,dsed_base,
+	[reduced_reticence_with_unfamiliar_adults,overly_familiar_behaviour,does_not_check_back_with_caregiver,willing_to_go_off_with_strangers],2).
+boundary(arousal_alterations,posttraumatic_stress_disorder,ptsd_adult,
+	[hypervigilance,exaggerated_startle_response,irritability_or_aggression,reckless_or_self_destructive_behaviour,difficulty_concentrating,sleep_disturbance],2).
+boundary(preschool_arousal_alterations,posttraumatic_stress_disorder,ptsd_preschool,
+	[hypervigilance,exaggerated_startle_response,irritability_or_aggression,difficulty_concentrating,sleep_disturbance],2).
+boundary(adjustment_clinical_significance,adjustment_disorder_unspecified,adj_base,
+	[distress_out_of_proportion_to_stressor,occupational_distress,social_distress,other_functional_distress],1).
+boundary(grief_associated_symptoms,prolonged_grief_disorder,pgd_adult,
+	[identity_disruption_since_death,disbelief_about_the_death,avoidance_of_reminders_of_death,intense_emotional_pain,difficulty_reintegrating,emotional_numbness,feeling_life_is_meaningless,intense_loneliness],3).
+boundary(language_acquisition_deficits,language_disorder,ld_base,
+	[reduced_vocabulary,limited_sentence_structure,impaired_discourse],1).
+boundary(motor_coordination_deficits,developmental_coordination_disorder,dcd_base,
+	[motor_skills_substantially_below_age,clumsy_slow_or_inaccurate_motor_performance],2).
+
+vignette(sp_animal,Age,Answers) :-
+	vignette(sp_base,Age,Answers0),
+	append(Answers0,[y(fear_of_animals)],Answers).
+
+extra(Id,boundary,D,Spec,[Expectation]) :-
+	boundary(Criterion,Goal,V,Items,M),
+	M1 is M-1,
+	member(K-Where-Expectation,[M-at-present(Goal),M1-below-absent(Goal)]),
+	atomic_list_concat([Criterion,'_',Where],Id),
+	format(atom(D),'~w with ~w of its items (threshold ~w)',[Criterion,K,M]),
+	length(Kept,K),
+	append(Kept,_,Items),
+	findall(-I,member(I,Items),Removed),
+	findall(y(I),member(I,Kept),Added),
+	append([[v(V)],Removed,Added],Spec).
 
 %--------------------------------CASE EXPANSION---------------------------------
 %	case(Id, Goal, Type, Description, Age, Answers, Expectations)
