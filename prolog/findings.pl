@@ -35,6 +35,10 @@ finding(raads_r_social_relatedness,integer(0,117),'RAADS-R social relatedness, c
 finding(raads_r_language,integer(0,21),'RAADS-R language, cutoff 4 (ASD A2, provisional)').
 finding(raads_r_circumscribed_interests,integer(0,42),'RAADS-R circumscribed interests, cutoff 15 (ASD B2, B3, provisional)').
 finding(raads_r_sensory_motor,integer(0,60),'RAADS-R sensory-motor, cutoff 16 (ASD B1, B4, provisional)').
+finding(adir_social,integer(0,30),'ADI-R algorithm A, reciprocal social interaction, cutoff 10 (ASD A, confirmatory)').
+finding(adir_communication,integer(0,26),'ADI-R algorithm B, communication, cutoff 8 (ASD A2, confirmatory)').
+finding(adir_restricted,integer(0,12),'ADI-R algorithm C, restricted, repetitive behaviours, cutoff 3 (ASD B, confirmatory)').
+finding(adir_onset,integer(0,5),'ADI-R algorithm D, abnormality evident by 36 months, cutoff 1 (ASD C, confirmatory)').
 finding(developmental_history_early_onset,boolean,'The developmental history places the first signs in the early developmental period').
 finding(asd_support_level_social_communication,integer(1,3),'Level of support needed for social communication (ASD severity)').
 finding(asd_support_level_restricted_behaviour,integer(1,3),'Level of support needed for restricted, repetitive behaviours (ASD severity)').
@@ -87,6 +91,19 @@ finding_evidence(raads_r_circumscribed_interests,S,item(I,D,provisional)) :-
 finding_evidence(raads_r_sensory_motor,S,item(I,D,provisional)) :-
 	member(I,[stereotyped_or_repetitive_behaviour,sensory_reactivity_or_interest]),
 	screening_degree(S,13,16,D).
+
+% ASD: ADI-R, a structured diagnostic interview (confirmatory), on its
+% algorithm cutoffs; a ramp that is null well below the cutoff and unit at it.
+finding_evidence(adir_social,S,item(I,D,confirmatory)) :-
+	member(I,[social_emotional_reciprocity_deficits,relationship_deficits]),
+	ramp_up(S,6,10,D).
+finding_evidence(adir_communication,S,item(nonverbal_communication_deficits,D,confirmatory)) :-
+	ramp_up(S,5,8,D).
+finding_evidence(adir_restricted,S,item(I,D,confirmatory)) :-
+	member(I,[stereotyped_or_repetitive_behaviour,insistence_on_sameness,restricted_fixated_interests,sensory_reactivity_or_interest]),
+	ramp_up(S,1,3,D).
+finding_evidence(adir_onset,S,item(onset_in_early_developmental_period,D,confirmatory)) :-
+	ramp_up(S,0,1,D).
 finding_evidence(developmental_history_early_onset,B,item(onset_in_early_developmental_period,D,confirmatory)) :-
 	boolean_degree(B,0.9,D).
 finding_evidence(asd_support_level_social_communication,L,choice(asd_social_communication_support,O)) :-
