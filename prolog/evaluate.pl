@@ -367,6 +367,9 @@ evaluate(Request,Response) :-
 	assertz(language(Lang)),
 	retractall(uncertainty_method(_)),
 	assertz(uncertainty_method(Method)),
+	request_membership(Request,Membership),
+	retractall(membership_mode(_)),
+	assertz(membership_mode(Membership)),
 	reset_evaluation,
 	load_request(Request),
 	request_goals(Request,Goals),
@@ -387,6 +390,10 @@ request_language(Request,Lang) :-
 request_method(Request,Method) :-
 	( get_dict(backend,Request,Method) -> true ; Method = cf ),
 	( method_t_norm(Method,_) -> true ; throw(evaluation_error(null,'unknown backend')) ).
+
+request_membership(Request,Mode) :-
+	( get_dict(membership,Request,Mode) -> true ; Mode = soft ),
+	( memberchk(Mode,[soft,hard]) -> true ; throw(evaluation_error(null,'membership is soft or hard')) ).
 
 %	request_goals(Request,Goals): the goals asked for, by identifier or by
 %	chapter (the neurodevelopmental chapter by default).

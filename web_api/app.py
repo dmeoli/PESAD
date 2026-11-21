@@ -76,6 +76,7 @@ class Evaluate(BaseModel):
     model_config = ConfigDict(extra="forbid")
     lang: Literal["en", "it"] = "en"
     backend: Literal[tuple(METHODS)] = "cf"
+    membership: Literal["soft", "hard"] = "soft"
     age: float | None = Field(default=None, ge=0, le=120)
     age_band: Literal["preschool", "child", "adolescent", "adult"] | None = None
     facts: list[Fact] = Field(default_factory=list, max_length=MAX_FACTS)

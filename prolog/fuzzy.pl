@@ -16,16 +16,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 :- dynamic known_value/2.
+:- dynamic membership_mode/1.
 
 
 %------------------------MEMBERSHIP-FUNCTION PRIMITIVES-------------------------
 
-%	ramp_up(X,A,B,Mu): 0 for X=<A, 1 for X>=B, linear in between (open right shoulder).
+%	current_membership_mode(Mode): soft (the graded ramp, the default) or hard
+%		(a Boolean step at the cutoff, used to compare the soft reading with the
+%		crisp one the instruments' own algorithms apply).
+current_membership_mode(Mode) :- membership_mode(Mode), !.
+current_membership_mode(soft).
+
+%	ramp_up(X,A,B,Mu): 0 for X=<A, 1 for X>=B, linear in between (open right shoulder);
+%		under the hard mode a step, 1 iff X>=B (the cutoff).
+ramp_up(X,_,B,D)   :- current_membership_mode(hard), !, ( X >= B -> D = 1.0 ; D = 0.0 ).
 ramp_up(X,A,_,0.0) :- X =< A, !.
 ramp_up(X,_,B,1.0) :- X >= B, !.
 ramp_up(X,A,B,Mu)  :- Mu is (X-A)/(B-A).
 
-%	ramp_down(X,A,B,Mu): 1 for X=<A, 0 for X>=B, linear in between (open left shoulder).
+%	ramp_down(X,A,B,Mu): 1 for X=<A, 0 for X>=B, linear in between (open left shoulder);
+%		under the hard mode a step, 1 iff X=<A.
+ramp_down(X,A,_,D)   :- current_membership_mode(hard), !, ( X =< A -> D = 1.0 ; D = 0.0 ).
 ramp_down(X,A,_,1.0) :- X =< A, !.
 ramp_down(X,_,B,0.0) :- X >= B, !.
 ramp_down(X,A,B,Mu)  :- Mu is (B-X)/(B-A).
