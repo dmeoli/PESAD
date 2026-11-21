@@ -66,6 +66,15 @@ finding_evidence(asrs_inattention_count,N,count(inattention_symptom_count,N,0.8,
 finding_evidence(asrs_hyperactivity_count,N,count(hyperactivity_impulsivity_symptom_count,N,0.8,provisional)).
 finding_evidence(diva5_childhood_inattention_count,N,childhood(N)).
 finding_evidence(diva5_childhood_hyperactivity_count,N,childhood(N)).
+% The childhood section of the structured interview is also evidence on whether
+% the full criteria were ever met: a count reaching the full threshold (6) in
+% either cluster supports it, a clearly lower one leaves it known-low, so that a
+% clearly negative interview can rule out partial remission (ADHD, in partial
+% remission) instead of leaving it open.
+finding_evidence(diva5_childhood_inattention_count,N,item(full_adhd_criteria_previously_met,D,confirmatory)) :-
+	ramp_up(N,5,6,D).
+finding_evidence(diva5_childhood_hyperactivity_count,N,item(full_adhd_criteria_previously_met,D,confirmatory)) :-
+	ramp_up(N,5,6,D).
 finding_evidence(informant_confirms_childhood_symptoms,B,informant(B)).
 finding_evidence(school_report_symptoms_before_twelve,B,item(several_symptoms_before_age_twelve,D,confirmatory)) :-
 	boolean_degree(B,0.9,D).
