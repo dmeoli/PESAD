@@ -43,7 +43,10 @@
 % Knowledge base.
 :- reconsult('disorders.pl').
 :- reconsult('criteria.pl').
-:- reconsult('findings.pl').
 :- reconsult('evaluate.pl').
 
 :- main.
+
+% Optional external rule file(s) (e.g. Prisma's test-to-criteria mappings),
+% kept out of this generic DSM engine; set PESAD_EXTRA_RULES to load them.
+:- ( getenv('PESAD_EXTRA_RULES', F) -> reconsult(F) ; true ).

@@ -28,6 +28,12 @@
 
 :- use_module(library(http/json)).
 
+% the test-to-criteria knowledge (finding/3, finding_evidence/3,
+% childhood_evidence/3) is optional and may be loaded from outside this
+% generic engine (PESAD_EXTRA_RULES); declare it multifile so the engine
+% loads and runs without it.
+:- multifile finding/3, finding_evidence/3, childhood_evidence/3.
+
 :- thread_local evaluation_bound/1.	% lower | upper, while a run is on
 :- thread_local provisional/2.		% provisional(Attribute,Item): screening evidence only
 :- thread_local count_evidence/4.	% count_evidence(Count,N,Weight,Kind)

@@ -54,13 +54,16 @@ load_pesad :-
 	                      'shell.pl',
 	                      'disorders.pl',
 	                      'criteria.pl',
-	                      'findings.pl',
-	                      'evaluate.pl',
+		                      'evaluate.pl',
 	                      'bot_session.pl' ]),
 	       ( atomic_list_concat([Dir, '/', File], Path),
 	         reconsult(Path) )).
 
 :- load_pesad.
+
+% Optional external rule file(s) (e.g. Prisma's test-to-criteria mappings),
+% kept out of this generic DSM engine; set PESAD_EXTRA_RULES to load them.
+:- ( getenv('PESAD_EXTRA_RULES', F) -> reconsult(F) ; true ).
 
 % Switch the I/O layer to bot mode for the whole process.
 :- retractall(io_mode(_)), assertz(io_mode(bot)).

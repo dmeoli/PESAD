@@ -51,8 +51,10 @@
 :- reconsult('shell.pl').
 :- reconsult('disorders.pl').
 :- reconsult('criteria.pl').
-:- reconsult('findings.pl').
 :- reconsult('evaluate.pl').
+:- multifile finding/3, finding_evidence/3, childhood_evidence/3.
+:- dynamic evaluation_case/4.
+:- ( getenv('PESAD_EXTRA_RULES', F) -> reconsult(F) ; true ).
 
 %	threshold(T): a goal is present when its certainty is at least T.
 threshold(0.5).
@@ -984,13 +986,9 @@ report_failure(M,Id,D,E,Ranked) :-
 
 
 %----------------------------EVALUATION FROM FACTS------------------------------
-%	evaluation_case(Id, Description, Request, Expectations): a request of
-%	POST /evaluate (as parsed from JSON) run under every method. Expectations
-%	are status(Goal,Status), criterion(Goal,Criterion,Status),
-%	missing(Goal,Item) and error(Index).
+% Prisma-specific evaluation_case/4 facts (test-result cases) live in the
+% private PrismaMD repository and are loaded via PESAD_EXTRA_RULES.
 
-
-%	run_evaluation(Method,Request,Response)
 run_evaluation(Method,Request,Response) :-
 	put_dict(_{lang:en, backend:Method},Request,Request1),
 	catch(evaluate(Request1,Response),evaluation_error(Index,Message),Response = error(Index,Message)).
