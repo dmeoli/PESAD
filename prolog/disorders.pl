@@ -530,6 +530,19 @@ disorder(provisional_tic_disorder,Patient,CF) :-
 	primary(provisional_tic_disorder,Patient,CF1,CF2,CF3),
 	certainty(provisional_tic_disorder,1,[CF1,CF2,CF3],0.96,CF,true).
 
+%-------------------------Bipolar and Depressive Disorders----------------------
+%	Episode-based goals (see criteria.pl): the criteria are satisfied by the
+%	documented mood episodes.
+disorder(major_depressive_disorder,Patient,CF) :-
+	primary(major_depressive_disorder,Patient,CF1,CF2,CF3),
+	certainty(major_depressive_disorder,1,[CF1,CF2,CF3],0.95,CF,true).
+disorder(bipolar_i_disorder,Patient,CF) :-
+	primary(bipolar_i_disorder,Patient,CF1,CF2,CF3),
+	certainty(bipolar_i_disorder,1,[CF1,CF2,CF3],0.95,CF,true).
+disorder(bipolar_ii_disorder,Patient,CF) :-
+	primary(bipolar_ii_disorder,Patient,CF1,CF2,CF3),
+	certainty(bipolar_ii_disorder,1,[CF1,CF2,CF3],0.95,CF,true).
+
 %---------------------------LIST OF CODED DISORDERS-----------------------------
 goals_list(L) :-
 	findall(G,disorder_codes(G,_,_),L).
@@ -633,6 +646,9 @@ disorder_codes(tourettes_disorder,'F95.2','8A05.00').
 disorder_codes(persistent_tic_disorder_with_motor_tics_only,'F95.1','8A05.01').
 disorder_codes(persistent_tic_disorder_with_vocal_tics_only,'F95.1','8A05.02').
 disorder_codes(provisional_tic_disorder,'F95.0','8A05.03 (transient motor tics)').
+disorder_codes(major_depressive_disorder,'F32.9','6A70').
+disorder_codes(bipolar_i_disorder,'F31.9','6A60').
+disorder_codes(bipolar_ii_disorder,'F31.81','6A61').
 
 
 %-----------------------------CHAPTERS / DIFFERENTIALS--------------------------
@@ -642,6 +658,7 @@ chapter_first_goal(anxiety,separation_anxiety_disorder).
 chapter_first_goal(obsessive_compulsive,obsessive_compulsive_disorder_with_good_or_fair_insight).
 chapter_first_goal(trauma,reactive_attachment_disorder).
 chapter_first_goal(neurodevelopmental,intellectual_developmental_disorder_mild).
+chapter_first_goal(mood,major_depressive_disorder).
 
 %	goal_chapter(Goal,Chapter)
 goal_chapter(Goal,Chapter) :-
@@ -677,6 +694,9 @@ family_prefix(reactive_attachment_disorder,reactive_attachment_disorder).
 family_prefix(disinhibited_social_engagement_disorder,disinhibited_social_engagement_disorder).
 family_prefix(posttraumatic_stress_disorder,posttraumatic_stress_disorder).
 family_prefix(adjustment_disorder,adjustment_disorder).
+family_prefix(major_depressive_disorder,major_depressive_disorder).
+family_prefix(bipolar_i_disorder,bipolar_i_disorder).
+family_prefix(bipolar_ii_disorder,bipolar_ii_disorder).
 
 %	differentials(Family,Families): the disorders that the differential
 %	diagnosis section of DSM-5-TR asks to rule out (those in the knowledge base).
@@ -684,7 +704,10 @@ differentials(intellectual_developmental_disorder,[specific_learning_disorder,la
 differentials(language_disorder,[intellectual_developmental_disorder,autism_spectrum_disorder,social_pragmatic_communication_disorder,selective_mutism]).
 differentials(social_pragmatic_communication_disorder,[autism_spectrum_disorder,language_disorder,intellectual_developmental_disorder,attention_deficit_hyperactivity_disorder,social_anxiety_disorder]).
 differentials(autism_spectrum_disorder,[social_pragmatic_communication_disorder,language_disorder,intellectual_developmental_disorder,attention_deficit_hyperactivity_disorder,selective_mutism,reactive_attachment_disorder,social_anxiety_disorder,obsessive_compulsive_disorder]).
-differentials(attention_deficit_hyperactivity_disorder,[autism_spectrum_disorder,specific_learning_disorder,intellectual_developmental_disorder,reactive_attachment_disorder,disinhibited_social_engagement_disorder,generalized_anxiety_disorder,separation_anxiety_disorder,posttraumatic_stress_disorder,adjustment_disorder]).
+differentials(attention_deficit_hyperactivity_disorder,[autism_spectrum_disorder,specific_learning_disorder,intellectual_developmental_disorder,reactive_attachment_disorder,disinhibited_social_engagement_disorder,generalized_anxiety_disorder,separation_anxiety_disorder,posttraumatic_stress_disorder,adjustment_disorder,bipolar_i_disorder,bipolar_ii_disorder,major_depressive_disorder]).
 differentials(specific_learning_disorder,[intellectual_developmental_disorder,attention_deficit_hyperactivity_disorder,language_disorder,developmental_coordination_disorder]).
 differentials(developmental_coordination_disorder,[intellectual_developmental_disorder,attention_deficit_hyperactivity_disorder,autism_spectrum_disorder]).
 differentials(tic_disorders,[obsessive_compulsive_disorder,autism_spectrum_disorder,attention_deficit_hyperactivity_disorder]).
+differentials(major_depressive_disorder,[bipolar_i_disorder,bipolar_ii_disorder,generalized_anxiety_disorder,posttraumatic_stress_disorder,adjustment_disorder,attention_deficit_hyperactivity_disorder]).
+differentials(bipolar_i_disorder,[bipolar_ii_disorder,major_depressive_disorder,attention_deficit_hyperactivity_disorder]).
+differentials(bipolar_ii_disorder,[bipolar_i_disorder,major_depressive_disorder,attention_deficit_hyperactivity_disorder]).

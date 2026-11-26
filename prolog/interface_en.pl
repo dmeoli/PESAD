@@ -825,3 +825,14 @@ explanation(en, tics_persisted_more_than_one_year, 'More than 1 year separates T
 explanation(en, tic_onset_before_age_eighteen, 'Every tic disorder requires onset before age 18 (Criterion C).') :- !.
 explanation(en, criteria_ever_met_for_tourettes_disorder, 'Persistent and provisional tic disorder are not diagnosed after Tourette''s disorder (Criterion E).') :- !.
 explanation(en, criteria_ever_met_for_persistent_tic_disorder, 'Provisional tic disorder is not diagnosed after a persistent tic disorder (Criterion E).') :- !.
+
+% ---- mood (bipolar and depressive) ----
+label(en, major_depressive_disorder, 'Major Depressive Disorder') :- !.
+label(en, bipolar_i_disorder, 'Bipolar I Disorder') :- !.
+label(en, bipolar_ii_disorder, 'Bipolar II Disorder') :- !.
+label(en, major_depressive_episode, 'Major Depressive Episode') :- !.
+label(en, manic_episode, 'Manic Episode') :- !.
+label(en, hypomanic_episode, 'Hypomanic Episode') :- !.
+label(en, major_depressive_episode_present, 'A major depressive episode is documented in the history') :- !.
+label(en, manic_episode_present, 'A manic episode is documented in the history') :- !.
+label(en, hypomanic_episode_present, 'A hypomanic episode is documented in the history') :- !.

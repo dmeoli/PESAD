@@ -50,7 +50,7 @@ ORIGINS = ["https://dmeoli.github.io", "http://localhost:8780"]
 
 
 Id = Annotated[str, StringConstraints(max_length=128, pattern=r"^[a-z0-9_]+$")]
-CHAPTERS = Literal["neurodevelopmental", "anxiety", "obsessive_compulsive", "trauma"]
+CHAPTERS = Literal["neurodevelopmental", "anxiety", "obsessive_compulsive", "trauma", "mood"]
 
 
 class Step(BaseModel):
@@ -58,7 +58,7 @@ class Step(BaseModel):
     backend: Literal[tuple(METHODS)] = "cf"
     answers: list[Annotated[str, StringConstraints(max_length=64)]] = Field(
         default_factory=list, max_length=MAX_ANSWERS)
-    chapters: list[CHAPTERS] | None = Field(default=None, min_length=1, max_length=4)
+    chapters: list[CHAPTERS] | None = Field(default=None, min_length=1, max_length=5)
 
 
 class Fact(BaseModel):
@@ -81,7 +81,7 @@ class Evaluate(BaseModel):
     age_band: Literal["preschool", "child", "adolescent", "adult"] | None = None
     facts: list[Fact] = Field(default_factory=list, max_length=MAX_FACTS)
     goals: list[Id] | None = Field(default=None, max_length=200)
-    chapters: list[CHAPTERS] | None = Field(default=None, max_length=4)
+    chapters: list[CHAPTERS] | None = Field(default=None, max_length=5)
 
 
 @asynccontextmanager

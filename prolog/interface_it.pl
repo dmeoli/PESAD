@@ -825,3 +825,14 @@ explanation(it, tics_persisted_more_than_one_year, 'Più di 1 anno distingue il 
 explanation(it, tic_onset_before_age_eighteen, 'Ogni disturbo da tic richiede l''esordio prima dei 18 anni (Criterio C).') :- !.
 explanation(it, criteria_ever_met_for_tourettes_disorder, 'Il disturbo persistente e quello transitorio non si diagnosticano dopo un disturbo di Tourette (Criterio E).') :- !.
 explanation(it, criteria_ever_met_for_persistent_tic_disorder, 'Il disturbo da tic transitorio non si diagnostica dopo un disturbo persistente da tic (Criterio E).') :- !.
+
+% ---- umore (bipolari e depressivi) ----
+label(it, major_depressive_disorder, 'Disturbo Depressivo Maggiore') :- !.
+label(it, bipolar_i_disorder, 'Disturbo Bipolare I') :- !.
+label(it, bipolar_ii_disorder, 'Disturbo Bipolare II') :- !.
+label(it, major_depressive_episode, 'Episodio Depressivo Maggiore') :- !.
+label(it, manic_episode, 'Episodio Maniacale') :- !.
+label(it, hypomanic_episode, 'Episodio Ipomaniacale') :- !.
+label(it, major_depressive_episode_present, 'Nella storia è documentato un episodio depressivo maggiore') :- !.
+label(it, manic_episode_present, 'Nella storia è documentato un episodio maniacale') :- !.
+label(it, hypomanic_episode_present, 'Nella storia è documentato un episodio ipomaniacale') :- !.

@@ -1082,3 +1082,45 @@ etiological_evidence(Y,Z,CF) :-
 
 patient(X) :-
 	selective_ask(patient,X,[preschool,child,adolescent,adult]).
+
+
+%-------------------------Bipolar and Depressive Disorders----------------------
+%	Episode-based: a documented mood episode (major depressive, manic, hypomanic)
+%	is evidence toward the corresponding disorder; the per-symptom detail of each
+%	episode refines the criteria as it is elicited.
+
+%	Major depressive episode (DSM-5-TR A-C, >= 2 weeks, depressed mood or anhedonia).
+symptomatic_manifestation(major_depressive_episode,_,CF,TV) :-
+	symptom([major_depressive_episode_present],1,CF1),
+	certainty(major_depressive_episode,3,[CF1],0.95,CF,TV).
+
+%	Manic episode (DSM-5-TR A-D, >= 1 week or hospitalization).
+symptomatic_manifestation(manic_episode,_,CF,TV) :-
+	symptom([manic_episode_present],1,CF1),
+	certainty(manic_episode,3,[CF1],0.95,CF,TV).
+
+%	Hypomanic episode (DSM-5-TR A-F, >= 4 days).
+symptomatic_manifestation(hypomanic_episode,_,CF,TV) :-
+	symptom([hypomanic_episode_present],1,CF1),
+	certainty(hypomanic_episode,3,[CF1],0.95,CF,TV).
+
+%	Major Depressive Disorder: a major depressive episode with distress, and no
+%	manic or hypomanic episode ever (which would place it among the bipolar).
+disorder_nc(major_depressive_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(major_depressive_episode,Patient,CF1,true),
+	symptomatic_manifestation(significant_distress,Patient,CF2,true),
+	unless_absent([CF1,CF2],symptomatic_manifestation(manic_episode,Patient,CF3,false),[CF3]),
+	unless_absent([CF1,CF2,CF3],symptomatic_manifestation(hypomanic_episode,Patient,CF4,false),[CF4]),
+	certainty(major_depressive_disorder,2,[CF1,CF2,CF3,CF4],0.95,CF,TV).
+
+%	Bipolar I Disorder: at least one manic episode (a depressive episode is not required).
+disorder_nc(bipolar_i_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(manic_episode,Patient,CF1,true),
+	certainty(bipolar_i_disorder,2,[CF1],0.95,CF,TV).
+
+%	Bipolar II Disorder: a hypomanic episode and a major depressive episode, never a manic one.
+disorder_nc(bipolar_ii_disorder,Patient,CF,TV) :-
+	symptomatic_manifestation(hypomanic_episode,Patient,CF1,true),
+	symptomatic_manifestation(major_depressive_episode,Patient,CF2,true),
+	unless_absent([CF1,CF2],symptomatic_manifestation(manic_episode,Patient,CF3,false),[CF3]),
+	certainty(bipolar_ii_disorder,2,[CF1,CF2,CF3],0.95,CF,TV).
